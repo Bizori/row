@@ -3,64 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
+<meta name="theme-color" content="#0C0C12">
 <title>Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="lock.js" defer></script>
 <script src="topbar.js" defer></script>
 <style>
 :root {
-  --text-primary:   #FAFAFA;
-  --text-secondary: #B8B6B0;
-  --text-tertiary:  #76746E;
-  --success: #6BE3A4;
-  --warning: #F2C063;
-  --font:      "Space Grotesk", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+  --text-primary:   var(--fg);
+  --text-secondary: var(--muted-strong);
+  --text-tertiary:  var(--muted);
+  --success: var(--pos);
+  --warning: var(--warn);
+  --font:      var(--font-ui);
+  --font-mono: var(--font-mono);
 }
 
-* { box-sizing: border-box; }
-html, body {
-  margin: 0; padding: 0;
-  background: #050506;
-  color: var(--text-secondary);
-  font-family: var(--font);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
 body {
   min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
   padding: max(28px, env(safe-area-inset-top)) 20px 80px;
-}
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background:
-    radial-gradient(circle at 75% 18%, rgba(107,227,164,0.10), transparent 42%),
-    radial-gradient(circle at 20% 80%, rgba(124,186,252,0.08), transparent 48%);
-  filter: blur(40px);
-  pointer-events: none;
-  z-index: -2;
-  animation: drift 36s ease-in-out infinite alternate;
-}
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  background-size: 200px 200px;
-  opacity: 0.022; mix-blend-mode: overlay;
-  pointer-events: none;
-  z-index: -1;
-}
-@keyframes drift {
-  0%   { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-22px, 14px, 0); }
 }
 
 .page {
@@ -72,8 +39,9 @@ body::after {
   margin: 0 0 14px;
   font-size: 28px;
   font-weight: 700;
-  letter-spacing: -0.025em;
-  background: linear-gradient(180deg, #FFFFFF 0%, #C7C4BC 120%);
+  letter-spacing: -0.02em;
+  font-family: 'Orbitron', sans-serif;
+  background: linear-gradient(180deg, #F3F2F8 0%, rgba(243,242,248,0.7) 120%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -89,8 +57,8 @@ body::after {
   padding: 7px 12px;
   margin-bottom: 18px;
   border-radius: 12px;
-  background: rgba(0,0,0,0.38);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--surface);
+  border: 1px solid var(--border);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
 }
 .metrics-ticker.hidden { display: none; }
@@ -104,8 +72,8 @@ body::after {
 }
 .metrics-led {
   width: 5px; height: 5px; border-radius: 50%;
-  background: var(--success);
-  box-shadow: 0 0 6px rgba(107,227,164,0.8);
+  background: var(--pos);
+  box-shadow: 0 0 6px rgba(70,224,168,0.8);
   animation: metricsLed 2s ease-in-out infinite;
   flex-shrink: 0;
 }
@@ -162,10 +130,10 @@ body::after {
   border-radius: 18px;
   background: linear-gradient(
     145deg,
-    color-mix(in srgb, var(--accent) 13%, #0a0a0c) 0%,
-    #0d0d0f 75%
+    color-mix(in srgb, var(--accent) 12%, #0e0e18) 0%,
+    #0C0C12 75%
   );
-  border: 1px solid color-mix(in srgb, var(--accent) 28%, rgba(255,255,255,0.06));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   text-decoration: none;
@@ -270,7 +238,7 @@ body::after {
 
   <div class="bento">
 
-    <a href="main.html" class="tile big" style="--accent:#6BE3A4">
+    <a href="main.html" class="tile big" style="--accent:#8B7CFF">
       <span class="tile-num">·01</span>
       <span class="tile-emoji">🏠</span>
       <div class="tile-spacer"></div>
@@ -281,7 +249,7 @@ body::after {
       </div>
     </a>
 
-    <a href="gym.html" class="tile wide" style="--accent:#7DD3FC">
+    <a href="gym.html" class="tile wide" style="--accent:#46E0A8">
       <span class="tile-num">·02</span>
       <span class="tile-emoji">💪</span>
       <div class="tile-spacer"></div>
@@ -292,7 +260,7 @@ body::after {
       </div>
     </a>
 
-    <a href="health.html" class="tile" style="--accent:#A7F3D0">
+    <a href="health.html" class="tile" style="--accent:#FB7185">
       <span class="tile-num">·03</span>
       <span class="tile-emoji">💊</span>
       <div class="tile-spacer"></div>
@@ -303,7 +271,7 @@ body::after {
       </div>
     </a>
 
-    <a href="progress.html" class="tile" style="--accent:#C084FC">
+    <a href="progress.html" class="tile" style="--accent:#C7BBFF">
       <span class="tile-num">·04</span>
       <span class="tile-emoji">📸</span>
       <div class="tile-spacer"></div>
@@ -314,7 +282,7 @@ body::after {
       </div>
     </a>
 
-    <a href="finance.html" class="tile wide" style="--accent:#F2C063">
+    <a href="finance.html" class="tile wide" style="--accent:#FBBF24">
       <span class="tile-num">·05</span>
       <span class="tile-emoji">📊</span>
       <div class="tile-spacer"></div>
