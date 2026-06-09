@@ -480,57 +480,86 @@ main {
 /* ============================================================
    GARMIN CARD
    ============================================================ */
-.garmin-section { margin-bottom: 48px; }
+.garmin-section { margin-bottom: 32px; }
 .garmin-card {
-  padding: 20px;
+  padding: 22px 22px 18px;
   background: rgba(255,255,255,0.025);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  box-shadow: var(--glass-shadow);
+  border-radius: 22px;
+  box-shadow: 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 12px 40px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.25);
 }
-.garmin-brand {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
-}
-.garmin-brand-mark {
-  width: 26px; height: 26px; border-radius: 50%;
-  background: #00A6FF; color: #fff;
-  font-weight: 800; font-size: 13px;
-  display: grid; place-items: center;
-}
-.garmin-brand-text {
-  font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
-  text-transform: uppercase; color: var(--text-primary);
-}
-.garmin-header-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.garmin-updated { font-size: 11px; color: var(--text-tertiary); }
-.garmin-refresh-btn {
-  background: none; border: none; cursor: pointer;
-  color: var(--text-tertiary); padding: 4px; border-radius: 6px;
-  display: flex; align-items: center; transition: color 0.2s;
-}
-.garmin-refresh-btn:hover { color: var(--text-primary); }
-.garmin-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-}
-@media (max-width: 400px) { .garmin-grid { grid-template-columns: repeat(2, 1fr); } }
-.garmin-cell {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--glass-border);
-  border-radius: 14px; padding: 14px 12px 12px;
-  display: flex; flex-direction: column; gap: 4px;
-}
-.garmin-cell-label {
-  font-size: 10.5px; font-weight: 600; color: var(--text-tertiary);
-  letter-spacing: 0.05em; text-transform: uppercase;
-}
-.garmin-cell-value {
-  font-size: 22px; font-weight: 700; color: var(--text-primary); line-height: 1;
-}
-.garmin-cell-sub { font-size: 11px; color: var(--text-tertiary); }
-.garmin-no-data {
-  text-align: center; padding: 24px 16px;
-  font-size: 13px; color: var(--text-tertiary);
-}
+/* Brand */
+.wh-brand { display:inline-flex; align-items:center; gap:8px; }
+.wh-brand-mark { width:22px; height:22px; border-radius:50%; background:#00A6FF; color:#fff; font-weight:900; font-size:12px; display:inline-flex; align-items:center; justify-content:center; letter-spacing:-0.04em; box-shadow:0 0 12px rgba(0,166,255,0.30); }
+.wh-brand-text { font-weight:800; font-size:13px; letter-spacing:0.18em; color:var(--text-primary); }
+/* Header */
+.wh-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+.wh-live { display:inline-flex; align-items:center; gap:5px; font-size:9.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#6BE3A4; margin-left:4px; padding:3px 8px; border-radius:999px; background:rgba(107,227,164,0.10); border:1px solid rgba(107,227,164,0.30); }
+.wh-live-dot { width:6px; height:6px; border-radius:50%; background:#6BE3A4; box-shadow:0 0 8px rgba(107,227,164,0.65); animation:wh-pulse 1.6s ease-in-out infinite; }
+@keyframes wh-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+.wh-head-right { display:flex; align-items:center; gap:10px; }
+.wh-updated { font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); }
+.wh-refresh { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.4s, background 0.18s, color 0.18s; }
+.wh-refresh:hover { background:rgba(255,255,255,0.10); color:var(--text-primary); }
+.wh-refresh.spin { transform:rotate(360deg); }
+/* Ring */
+.wh-ring-wrap { position:relative; width:240px; max-width:78%; margin:0 auto 24px; aspect-ratio:1; }
+.wh-ring { width:100%; height:100%; transform:rotate(-90deg); filter:drop-shadow(0 0 24px rgba(255,255,255,0.05)); }
+.wh-ring-track { fill:none; stroke:rgba(255,255,255,0.06); stroke-width:12; }
+.wh-ring-fill { fill:none; stroke:#FFF; stroke-width:12; stroke-linecap:round; stroke-dasharray:603.19; stroke-dashoffset:603.19; transition:stroke-dashoffset 0.8s cubic-bezier(0.22,1,0.36,1), stroke 0.4s; }
+.wh-ring-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; }
+.wh-ring-num { font-size:60px; font-weight:700; letter-spacing:-0.04em; color:var(--text-primary); line-height:1; font-variant-numeric:tabular-nums; }
+.wh-ring-unit { font-size:10px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--text-tertiary); margin-top:10px; }
+.wh-ring-label { font-size:12.5px; font-weight:600; margin-top:6px; letter-spacing:-0.005em; }
+/* Stages */
+.wh-stages { margin-bottom:22px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.05); }
+.wh-stages-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
+.wh-stages-eye { font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-tertiary); }
+.wh-stages-meta { font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); }
+.wh-stages-bar { display:flex; height:10px; background:rgba(255,255,255,0.04); border-radius:999px; overflow:hidden; margin-bottom:12px; border:1px solid rgba(255,255,255,0.04); }
+.wh-stage { height:100%; transition:width 0.7s cubic-bezier(0.22,1,0.36,1); }
+.wh-stage-rem{background:#FFF} .wh-stage-deep{background:#B8B6B0} .wh-stage-light{background:#76746E} .wh-stage-awake{background:#38362F}
+.wh-stages-legend { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.wh-leg { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary); font-weight:500; }
+.wh-leg-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+.wh-leg-dot.d-rem{background:#FFF} .wh-leg-dot.d-deep{background:#B8B6B0} .wh-leg-dot.d-light{background:#76746E} .wh-leg-dot.d-awake{background:#38362F; border:1px solid rgba(255,255,255,0.10);}
+.wh-leg-num { margin-left:auto; color:var(--text-primary); font-weight:700; font-family:var(--font-mono); font-size:11px; }
+@media (max-width:480px) { .wh-stages-legend { grid-template-columns:repeat(2,1fr); } }
+/* Stats */
+.wh-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.05); }
+.wh-stat { position:relative; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.04); border-radius:12px; padding:12px 10px; text-align:center; }
+.wh-stat-label { font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.14em; font-weight:700; margin-bottom:8px; }
+.wh-stat-val { font-size:22px; font-weight:700; color:var(--text-primary); line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-0.03em; }
+.wh-stat-sub { font-size:10px; color:var(--text-tertiary); margin-top:5px; font-family:var(--font-mono); }
+@media (max-width:480px) { .wh-stats { grid-template-columns:repeat(2,1fr); } .wh-stat-val { font-size:20px; } }
+/* Biomarkers */
+.wh-bio { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+.wh-bio-item { position:relative; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.04); border-radius:12px; padding:11px 12px; text-align:center; }
+.wh-bio-label { display:block; font-size:9.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:4px; }
+.wh-bio-val { display:block; font-size:14px; font-weight:700; color:var(--text-primary); font-variant-numeric:tabular-nums; }
+@media (max-width:380px) { .wh-bio { grid-template-columns:1fr; } }
+/* Zone dot */
+.wh-zone { position:absolute; top:9px; right:9px; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.12); }
+.wh-zone.z-good { background:#6BE3A4; box-shadow:0 0 7px rgba(107,227,164,0.55); }
+.wh-zone.z-norm { background:rgba(255,255,255,0.30); }
+.wh-zone.z-warn { background:#F2C063; box-shadow:0 0 7px rgba(242,192,99,0.55); }
+.wh-zone.z-bad  { background:#FF8A8A; box-shadow:0 0 7px rgba(255,138,138,0.55); }
+/* Legend */
+.wh-legend { display:flex; justify-content:center; flex-wrap:wrap; gap:14px; margin-top:14px; padding:10px 12px; background:rgba(255,255,255,0.02); border-radius:999px; border:1px solid rgba(255,255,255,0.04); }
+.wh-leg-item { display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:600; color:var(--text-tertiary); }
+.wh-leg-item .wh-zone { position:static; display:inline-block; }
+/* Today's Call */
+.wh-verdict { margin-top:18px; padding:16px 18px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.04); border-left:2px solid rgba(255,255,255,0.40); border-radius:0 12px 12px 0; }
+.wh-verdict-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.wh-verdict-eye { font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.18em; font-weight:700; }
+.wh-verdict-badge { font-size:9.5px; font-weight:800; padding:3px 9px; border-radius:999px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid; }
+.wh-verdict-badge.green  { color:#6BE3A4; border-color:rgba(107,227,164,0.50); background:rgba(107,227,164,0.10); }
+.wh-verdict-badge.yellow { color:#F2C063; border-color:rgba(242,192,99,0.50); background:rgba(242,192,99,0.10); }
+.wh-verdict-badge.red    { color:#FF8A8A; border-color:rgba(255,138,138,0.50); background:rgba(255,138,138,0.10); }
+.wh-verdict-headline { font-size:15px; font-weight:600; color:var(--text-primary); line-height:1.4; margin-bottom:12px; }
+.wh-verdict-reasons { font-size:12.5px; color:var(--text-secondary); line-height:1.65; }
+/* Error / no-data */
+.wh-err { background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.28); color:#FF8A8A; padding:10px 12px; border-radius:10px; font-size:11.5px; font-family:var(--font-mono); margin-bottom:14px; }
+.wh-nodata { text-align:center; padding:32px 8px; color:var(--text-tertiary); font-size:13px; }
 </style>
 </head>
 <body>
@@ -538,49 +567,62 @@ main {
 <main>
   <section class="garmin-section">
     <div class="section-title">Garmin</div>
-    <div class="card garmin-card">
-      <div class="garmin-brand">
-        <span class="garmin-brand-mark">G</span>
-        <span class="garmin-brand-text">Garmin Connect</span>
-        <div class="garmin-header-right">
-          <span id="garminUpdated" class="garmin-updated">—</span>
-          <button id="garminRefreshBtn" class="garmin-refresh-btn" title="Refresh" aria-label="Refresh">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M23 4v6h-6"/><path d="M20.49 15A9 9 0 1 1 5.64 5.64L23 10"/>
-            </svg>
-          </button>
+    <div class="garmin-card">
+      <div id="whNoData" class="wh-nodata" style="display:none">No data yet — sync runs every 4 hours</div>
+      <div id="whConn" style="display:none">
+        <div class="wh-head">
+          <div class="wh-brand">
+            <span class="wh-brand-mark">G</span>
+            <span class="wh-brand-text">GARMIN</span>
+            <span class="wh-live"><span class="wh-live-dot"></span>daily sync</span>
+          </div>
+          <div class="wh-head-right">
+            <span id="whUpdated" class="wh-updated">—</span>
+            <button id="whRefresh" class="wh-refresh" type="button" aria-label="Refresh"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15A9 9 0 1 1 5.64 5.64L23 10"/></svg></button>
+          </div>
         </div>
-      </div>
-
-      <div id="garminNoData" class="garmin-no-data" style="display:none">
-        No data yet — sync runs every 4 hours
-      </div>
-
-      <div id="garminGrid" class="garmin-grid">
-        <div class="garmin-cell">
-          <div class="garmin-cell-label">Body Battery</div>
-          <div class="garmin-cell-value" id="garminRecovery">—</div>
-          <div class="garmin-cell-sub" id="garminRecoverySub">recovery</div>
+        <div id="whErr" class="wh-err" style="display:none"></div>
+        <div class="wh-ring-wrap">
+          <svg class="wh-ring" viewBox="0 0 220 220" aria-hidden="true">
+            <circle class="wh-ring-track" cx="110" cy="110" r="96"/>
+            <circle class="wh-ring-fill" cx="110" cy="110" r="96" id="whRingFill"/>
+          </svg>
+          <div class="wh-ring-center">
+            <div id="whRecNum" class="wh-ring-num">—</div>
+            <div class="wh-ring-unit">body battery</div>
+            <div id="whRecLabel" class="wh-ring-label">—</div>
+          </div>
         </div>
-        <div class="garmin-cell">
-          <div class="garmin-cell-label">Sleep</div>
-          <div class="garmin-cell-value" id="garminSleep">—</div>
-          <div class="garmin-cell-sub">duration</div>
+        <div id="whStages" class="wh-stages" style="display:none">
+          <div class="wh-stages-head"><span class="wh-stages-eye">Sleep stages</span><span class="wh-stages-meta" id="whStagesMeta">—</span></div>
+          <div class="wh-stages-bar">
+            <div class="wh-stage wh-stage-rem"   id="whBarRem"   style="width:0%"></div>
+            <div class="wh-stage wh-stage-deep"  id="whBarDeep"  style="width:0%"></div>
+            <div class="wh-stage wh-stage-light" id="whBarLight" style="width:0%"></div>
+            <div class="wh-stage wh-stage-awake" id="whBarAwake" style="width:0%"></div>
+          </div>
+          <div class="wh-stages-legend">
+            <div class="wh-leg"><span class="wh-leg-dot d-rem"></span>REM<span class="wh-leg-num" id="whRem">—</span></div>
+            <div class="wh-leg"><span class="wh-leg-dot d-deep"></span>Deep<span class="wh-leg-num" id="whDeep">—</span></div>
+            <div class="wh-leg"><span class="wh-leg-dot d-light"></span>Light<span class="wh-leg-num" id="whLight">—</span></div>
+            <div class="wh-leg"><span class="wh-leg-dot d-awake"></span>Awake<span class="wh-leg-num" id="whAwake">—</span></div>
+          </div>
         </div>
-        <div class="garmin-cell">
-          <div class="garmin-cell-label">Stress</div>
-          <div class="garmin-cell-value" id="garminStress">—</div>
-          <div class="garmin-cell-sub">avg today</div>
+        <div class="wh-stats">
+          <div class="wh-stat"><span class="wh-zone" id="whZoneSleep"></span><div class="wh-stat-label">Sleep</div><div class="wh-stat-val" id="whSleep">—</div><div class="wh-stat-sub" id="whSleepSub">score %</div></div>
+          <div class="wh-stat"><span class="wh-zone" id="whZoneStrain"></span><div class="wh-stat-label">Stress</div><div class="wh-stat-val" id="whStrain">—</div><div class="wh-stat-sub">avg /100</div></div>
+          <div class="wh-stat"><span class="wh-zone" id="whZoneRhr"></span><div class="wh-stat-label">RHR</div><div class="wh-stat-val" id="whRhr">—</div><div class="wh-stat-sub">bpm</div></div>
         </div>
-        <div class="garmin-cell">
-          <div class="garmin-cell-label">Sleep Score</div>
-          <div class="garmin-cell-value" id="garminSleepScore">—</div>
-          <div class="garmin-cell-sub">out of 100</div>
+        <div class="wh-legend">
+          <span class="wh-leg-item"><span class="wh-zone z-good"></span>Good</span>
+          <span class="wh-leg-item"><span class="wh-zone z-norm"></span>Normal</span>
+          <span class="wh-leg-item"><span class="wh-zone z-warn"></span>Watch</span>
+          <span class="wh-leg-item"><span class="wh-zone z-bad"></span>High / Low</span>
         </div>
-        <div class="garmin-cell">
-          <div class="garmin-cell-label">Resting HR</div>
-          <div class="garmin-cell-value" id="garminRhr">—</div>
-          <div class="garmin-cell-sub">bpm</div>
+        <div id="whVerdict" class="wh-verdict" style="display:none">
+          <div class="wh-verdict-head"><span class="wh-verdict-eye">Today's call</span><span id="whVerdictBadge" class="wh-verdict-badge"></span></div>
+          <div id="whVerdictHead" class="wh-verdict-headline"></div>
+          <div id="whVerdictReasons" class="wh-verdict-reasons"></div>
         </div>
       </div>
     </div>
@@ -1164,50 +1206,104 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+(function () {
   const SUPABASE_URL = 'https://ktqywwwrszmkwznhakbw.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_ru0xehlRpZQbSLLyeB9FHQ_T6ZAonPm';
 
-  async function loadGarminData() {
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const { data, error } = await sb
-      .from('garmin_daily')
-      .select('*')
-      .order('date', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+  const $ = (id) => document.getElementById(id);
 
-    if (error || !data) {
-      document.getElementById('garminNoData').style.display = '';
-      document.getElementById('garminGrid').style.display = 'none';
-      return;
+  function zone(el, c) { el.className = 'wh-zone'; if (c) el.classList.add('z-' + c); }
+  function recoveryZone(v) { if (v == null) return null; if (v >= 67) return 'good'; if (v >= 34) return 'warn'; return 'bad'; }
+  function sleepZone(p)    { if (p == null) return null; if (p >= 80) return 'good'; if (p >= 60) return 'norm'; return 'warn'; }
+  function stressZone(s)   { if (s == null) return null; if (s < 25) return 'good'; if (s < 50) return 'norm'; if (s < 75) return 'warn'; return 'bad'; }
+  function rhrZone(r)      { if (r == null) return null; if (r <= 55) return 'good'; if (r <= 70) return 'norm'; return 'warn'; }
+
+  function ringStroke(v) { if (v >= 67) return '#6BE3A4'; if (v >= 34) return '#F2C063'; return '#FF8A8A'; }
+  function recoveryLabel(v) { if (v >= 67) return 'High — push hard today'; if (v >= 34) return 'Moderate — listen to body'; return 'Low — recover today'; }
+
+  function buildVerdict(rec, stress, sleepScore) {
+    if (rec == null) return null;
+    let cls = 'green', badge = 'GREEN', headline = 'Push hard today. Body Battery is high — prime time for a harder session.';
+    if (rec < 67 && rec >= 34) { cls = 'yellow'; badge = 'YELLOW'; headline = 'Moderate day. Train but don\'t max out — stick to planned volume.'; }
+    else if (rec < 34) { cls = 'red'; badge = 'RED'; headline = 'Recover. Body Battery is low — light movement, walk, and sleep early.'; }
+    return { cls, badge, headline };
+  }
+  function showErr(m) { const e = $('whErr'); e.textContent = m || ''; e.style.display = m ? 'block' : 'none'; }
+
+  async function loadData() {
+    showErr('');
+    try {
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const { data, error } = await sb
+        .from('garmin_daily').select('*')
+        .order('date', { ascending: false }).limit(1).maybeSingle();
+
+      if (error) throw new Error(error.message || 'Supabase error');
+      if (!data) { $('whNoData').style.display = ''; $('whConn').style.display = 'none'; return; }
+
+      $('whNoData').style.display = 'none';
+      $('whConn').style.display = '';
+
+      const recScore   = data.body_battery;
+      const sleepScore = data.sleep_score;
+      const sleepSecs  = data.sleep_seconds;
+      const stress     = data.avg_stress;
+      const rhr        = data.resting_hr;
+
+      // Ring
+      if (recScore != null) {
+        const C = 603.19;
+        $('whRingFill').style.strokeDashoffset = String(C * (1 - recScore / 100));
+        $('whRingFill').style.stroke = ringStroke(recScore);
+        $('whRecNum').textContent = String(recScore);
+        $('whRecLabel').textContent = recoveryLabel(recScore);
+        $('whRecLabel').style.color = ringStroke(recScore);
+      }
+
+      // Sleep stat (score + duration sub-label)
+      if (sleepScore != null) {
+        $('whSleep').textContent = sleepScore + '%';
+        if (sleepSecs != null) {
+          const h = Math.floor(sleepSecs / 3600);
+          const m = Math.floor((sleepSecs % 3600) / 60);
+          $('whSleepSub').textContent = h + 'h ' + String(m).padStart(2, '0') + 'm';
+        }
+        zone($('whZoneSleep'), sleepZone(sleepScore));
+      }
+
+      // Stress stat
+      if (stress != null) { $('whStrain').textContent = String(stress); zone($('whZoneStrain'), stressZone(stress)); }
+
+      // RHR stat
+      if (rhr != null) { $('whRhr').textContent = String(rhr); zone($('whZoneRhr'), rhrZone(rhr)); }
+
+      // Verdict
+      const v = buildVerdict(recScore, stress, sleepScore);
+      if (v) {
+        $('whVerdict').style.display = '';
+        $('whVerdictBadge').textContent = v.badge;
+        $('whVerdictBadge').className = 'wh-verdict-badge ' + v.cls;
+        $('whVerdictHead').textContent = v.headline;
+        const reasons = [];
+        if (sleepScore != null) reasons.push((sleepScore >= 75 ? '✓' : '·') + ' Sleep score ' + sleepScore + '/100 — ' + (sleepScore >= 75 ? 'well rested.' : 'sub-par sleep.'));
+        if (stress != null)     reasons.push((stress < 40 ? '✓' : '·') + ' Avg stress ' + stress + '/100 — ' + (stress < 40 ? 'calm state.' : stress < 65 ? 'moderate load.' : 'high stress.'));
+        if (rhr != null)        reasons.push((rhr <= 60 ? '✓' : '·') + ' RHR ' + rhr + ' bpm — ' + (rhr <= 60 ? 'well-conditioned.' : 'elevated.'));
+        $('whVerdictReasons').innerHTML = reasons.join('<br>');
+      }
+
+      if (data.date) $('whUpdated').textContent = data.date;
+    } catch (e) {
+      showErr(e.message || String(e));
     }
-
-    document.getElementById('garminNoData').style.display = 'none';
-    document.getElementById('garminGrid').style.display = '';
-
-    if (data.body_battery != null) {
-      document.getElementById('garminRecovery').textContent = data.body_battery;
-      const level = data.body_battery >= 70 ? 'High' : data.body_battery >= 40 ? 'Moderate' : 'Low';
-      document.getElementById('garminRecoverySub').textContent = level;
-    }
-
-    if (data.sleep_seconds != null) {
-      const h = Math.floor(data.sleep_seconds / 3600);
-      const m = Math.floor((data.sleep_seconds % 3600) / 60);
-      document.getElementById('garminSleep').textContent = h + 'h ' + m + 'm';
-    }
-
-    if (data.avg_stress != null)  document.getElementById('garminStress').textContent = data.avg_stress;
-    if (data.sleep_score != null) document.getElementById('garminSleepScore').textContent = data.sleep_score;
-    if (data.resting_hr != null)  document.getElementById('garminRhr').textContent = data.resting_hr;
-
-    if (data.date) document.getElementById('garminUpdated').textContent = data.date;
   }
 
-  document.getElementById('garminRefreshBtn').addEventListener('click', loadGarminData);
-  loadGarminData();
-});
+  $('whRefresh').addEventListener('click', (e) => {
+    const btn = e.currentTarget; btn.classList.add('spin');
+    loadData().finally(() => setTimeout(() => btn.classList.remove('spin'), 600));
+  });
+
+  loadData();
+})();
 </script>
 
 </body>
