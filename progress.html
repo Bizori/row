@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050506">
+<title>Progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="topbar.js" defer></script>
+<script src="sync.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #050506;
+  --bg-card: rgba(255,255,255,0.025);
+  --text-1: #ffffff;
+  --text-2: rgba(255,255,255,0.6);
+  --text-3: rgba(255,255,255,0.4);
+  --text-4: rgba(255,255,255,0.25);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.16);
+  --good: #6BE3A4;
+  --pos: #7DD3FC;
+  --warn: #fbbf24;
+  --bad: #ff8a8a;
+  --brand: #6BE3A4;
+  --font: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: #050506;
+  color: var(--text-1);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body {
+  padding: max(24px, env(safe-area-inset-top)) 16px calc(80px + env(safe-area-inset-bottom));
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 45% at 80% 8%, rgba(107,227,164,0.09), transparent 55%),
+    radial-gradient(ellipse 50% 35% at 12% 92%, rgba(125,211,252,0.05), transparent 55%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: -2;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 200px 200px;
+  opacity: 0.025; mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: -1;
+}
+.shell { max-width: 720px; margin: 0 auto; }
+
+/* Page header */
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+}
+.page-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px 7px 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: 12px; font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+.page-back:hover { background: rgba(255,255,255,0.08); color: var(--text-1); }
+.page-title {
+  font-size: 26px; font-weight: 700; letter-spacing: -0.02em;
+  background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 120%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  margin: 0;
+}
+
+/* Glass card */
+.card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 22px 20px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Section label */
+.eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text-3);
+  margin-bottom: 6px;
+}
+
+/* Hero weight */
+.hero-num-row { display: flex; align-items: baseline; gap: 8px; }
+.hero-num {
+  font-size: 56px; font-weight: 700; line-height: 1;
+  letter-spacing: -0.03em; font-variant-numeric: tabular-nums;
+}
+.hero-unit { font-size: 18px; color: var(--text-3); font-weight: 500; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 999px;
+  font-size: 12px; font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid transparent;
+}
+.chip-green {
+  background: rgba(107,227,164,0.10);
+  border-color: rgba(107,227,164,0.25);
+  color: var(--good);
+}
+.chip-amber {
+  background: rgba(251,191,36,0.10);
+  border-color: rgba(251,191,36,0.25);
+  color: var(--warn);
+}
+.chip-neutral {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--border);
+  color: var(--text-2);
+}
+.chip-blue {
+  background: rgba(125,211,252,0.10);
+  border-color: rgba(125,211,252,0.25);
+  color: var(--pos);
+}
+
+/* Weight chart */
+.chart-wrap { position: relative; margin: 18px 0 8px; padding-left: 38px; }
+.chart-yaxis {
+  position: absolute; left: 0; top: 14px; bottom: 32px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-4);
+  font-variant-numeric: tabular-nums;
+}
+.chart-svg { display: block; width: 100%; height: 150px; }
+.chart-grid { stroke: rgba(255,255,255,0.04); stroke-width: .5; }
+.chart-area { fill: url(#progFill); }
+.chart-line {
+  fill: none; stroke: var(--good); stroke-width: 2.2;
+  stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 0 5px rgba(107,227,164,0.5));
+}
+.chart-avg {
+  fill: none; stroke: rgba(107,227,164,0.45); stroke-width: 1.4;
+  stroke-dasharray: 4 3; stroke-linecap: round;
+}
+.chart-dot { fill: var(--good); opacity: 0.5; }
+.chart-dot-today { fill: var(--good); filter: drop-shadow(0 0 6px var(--good)); }
+.chart-meta {
+  text-align: center; font-size: 11px; color: var(--text-3); margin-top: 8px;
+}
+.chart-legend {
+  display: flex; justify-content: center; gap: 18px; margin-top: 10px;
+}
+.legend-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; letter-spacing: 0.16em; font-weight: 600; color: var(--text-3);
+}
+.legend-line { width: 14px; height: 2px; border-radius: 1px; background: var(--good); }
+.legend-dash { width: 14px; height: 0; border-top: 2px dashed rgba(107,227,164,0.45); }
+.chart-empty {
+  text-align: center; padding: 28px 16px;
+  color: var(--text-3); font-size: 13px;
+  border: 1px dashed var(--border);
+  border-radius: 12px; margin: 16px 0 8px;
+}
+
+/* Locked / input */
+.logged-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px;
+  background: rgba(107,227,164,0.05);
+  border: 1px solid rgba(107,227,164,0.18);
+  border-radius: 12px; margin-top: 14px;
+}
+.logged-left { display: flex; align-items: center; gap: 12px; }
+.logged-check {
+  width: 30px; height: 30px;
+  background: rgba(107,227,164,0.12);
+  color: var(--good); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px;
+}
+.logged-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-bottom: 2px; }
+.logged-value { font-size: 16px; font-weight: 600; }
+.edit-btn {
+  background: transparent; border: 1px solid var(--border-strong);
+  color: var(--text-2); font-family: inherit;
+  font-size: 12px; padding: 7px 14px; border-radius: 999px;
+  cursor: pointer; transition: color 0.15s, border-color 0.15s;
+}
+.edit-btn:hover { color: var(--good); border-color: rgba(107,227,164,0.40); }
+
+.input-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+.wt-input {
+  flex: 1; appearance: none;
+  background: rgba(0,0,0,0.28); border: 1px solid var(--border-strong);
+  border-radius: 12px; color: var(--text-1);
+  font-family: inherit; font-size: 16px; padding: 12px 14px; outline: none;
+  transition: border-color 0.18s var(--ease);
+  -moz-appearance: textfield;
+}
+.wt-input::-webkit-outer-spin-button,
+.wt-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.wt-input:focus { border-color: rgba(107,227,164,0.5); }
+.wt-unit-label { color: var(--text-3); font-size: 13px; }
+.save-btn {
+  appearance: none; background: var(--good); border: none;
+  color: #042a1c; font-family: inherit; font-weight: 700;
+  font-size: 14px; padding: 12px 20px; border-radius: 12px;
+  cursor: pointer; transition: background 0.15s, transform 0.15s var(--ease);
+}
+.save-btn:hover { background: #4ecf8a; }
+.save-btn:active { transform: scale(0.97); }
+.error-text { color: var(--bad); font-size: 12px; margin-top: 8px; }
+
+/* Composition phase card */
+.phase-card {
+  padding: 20px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+.phase-word {
+  font-size: 34px; font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+.phase-word.bulk { color: var(--pos); }
+.phase-word.cut  { color: var(--good); }
+.phase-word.recomp { color: var(--warn); }
+.phase-sub {
+  font-size: 13px; color: var(--text-2); line-height: 1.5;
+  margin-bottom: 14px;
+}
+.phase-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.phase-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 13px; border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+}
+.phase-pill-label {
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3);
+}
+.phase-pill-value { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.phase-caveat {
+  font-size: 11px; color: var(--text-3); font-style: italic; margin-top: 14px;
+}
+
+/* Photos section */
+.photos-trigger {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(107,227,164,0.12);
+  border-radius: 20px;
+  cursor: pointer; width: 100%;
+  font-family: inherit; text-align: left;
+  transition: border-color 0.2s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: 14px;
+}
+.photos-trigger:hover { border-color: rgba(107,227,164,0.28); }
+.photos-trigger:active { transform: scale(0.99); }
+.photos-trigger-label { font-size: 11px; letter-spacing: 0.18em; font-weight: 600; color: var(--text-3); margin-bottom: 4px; }
+.photos-trigger-count { font-size: 14px; font-weight: 500; color: var(--text-1); }
+.photos-trigger-arrow { color: var(--good); font-size: 20px; }
+
+/* Overlay */
+.overlay {
+  position: fixed; inset: 0; background: #050506;
+  z-index: 200; overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+}
+.overlay.is-open { transform: translateY(0); }
+.overlay-inner { max-width: 720px; margin: 0 auto; padding: 24px 16px 40px; }
+.overlay-head {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 22px;
+}
+.overlay-back {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text-1); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.overlay-title { font-size: 26px; font-weight: 600; letter-spacing: -0.015em; }
+.overlay-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+.overlay-action {
+  height: 50px; border-radius: 12px; border: none;
+  font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.overlay-primary { background: var(--good); color: #042a1c; }
+.overlay-secondary {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text-1);
+}
+.photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.photo-empty {
+  grid-column: 1 / -1; text-align: center;
+  padding: 50px 20px; color: var(--text-3); font-size: 13px;
+}
+.photo-card {
+  position: relative; aspect-ratio: 3 / 4;
+  border-radius: 12px; overflow: hidden;
+  background: linear-gradient(135deg, #1a1a24, #0a0f0a);
+  cursor: pointer; border: 1px solid rgba(107,227,164,0.08);
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.photo-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.photo-card-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.7) 100%); pointer-events: none; }
+.photo-card-meta {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 12px 14px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  font-size: 12px; font-weight: 500;
+}
+.photo-date { color: var(--good); }
+.photo-weight { color: var(--text-1); }
+
+/* Camera */
+.cam { position: fixed; inset: 0; background: #000; z-index: 300; display: none; flex-direction: column; }
+.cam.is-open { display: flex; }
+.cam-stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+.cam-video { width: 100%; height: 100%; object-fit: cover; background: #000; }
+.cam-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24px 28px calc(24px + env(safe-area-inset-bottom));
+  background: #000;
+}
+.cam-btn { background: transparent; border: none; color: var(--text-1); font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; padding: 10px; min-width: 60px; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+.cam-shutter { width: 64px; height: 64px; border-radius: 50%; background: #fff; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 0 0 2px #fff inset; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.cam-shutter:active { transform: scale(0.92); }
+
+/* Viewer */
+.viewer { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 250; opacity: 0; pointer-events: none; transition: opacity 0.2s; display: flex; flex-direction: column; padding: 24px 16px; }
+.viewer.is-open { opacity: 1; pointer-events: auto; }
+.viewer-stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.viewer-meta { text-align: center; padding: 16px 0 8px; }
+.viewer-date { color: var(--good); font-size: 11px; letter-spacing: 0.18em; font-weight: 600; margin-bottom: 4px; }
+.viewer-weight { color: var(--text-1); font-size: 20px; font-weight: 600; }
+.viewer-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.viewer-btn { background: transparent; border: 1px solid var(--border); font-family: inherit; font-size: 14px; font-weight: 500; padding: 12px; cursor: pointer; border-radius: 10px; -webkit-tap-highlight-color: transparent; }
+.viewer-close { color: var(--text-1); }
+.viewer-delete { color: var(--bad); border-color: rgba(248,113,113,0.3); }
+.viewer-delete.is-confirm { background: rgba(248,113,113,0.10); }
+.viewer-compare { color: var(--good); border-color: rgba(107,227,164,0.30); }
+.viewer-back { color: var(--good); border-color: rgba(107,227,164,0.30); }
+.viewer .viewer-single, .viewer .viewer-compare-view { display: none; flex-direction: column; flex: 1; min-height: 0; }
+.viewer[data-mode="single"] .viewer-single { display: flex; }
+.viewer[data-mode="compare"] .viewer-compare-view { display: flex; }
+.compare-stage { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-height: 0; align-items: stretch; }
+.compare-side { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 0; min-width: 0; background: transparent; border: none; padding: 0; cursor: default; font-family: inherit; }
+.compare-side img { max-width: 100%; max-height: calc(100% - 28px); object-fit: contain; border-radius: 6px; }
+.compare-meta { margin-top: 6px; font-size: 12px; color: var(--text-3); text-align: center; font-variant-numeric: tabular-nums; }
+.compare-other { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.compare-other:hover img { outline: 1px solid rgba(107,227,164,0.3); }
+.compare-headline { text-align: center; padding: 14px 8px 12px; font-size: 14px; font-weight: 600; color: var(--good); font-variant-numeric: tabular-nums; }
+.compare-headline.up { color: var(--warn); }
+.compare-headline.down { color: var(--good); }
+.compare-headline.flat { color: var(--text-2); }
+
+.hidden { display: none !important; }
+
+@media (max-width: 480px) {
+  body { padding: max(18px, env(safe-area-inset-top)) 12px calc(80px + env(safe-area-inset-bottom)); }
+  .hero-num { font-size: 44px; }
+  .phase-word { font-size: 26px; }
+  .photo-grid { gap: 8px; }
+  .overlay-inner { padding: 18px 12px 40px; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="page-header">
+    <a href="index.html" class="page-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      Back
+    </a>
+    <h1 class="page-title">Progress</h1>
+    <div></div>
+  </div>
+
+  <!-- Hero weight card -->
+  <div class="card" id="weightCard">
+    <div class="eyebrow">Current weight</div>
+    <div class="hero-num-row">
+      <span class="hero-num" id="heroNum">—</span>
+      <span class="hero-unit" id="heroUnit">kg</span>
+    </div>
+    <div class="chip-row">
+      <span class="chip chip-neutral hidden" id="deltaChip"></span>
+      <span class="chip chip-neutral hidden" id="streakChip"></span>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-wrap hidden" id="chartWrap">
+      <div class="chart-yaxis">
+        <span id="yAxisTop">—</span>
+        <span id="yAxisMid">—</span>
+        <span id="yAxisBot">—</span>
+      </div>
+      <svg class="chart-svg" viewBox="0 0 320 150" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="progFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#6BE3A4" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#6BE3A4" stop-opacity="0"/>
+          </linearGradient>
+          <filter id="chartGlow">
+            <feGaussianBlur stdDeviation="1.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <line class="chart-grid" x1="0" y1="25" x2="320" y2="25"></line>
+        <line class="chart-grid" x1="0" y1="75" x2="320" y2="75"></line>
+        <line class="chart-grid" x1="0" y1="125" x2="320" y2="125"></line>
+        <g id="chartContent"></g>
+      </svg>
+      <div class="chart-meta" id="chartMeta">0 entries</div>
+    </div>
+
+    <div class="chart-legend hidden" id="chartLegend">
+      <span class="legend-item"><span class="legend-line"></span>DAILY</span>
+      <span class="legend-item"><span class="legend-dash"></span>7-DAY AVG</span>
+    </div>
+
+    <div class="chart-empty" id="chartEmpty">Log your first weight to start tracking.</div>
+
+    <!-- Locked state -->
+    <div class="logged-row hidden" id="loggedRow">
+      <div class="logged-left">
+        <span class="logged-check">✓</span>
+        <div>
+          <div class="logged-label">Logged today</div>
+          <div class="logged-value" id="loggedValue">—</div>
+        </div>
+      </div>
+      <button class="edit-btn" id="editBtn">Edit</button>
+    </div>
+
+    <!-- Input -->
+    <div class="input-row" id="inputRow">
+      <input type="number" step="0.1" class="wt-input" id="weightInput" placeholder="Today's weight" inputmode="decimal" aria-label="Today's weight">
+      <span class="wt-unit-label" id="unitLabel">kg</span>
+      <button class="save-btn" id="saveBtn">Save</button>
+    </div>
+    <div class="error-text hidden" id="errorText"></div>
+  </div>
+
+  <!-- Composition phase card -->
+  <div class="phase-card hidden" id="phaseCard">
+    <div class="phase-word" id="phaseWord">—</div>
+    <p class="phase-sub" id="phaseSub"></p>
+    <div class="phase-pills" id="phasePills"></div>
+    <p class="phase-caveat">Estimated from weight slope + training volume. Not medical advice.</p>
+  </div>
+
+  <!-- Progress photos link -->
+  <button class="photos-trigger" id="photosTrigger" type="button">
+    <div>
+      <div class="photos-trigger-label">Progress photos</div>
+      <div class="photos-trigger-count" id="photosCount">0 photos</div>
+    </div>
+    <span class="photos-trigger-arrow">→</span>
+  </button>
+
+</div>
+
+<!-- Photos overlay -->
+<div class="overlay" id="photosOverlay" aria-hidden="true">
+  <div class="overlay-inner">
+    <div class="overlay-head">
+      <button class="overlay-back" id="overlayBack" aria-label="Back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="overlay-title">Progress Photos</div>
+    </div>
+    <div class="overlay-actions">
+      <button class="overlay-action overlay-primary" id="takePhotoBtn">Take Photo</button>
+      <button class="overlay-action overlay-secondary" id="fromLibraryBtn">From Library</button>
+    </div>
+    <input type="file" id="fileCameraInput" accept="image/*" capture="environment" style="display:none">
+    <input type="file" id="fileLibraryInput" accept="image/*" style="display:none">
+    <div class="photo-grid" id="photoGrid">
+      <div class="photo-empty">No photos yet — tap Take Photo to start</div>
+    </div>
+  </div>
+</div>
+
+<!-- Camera modal -->
+<div class="cam" id="cam" aria-hidden="true">
+  <div class="cam-stage">
+    <video class="cam-video" id="camVideo" autoplay playsinline muted></video>
+    <canvas id="camCanvas" style="display:none"></canvas>
+  </div>
+  <div class="cam-actions">
+    <button class="cam-btn" id="camCancel">Cancel</button>
+    <button class="cam-shutter" id="camShutter" aria-label="Capture"></button>
+    <button class="cam-btn" id="camFlip" aria-label="Flip camera">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+    </button>
+  </div>
+</div>
+
+<!-- Photo viewer -->
+<div class="viewer" id="viewer" data-mode="single" aria-hidden="true">
+  <div class="viewer-single">
+    <div class="viewer-stage">
+      <img id="viewerImg" alt="" style="max-width:100%;max-height:100%;object-fit:contain;">
+    </div>
+    <div class="viewer-meta">
+      <div class="viewer-date" id="viewerDate">—</div>
+      <div class="viewer-weight" id="viewerWeight">—</div>
+    </div>
+    <div class="viewer-actions">
+      <button class="viewer-btn viewer-compare" id="viewerCompare">Compare</button>
+      <button class="viewer-btn viewer-close" id="viewerClose">Close</button>
+      <button class="viewer-btn viewer-delete" id="viewerDelete">Delete</button>
+    </div>
+  </div>
+  <div class="viewer-compare-view">
+    <div class="compare-stage">
+      <div class="compare-side" id="cmpSideA">
+        <img id="cmpImgA" alt="">
+        <div class="compare-meta" id="cmpMetaA">—</div>
+      </div>
+      <button type="button" class="compare-side compare-other" id="cmpSideB" aria-label="Compare to a different photo">
+        <img id="cmpImgB" alt="">
+        <div class="compare-meta" id="cmpMetaB">—</div>
+      </button>
+    </div>
+    <div class="compare-headline" id="compareHeadline">—</div>
+    <div class="viewer-actions">
+      <button class="viewer-btn viewer-back" id="compareBack">← Back</button>
+      <button class="viewer-btn viewer-close" id="compareClose">Close</button>
+      <button class="viewer-btn viewer-delete" id="compareDelete">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+const UNITS = 'kg';
+const LS_KEY = 'progress_v1';  // { entries: [{dateKey, weight}], photos: [...] }
+const GYM_LS_KEY = 'po_coach_v1';
+
+// ------ helpers ------
+const $ = id => document.getElementById(id);
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function dateKey(d) {
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function parseKey(k) { const [y,m,d] = k.split('-').map(Number); return new Date(y, m-1, d); }
+function fmtDate(k) {
+  const d = parseKey(k);
+  const mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return mons[d.getMonth()] + ' ' + d.getDate();
+}
+function today() { return dateKey(new Date()); }
+
+// ------ state ------
+function loadState() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    const s = raw ? JSON.parse(raw) : {};
+    s.entries = Array.isArray(s.entries) ? s.entries.sort((a,b) => a.dateKey.localeCompare(b.dateKey)) : [];
+    s.photos = Array.isArray(s.photos) ? s.photos : [];
+    return s;
+  } catch { return { entries: [], photos: [] }; }
+}
+function saveState(s) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch {}
+}
+let state = loadState();
+
+// ------ smooth path ------
+function smoothPath(pts) {
+  if (!pts.length) return '';
+  if (pts.length === 1) return 'M ' + pts[0].x + ' ' + pts[0].y;
+  let d = 'M ' + pts[0].x.toFixed(2) + ' ' + pts[0].y.toFixed(2);
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i-1], c = pts[i];
+    const cx = (p.x + c.x) / 2;
+    d += ' Q ' + cx.toFixed(2) + ' ' + p.y.toFixed(2) + ', ' + cx.toFixed(2) + ' ' + ((p.y + c.y)/2).toFixed(2);
+    d += ' T ' + c.x.toFixed(2) + ' ' + c.y.toFixed(2);
+  }
+  return d;
+}
+
+// ------ render weight ------
+function renderWeight() {
+  const entries = state.entries;
+  const todayKey = today();
+  const todayEntry = entries.find(e => e.dateKey === todayKey);
+  const last = entries[entries.length - 1] || null;
+
+  $('heroNum').textContent = last ? last.weight.toFixed(1) : '—';
+  $('heroUnit').textContent = UNITS;
+  $('unitLabel').textContent = UNITS;
+
+  // Locked vs input
+  if (todayEntry) {
+    $('loggedValue').textContent = todayEntry.weight.toFixed(1) + ' ' + UNITS;
+    $('loggedRow').classList.remove('hidden');
+    $('inputRow').classList.add('hidden');
+    $('chartEmpty').classList.add('hidden');
+  } else {
+    $('loggedRow').classList.add('hidden');
+    $('inputRow').classList.remove('hidden');
+    if (last && !$('weightInput').value) $('weightInput').value = last.weight.toFixed(1);
+    if (!entries.length) $('chartEmpty').classList.remove('hidden');
+    else $('chartEmpty').classList.add('hidden');
+  }
+
+  // Chart
+  if (entries.length >= 2) {
+    $('chartWrap').classList.remove('hidden');
+    $('chartLegend').classList.remove('hidden');
+    renderChart();
+  } else {
+    $('chartWrap').classList.add('hidden');
+    $('chartLegend').classList.add('hidden');
+  }
+
+  // Delta chip
+  renderDelta();
+  renderStreak();
+  renderPhase();
+}
+
+function renderChart() {
+  const recent = state.entries.slice(-30);
+  const ws = recent.map(e => e.weight);
+  const mn = Math.min(...ws), mx = Math.max(...ws);
+  const pad = Math.max((mx - mn) * 0.15, 0.5);
+  const yMin = mn - pad, yMax = mx + pad;
+  const W = 312, H = 130, xL = 8, xR = 312, yT = 10, yB = 120;
+  const xFor = i => recent.length === 1 ? xR : xL + (i / (recent.length - 1)) * (xR - xL);
+  const yFor = w => yB - ((w - yMin) / (yMax - yMin)) * (yB - yT);
+  const pts = recent.map((e, i) => ({ x: xFor(i), y: yFor(e.weight) }));
+  const line = smoothPath(pts);
+  const area = line + ' L ' + pts[pts.length-1].x.toFixed(2) + ' ' + H + ' L ' + pts[0].x.toFixed(2) + ' ' + H + ' Z';
+  const avgPts = recent.map((_, i) => {
+    const win = recent.slice(Math.max(0, i-6), i+1);
+    const avg = win.reduce((s, p) => s + p.weight, 0) / win.length;
+    return { x: xFor(i), y: yFor(avg) };
+  });
+  const avgLine = smoothPath(avgPts);
+  let html = '<path class="chart-avg" d="' + avgLine + '"></path>'
+           + '<path class="chart-area" d="' + area + '"></path>'
+           + '<path class="chart-line" filter="url(#chartGlow)" d="' + line + '"></path>';
+  const todayK = today();
+  pts.forEach((p, i) => {
+    const cls = recent[i].dateKey === todayK ? 'chart-dot-today' : 'chart-dot';
+    const r = recent[i].dateKey === todayK ? 5 : 3;
+    html += '<circle class="' + cls + '" cx="' + p.x.toFixed(2) + '" cy="' + p.y.toFixed(2) + '" r="' + r + '"/>';
+  });
+  $('chartContent').innerHTML = html;
+  $('yAxisTop').textContent = yMax.toFixed(1);
+  $('yAxisMid').textContent = ((yMin + yMax) / 2).toFixed(1);
+  $('yAxisBot').textContent = yMin.toFixed(1);
+  $('chartMeta').textContent = state.entries.length + ' entries · last ' + recent.length + ' days';
+}
+
+function renderDelta() {
+  const entries = state.entries;
+  if (entries.length < 2) { $('deltaChip').classList.add('hidden'); return; }
+  const last = entries[entries.length - 1];
+  const cutoff = new Date(parseKey(last.dateKey)); cutoff.setDate(cutoff.getDate() - 7);
+  const base = entries.find(e => parseKey(e.dateKey) >= cutoff) || entries[0];
+  const diff = last.weight - base.weight;
+  if (Math.abs(diff) < 0.05) { $('deltaChip').classList.add('hidden'); return; }
+  const arrow = diff > 0 ? '↑' : '↓';
+  const sign = diff > 0 ? '+' : '−';
+  const chip = $('deltaChip');
+  chip.textContent = arrow + ' ' + sign + Math.abs(diff).toFixed(1) + ' kg · 7d';
+  chip.className = 'chip ' + (diff > 0 ? 'chip-amber' : 'chip-green');
+  chip.classList.remove('hidden');
+}
+
+function renderStreak() {
+  const entries = state.entries;
+  if (!entries.length) { $('streakChip').classList.add('hidden'); return; }
+  let streak = 0;
+  let cursor = new Date();
+  if (!entries.find(e => e.dateKey === dateKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+  while (entries.find(e => e.dateKey === dateKey(cursor))) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  const chip = $('streakChip');
+  if (streak >= 2) {
+    chip.textContent = '🔥 ' + streak + ' day streak';
+    chip.classList.remove('hidden');
+  } else {
+    chip.classList.add('hidden');
+  }
+}
+
+function renderPhase() {
+  const entries = state.entries;
+  if (entries.length < 5) { $('phaseCard').classList.add('hidden'); return; }
+  const window = 30;
+  const now = parseKey(entries[entries.length - 1].dateKey);
+  const start = new Date(now); start.setDate(start.getDate() - window);
+  const startEntry = entries.find(e => parseKey(e.dateKey) >= start);
+  const endEntry = entries[entries.length - 1];
+  if (!startEntry || startEntry === endEntry) { $('phaseCard').classList.add('hidden'); return; }
+  const weightDelta = endEntry.weight - startEntry.weight;
+  const actualDays = Math.max(1, Math.round((parseKey(endEntry.dateKey) - parseKey(startEntry.dateKey)) / 86400000));
+  const slope = weightDelta / (actualDays / 7); // kg per week
+
+  // Try to get training volume from gym state
+  let weeklyVol = 0;
+  try {
+    const gymRaw = localStorage.getItem(GYM_LS_KEY);
+    if (gymRaw) {
+      const gym = JSON.parse(gymRaw);
+      const startMs = start.getTime();
+      gym.exercises && gym.exercises.forEach(ex => {
+        (gym.logs && gym.logs[ex.id] || []).forEach(l => {
+          if (new Date(l.date).getTime() >= startMs) {
+            weeklyVol += (l.weight || 0) * (l.reps || 0);
+          }
+        });
+      });
+      weeklyVol = weeklyVol / (actualDays / 7); // per week
+    }
+  } catch {}
+
+  let phase, phaseCls, phaseSub;
+  if (Math.abs(slope) < 0.1) {
+    phase = 'Recomp';
+    phaseCls = 'recomp';
+    phaseSub = 'Your weight is stable. If you\'re training consistently, this is a body recomposition phase — losing fat and building muscle simultaneously.';
+  } else if (slope > 0.1) {
+    if (weeklyVol > 1000) {
+      phase = 'Bulk';
+      phaseCls = 'bulk';
+      phaseSub = 'You\'re in a calorie surplus with active training — lean bulk territory. Monitor the rate: ~0.25–0.5 kg/wk is optimal.';
+    } else {
+      phase = 'Bulk';
+      phaseCls = 'bulk';
+      phaseSub = 'Weight is trending up. Increase training intensity to direct this surplus toward muscle growth.';
+    }
+  } else {
+    if (weeklyVol > 800) {
+      phase = 'Cut';
+      phaseCls = 'cut';
+      phaseSub = 'Losing weight while maintaining training load — this is an effective cut. Aim for ~0.5–1% body weight/week to preserve muscle.';
+    } else {
+      phase = 'Cut';
+      phaseCls = 'cut';
+      phaseSub = 'Weight is declining. Keep training to preserve muscle mass during the deficit.';
+    }
+  }
+
+  $('phaseWord').textContent = phase;
+  $('phaseWord').className = 'phase-word ' + phaseCls;
+  $('phaseSub').textContent = phaseSub;
+
+  // Pills
+  const rateStr = (slope >= 0 ? '+' : '') + slope.toFixed(2) + ' kg/wk';
+  const volStr = weeklyVol > 0 ? Math.round(weeklyVol).toLocaleString() + ' kg vol/wk' : 'No gym data';
+  $('phasePills').innerHTML =
+    '<div class="phase-pill"><span class="phase-pill-label">Slope</span><span class="phase-pill-value">' + rateStr + '</span></div>' +
+    '<div class="phase-pill"><span class="phase-pill-label">Training vol</span><span class="phase-pill-value">' + volStr + '</span></div>' +
+    '<div class="phase-pill"><span class="phase-pill-label">Window</span><span class="phase-pill-value">last ' + actualDays + 'd</span></div>';
+  $('phaseCard').classList.remove('hidden');
+}
+
+// ------ input ------
+function saveWeight(v) {
+  if (isNaN(v) || v <= 0 || v > 500) {
+    $('errorText').textContent = 'Enter a valid weight (0–500 kg)';
+    $('errorText').classList.remove('hidden');
+    return;
+  }
+  $('errorText').classList.add('hidden');
+  const k = today();
+  const ex = state.entries.find(e => e.dateKey === k);
+  if (ex) ex.weight = v;
+  else { state.entries.push({ dateKey: k, weight: v }); state.entries.sort((a,b) => a.dateKey.localeCompare(b.dateKey)); }
+  saveState(state);
+  renderWeight();
+}
+$('saveBtn').addEventListener('click', () => {
+  const v = parseFloat($('weightInput').value);
+  saveWeight(v);
+});
+$('weightInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('saveBtn').click(); });
+$('editBtn').addEventListener('click', () => {
+  $('loggedRow').classList.add('hidden');
+  $('inputRow').classList.remove('hidden');
+  const e = state.entries.find(x => x.dateKey === today());
+  if (e) $('weightInput').value = e.weight.toFixed(1);
+  $('weightInput').focus(); $('weightInput').select();
+});
+
+// ------ photos ------
+function renderPhotos() {
+  const grid = $('photoGrid');
+  const photos = state.photos;
+  $('photosCount').textContent = photos.length === 0 ? '0 photos'
+    : photos.length + ' photo' + (photos.length === 1 ? '' : 's') + (photos[0] ? ' · latest ' + fmtDate(photos[0].dateKey) : '');
+  if (!photos.length) {
+    grid.innerHTML = '<div class="photo-empty">No photos yet — tap Take Photo to start</div>';
+    return;
+  }
+  grid.innerHTML = photos.map(p =>
+    '<button class="photo-card" data-id="' + esc(p.id) + '" type="button">'
+    + '<img src="' + p.dataUrl + '" alt="" loading="lazy">'
+    + '<div class="photo-card-overlay"></div>'
+    + '<div class="photo-card-meta">'
+    +   '<span class="photo-date">' + fmtDate(p.dateKey) + '</span>'
+    +   '<span class="photo-weight">' + (p.weight || '—') + '</span>'
+    + '</div>'
+    + '</button>'
+  ).join('');
+  grid.querySelectorAll('.photo-card').forEach(c => c.addEventListener('click', () => openPhoto(c.dataset.id)));
+}
+
+async function compressPhoto(dataUrl, maxDim, q) {
+  maxDim = maxDim || 1080; q = q == null ? 0.75 : q;
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w >= h) { h = Math.round(h * maxDim / w); w = maxDim; }
+        else { w = Math.round(w * maxDim / h); h = maxDim; }
+      }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      try { res(c.toDataURL('image/jpeg', q)); } catch { res(dataUrl); }
+    };
+    img.onerror = () => res(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+function photoCurWeight() {
+  const last = state.entries[state.entries.length - 1];
+  return last ? (last.weight.toFixed(1) + ' ' + UNITS) : '—';
+}
+
+async function addPhoto(dataUrl) {
+  let compressed = dataUrl;
+  try { compressed = await compressPhoto(dataUrl); } catch {}
+  const id = 'p' + Date.now() + '_' + Math.floor(Math.random() * 9999);
+  const entry = { id, dataUrl: compressed, dateKey: today(), weight: photoCurWeight() };
+  state.photos.unshift(entry);
+  try { saveState(state); } catch {
+    // Retry at lower quality
+    try { entry.dataUrl = await compressPhoto(dataUrl, 800, 0.6); } catch {}
+    try { saveState(state); } catch { state.photos.shift(); alert('Storage full — delete older photos first.'); return; }
+  }
+  renderPhotos();
+}
+
+function fileToPhoto(file) {
+  const r = new FileReader();
+  r.onload = e => addPhoto(e.target.result);
+  r.readAsDataURL(file);
+}
+
+$('photosTrigger').addEventListener('click', () => {
+  renderPhotos();
+  $('photosOverlay').classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+});
+$('overlayBack').addEventListener('click', () => {
+  $('photosOverlay').classList.remove('is-open');
+  document.body.style.overflow = '';
+});
+$('fromLibraryBtn').addEventListener('click', () => $('fileLibraryInput').click());
+$('fileLibraryInput').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0];
+  if (f) fileToPhoto(f);
+  e.target.value = '';
+});
+
+// Camera
+let camStream = null, camFacing = 'environment';
+async function openCam() {
+  $('cam').classList.add('is-open');
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: camFacing } }, audio: false });
+    $('camVideo').srcObject = camStream;
+  } catch {
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      $('camVideo').srcObject = camStream;
+    } catch {
+      closeCam();
+      alert('Camera unavailable — use "From Library" instead.');
+    }
+  }
+}
+function closeCam() {
+  if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
+  $('camVideo').srcObject = null;
+  $('cam').classList.remove('is-open');
+}
+$('takePhotoBtn').addEventListener('click', async () => {
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    try { await openCam(); return; } catch {}
+  }
+  $('fileCameraInput').click();
+});
+$('fileCameraInput').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0];
+  if (f) fileToPhoto(f);
+  e.target.value = '';
+});
+$('camCancel').addEventListener('click', closeCam);
+$('camFlip').addEventListener('click', async () => {
+  camFacing = camFacing === 'environment' ? 'user' : 'environment';
+  if (camStream) camStream.getTracks().forEach(t => t.stop());
+  try { await openCam(); } catch {}
+});
+$('camShutter').addEventListener('click', () => {
+  const v = $('camVideo'), c = $('camCanvas');
+  if (!v.videoWidth) return;
+  c.width = v.videoWidth; c.height = v.videoHeight;
+  c.getContext('2d').drawImage(v, 0, 0);
+  const url = c.toDataURL('image/jpeg', 0.85);
+  closeCam();
+  addPhoto(url);
+});
+
+// Viewer
+let activeId = null, compareId = null, deleteConfirm = false;
+function openPhoto(id) {
+  const p = state.photos.find(x => x.id === id);
+  if (!p) return;
+  activeId = id;
+  $('viewerImg').src = p.dataUrl;
+  $('viewerDate').textContent = fmtDate(p.dateKey).toUpperCase();
+  $('viewerWeight').textContent = p.weight || '—';
+  $('viewer').dataset.mode = 'single';
+  $('viewer').classList.add('is-open');
+  deleteConfirm = false;
+  $('viewerDelete').textContent = 'Delete';
+  $('viewerDelete').classList.remove('is-confirm');
+  $('viewerCompare').disabled = state.photos.length < 2;
+  $('viewerCompare').style.opacity = state.photos.length < 2 ? '0.4' : '';
+}
+function closePhoto() {
+  $('viewer').classList.remove('is-open');
+  $('viewer').dataset.mode = 'single';
+  activeId = null; compareId = null;
+}
+function defaultCompare(id) {
+  const idx = state.photos.findIndex(p => p.id === id);
+  if (idx === -1) return null;
+  if (state.photos[idx + 1]) return state.photos[idx + 1].id;
+  if (state.photos[idx - 1]) return state.photos[idx - 1].id;
+  return null;
+}
+function parseW(s) { const m = String(s||'').match(/-?\d+(\.\d+)?/); return m ? parseFloat(m[0]) : null; }
+function openCompare(aId, bId) {
+  const A = state.photos.find(p => p.id === aId);
+  const B = state.photos.find(p => p.id === bId);
+  if (!A || !B) return;
+  activeId = aId; compareId = bId;
+  $('cmpImgA').src = A.dataUrl; $('cmpImgB').src = B.dataUrl;
+  $('cmpMetaA').textContent = fmtDate(A.dateKey) + ' · ' + (A.weight || '—');
+  $('cmpMetaB').textContent = fmtDate(B.dateKey) + ' · ' + (B.weight || '—');
+  const wA = parseW(A.weight), wB = parseW(B.weight);
+  const head = $('compareHeadline');
+  let headline = fmtDate(A.dateKey) + ' → ' + fmtDate(B.dateKey);
+  let cls = 'flat';
+  if (wA != null && wB != null) {
+    const diff = wA - wB;
+    if (Math.abs(diff) >= 0.05) {
+      headline += ' · ' + (diff > 0 ? '+' : '−') + Math.abs(diff).toFixed(1) + ' ' + UNITS;
+      cls = diff > 0 ? 'up' : 'down';
+    }
+  }
+  head.textContent = headline;
+  head.className = 'compare-headline ' + cls;
+  $('viewer').dataset.mode = 'compare';
+  $('viewer').classList.add('is-open');
+  deleteConfirm = false;
+  $('compareDelete').textContent = 'Delete';
+  $('compareDelete').classList.remove('is-confirm');
+}
+function deletePhoto(delBtn) {
+  if (!activeId) return;
+  if (!deleteConfirm) {
+    deleteConfirm = true;
+    delBtn.textContent = 'Confirm delete?';
+    delBtn.classList.add('is-confirm');
+    setTimeout(() => { deleteConfirm = false; delBtn.textContent = 'Delete'; delBtn.classList.remove('is-confirm'); }, 3000);
+    return;
+  }
+  state.photos = state.photos.filter(p => p.id !== activeId);
+  saveState(state);
+  renderPhotos();
+  closePhoto();
+}
+$('viewerClose').addEventListener('click', closePhoto);
+$('compareClose').addEventListener('click', closePhoto);
+$('viewerDelete').addEventListener('click', () => deletePhoto($('viewerDelete')));
+$('compareDelete').addEventListener('click', () => deletePhoto($('compareDelete')));
+$('viewerCompare').addEventListener('click', () => {
+  if (!activeId) return;
+  const oid = defaultCompare(activeId);
+  if (!oid) { alert('Need at least one other photo.'); return; }
+  openCompare(activeId, oid);
+});
+$('compareBack').addEventListener('click', () => { if (activeId) $('viewer').dataset.mode = 'single'; else closePhoto(); });
+$('cmpSideB').addEventListener('click', () => {
+  if (!activeId) return;
+  const others = state.photos.filter(p => p.id !== activeId);
+  if (!others.length) return;
+  const ci = others.findIndex(p => p.id === compareId);
+  openCompare(activeId, others[(ci + 1) % others.length].id);
+});
+
+// ------ Supabase cloud sync ------
+const SUPABASE_URL = 'https://ktqywwwrszmkwznhakbw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_ru0xehlRpZQbSLLyeB9FHQ_T6ZAonPm';
+const SYNC_KEY = 'progress';
+let supa = null, lastSyncedJson = null, pushTimer = null, suppressSync = false;
+
+const _origSet = localStorage.setItem.bind(localStorage);
+const _origRemove = localStorage.removeItem.bind(localStorage);
+localStorage.setItem = function(k, v) {
+  _origSet(k, v);
+  try { if (!suppressSync && k === LS_KEY) schedulePush(); } catch {}
+};
+localStorage.removeItem = function(k) {
+  _origRemove(k);
+  try { if (!suppressSync && k === LS_KEY) schedulePush(); } catch {}
+};
+
+function schedulePush() {
+  if (suppressSync) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(pushNow, 300);
+}
+async function pushNow() {
+  if (!supa) return;
+  const raw = localStorage.getItem(LS_KEY);
+  if (!raw) return;
+  const json = raw;
+  if (json === lastSyncedJson) return;
+  try {
+    let data;
+    try { data = JSON.parse(raw); } catch { return; }
+    const { error } = await supa.from('app_state').upsert(
+      { key: SYNC_KEY, data, updated_at: new Date().toISOString() }, { onConflict: 'key' }
+    );
+    if (!error) lastSyncedJson = json;
+  } catch {}
+}
+
+(async function initSync() {
+  if (!window.supabase) return;
+  supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  try {
+    const { data, error } = await supa.from('app_state').select('data').eq('key', SYNC_KEY).maybeSingle();
+    if (!error && data && data.data) {
+      const incoming = JSON.stringify(data.data);
+      const local = localStorage.getItem(LS_KEY);
+      if (local !== incoming) {
+        suppressSync = true;
+        try { _origSet(LS_KEY, incoming); } finally { suppressSync = false; }
+        state = loadState();
+        renderWeight();
+        renderPhotos();
+      }
+      lastSyncedJson = incoming;
+    }
+  } catch {}
+  supa.channel('progress_state').on('postgres_changes', {
+    event: '*', schema: 'public', table: 'app_state', filter: 'key=eq.' + SYNC_KEY
+  }, payload => {
+    if (!payload.new || !payload.new.data) return;
+    const incoming = JSON.stringify(payload.new.data);
+    if (incoming === lastSyncedJson) return;
+    lastSyncedJson = incoming;
+    suppressSync = true;
+    try { _origSet(LS_KEY, incoming); } finally { suppressSync = false; }
+    state = loadState();
+    renderWeight();
+    renderPhotos();
+  }).subscribe();
+})();
+
+window.addEventListener('pagehide', () => pushNow());
+window.addEventListener('beforeunload', () => pushNow());
+
+// ------ Boot ------
+renderWeight();
+renderPhotos();
+})();
+</script>
+</body>
+</html>

@@ -6,8 +6,6 @@
 <meta name="theme-color" content="#0a0a0b">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Finances</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js" defer></script>
 <script src="topbar.js" defer></script>
 <style>
 :root {
@@ -1595,7 +1593,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:14px">
       <div>
         <div style="font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.04em;font-weight:500">Total net worth</div>
-        <div id="netWorthTotal" style="font-size:34px;font-weight:700;color:var(--text-primary);line-height:1.05;margin-top:2px">CHF 0</div>
+        <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:10px;margin-top:2px">
+          <div id="netWorthTotal" style="font-size:34px;font-weight:700;color:var(--text-primary);line-height:1.05">CHF 0</div>
+          <span id="nwDailyDelta" style="display:none;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;background:rgba(107,227,164,0.10);color:#6BE3A4;border:1px solid rgba(107,227,164,0.25)"></span>
+        </div>
         <div id="netWorthBreakdown" style="font-size:11px;color:var(--text-tertiary);margin-top:4px"></div>
       </div>
       <div style="display:flex;align-items:center;gap:6px">
@@ -2077,6 +2078,57 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     input.addEventListener('blur', save);
   }
 
+  // Daily delta chip — compares current net worth to yesterday's snapshot.
+  const NW_DAILY_SNAP_KEY = 'nw:daily_snap';
+  function renderDailyDelta(grandCHF) {
+    const chip = document.getElementById('nwDailyDelta');
+    if (!chip) return;
+    const today = new Date().toISOString().slice(0,10);
+    let snap = null;
+    try { snap = JSON.parse(localStorage.getItem(NW_DAILY_SNAP_KEY)); } catch {}
+    // Store today's snapshot if missing or outdated
+    if (!snap || snap.date !== today) {
+      // Snapshot from yesterday (yesterday's value is what grand was BEFORE today's changes)
+      const yesterdaySnap = snap && snap.date !== today ? { date: snap.date, v: snap.v } : null;
+      try { localStorage.setItem(NW_DAILY_SNAP_KEY, JSON.stringify({ date: today, v: grandCHF })); } catch {}
+      if (yesterdaySnap) {
+        const diff = grandCHF - yesterdaySnap.v;
+        renderDeltaChip(chip, diff);
+      } else {
+        chip.style.display = 'none';
+      }
+      return;
+    }
+    // Same day — compare to the value from yesterday in history
+    const hist = storeGet(NW_HISTORY_KEY) || [];
+    if (hist.length >= 2) {
+      const todayMs = new Date(today).getTime();
+      const yesterday = hist.filter(p => p.t < todayMs).pop();
+      if (yesterday) {
+        renderDeltaChip(chip, grandCHF - yesterday.v);
+        return;
+      }
+    }
+    chip.style.display = 'none';
+  }
+  function renderDeltaChip(chip, diff) {
+    if (Math.abs(diff) < 0.005) { chip.style.display = 'none'; return; }
+    const up = diff > 0;
+    const arrow = up ? '↑' : '↓';
+    const sign  = up ? '+' : '−';
+    chip.textContent = arrow + ' ' + sign + fmtMoney(Math.abs(diff)) + ' today';
+    chip.style.display = 'inline-flex';
+    if (up) {
+      chip.style.background = 'rgba(107,227,164,0.10)';
+      chip.style.color = '#6BE3A4';
+      chip.style.borderColor = 'rgba(107,227,164,0.25)';
+    } else {
+      chip.style.background = 'rgba(255,107,107,0.10)';
+      chip.style.color = '#FF6B6B';
+      chip.style.borderColor = 'rgba(255,107,107,0.25)';
+    }
+  }
+
   function renderAllNetWorth() {
     let grand = 0;
     const breakdown = [];
@@ -2090,6 +2142,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     if (netWorthTotal) netWorthTotal.textContent = fmtMoney(grand);
     if (netWorthBreakdown) netWorthBreakdown.textContent = breakdown.join('  •  ');
     logNetWorthSnapshot(grand);
+    renderDailyDelta(grand);
     renderNetWorthChart();
     renderAllocationDonut(sliceTotals, grand);
     renderActivity();
@@ -2491,11 +2544,24 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         }
       }
       const isUrgent = daysToRenew != null && daysToRenew <= 5;
+      const isSoon   = daysToRenew != null && daysToRenew <= 14 && daysToRenew > 5;
       const row = document.createElement('div');
       row.className = 'sub-row' + (isUrgent ? ' is-urgent' : '');
       row.style.cssText = 'display:grid;grid-template-columns:1fr auto auto;align-items:center;padding:12px 14px;background:rgba(255,255,255,0.025);border-radius:var(--radius-md);margin-bottom:8px;gap:12px;';
+      let countdownBadge = '';
+      if (daysToRenew != null && daysToRenew <= 14) {
+        if (daysToRenew <= 0) {
+          countdownBadge = '<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(255,107,107,0.15);color:#FF6B6B;border:1px solid rgba(255,107,107,0.3);margin-left:6px">DUE</span>';
+        } else if (daysToRenew === 1) {
+          countdownBadge = '<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(255,107,107,0.15);color:#FF6B6B;border:1px solid rgba(255,107,107,0.3);margin-left:6px">TOMORROW</span>';
+        } else if (daysToRenew <= 5) {
+          countdownBadge = '<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:rgba(242,192,99,0.15);color:#F2C063;border:1px solid rgba(242,192,99,0.3);margin-left:6px">in ' + daysToRenew + 'd</span>';
+        } else {
+          countdownBadge = '<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.04);color:var(--text-tertiary);border:1px solid rgba(255,255,255,0.08);margin-left:6px">in ' + daysToRenew + 'd</span>';
+        }
+      }
       const renewLine = it.renewal
-        ? '<div class="sub-renew-line" style="font-size:10px;color:#F2C063;margin-top:3px">↻ Renews ' + formatRenewal(it.renewal) + '</div>'
+        ? '<div class="sub-renew-line" style="display:flex;align-items:center;font-size:10px;color:#F2C063;margin-top:3px">↻ Renews ' + formatRenewal(it.renewal) + countdownBadge + '</div>'
         : '';
       // Linked NW account + auto-deduct toggle pills
       let metaLine = '';
@@ -3376,17 +3442,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   setInterval(safeRenderTicker, 1500);
 
 })();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  if (typeof initCloudSync !== 'function') return;
-  initCloudSync({
-    appKey: 'finance',
-    syncedKeys: ['subs', 'wishlist', 'incoming_orders', 'nw_currency', 'nw:activity', 'nw:history'],
-    syncedPrefixes: ['nw:'],
-    onApplied: function () { window.dispatchEvent(new Event('storage')); }
-  });
-});
 </script>
 
 </body>

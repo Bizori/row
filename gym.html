@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0b">
-<title>Progressive Overload Coach</title>
+<meta name="theme-color" content="#050506">
+<title>Fitness Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="topbar.js" defer></script>
+<script src="sync.js" defer></script>
 
 <!-- =============================================================
      EDIT THIS BLOCK TO MAKE THE APP YOURS.
@@ -93,25 +97,27 @@ const CONFIG = {
 
 <style>
 :root {
-  --bg: #0a0a0b;
-  --bg-card: #111113;
+  --bg: #050506;
+  --bg-card: rgba(255,255,255,0.025);
   --text-1: #ffffff;
   --text-2: rgba(255,255,255,0.6);
   --text-3: rgba(255,255,255,0.4);
   --text-4: rgba(255,255,255,0.25);
-  --border: rgba(255,255,255,0.06);
-  --border-strong: rgba(255,255,255,0.14);
-  --accent: #ffffff;
-  --good: #6ee7b7;
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.16);
+  --accent: #6BE3A4;
+  --good: #6BE3A4;
+  --pos: #7DD3FC;
   --warn: #fbbf24;
   --bad: #ff8a8a;
-  --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  --brand: #6BE3A4;
+  --font: "Space Grotesk", -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SF Mono, Menlo, Consolas, monospace;
 }
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, #14141a 0%, #0a0a0b 60%);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(107,227,164,0.06) 0%, #050506 60%);
   color: var(--text-1);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
@@ -239,11 +245,13 @@ img, video, canvas, svg { max-width: 100%; }
 .po-icon-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-1); }
 
 .card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
   padding: 20px;
   margin-bottom: 14px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* ----- Filters (Gym + Day segmented controls) ----- */
@@ -271,9 +279,9 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .po-seg-btn:hover { color: var(--text-2); background: rgba(255,255,255,0.04); }
 .po-seg-btn.active {
-  background: linear-gradient(180deg, #ffffff 0%, #e8e5dd 100%);
-  color: #0a0a0b;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 4px 12px rgba(0,0,0,0.35);
+  background: linear-gradient(180deg, #6BE3A4 0%, #4ecf8a 100%);
+  color: #042a1c;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 12px rgba(107,227,164,0.35);
 }
 
 /* ----- Sub-section title ----- */
@@ -422,21 +430,22 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .po-reps-pill:hover { background: rgba(255,255,255,0.06); color: var(--text-1); }
 .po-reps-pill.active {
-  background: linear-gradient(180deg, #ffffff 0%, #e8e5dd 100%);
-  color: #0a0a0b; border-color: transparent;
+  background: linear-gradient(180deg, #6BE3A4 0%, #4ecf8a 100%);
+  color: #042a1c; border-color: transparent;
   font-weight: 800;
 }
 
 /* ----- Primary button ----- */
 .po-btn-primary {
   width: 100%; padding: 14px;
-  border: 1px solid rgba(255,255,255,0.85);
-  background: linear-gradient(180deg, #ffffff 0%, #e8e5dd 100%);
-  color: #0a0a0b; border-radius: 12px;
+  border: 1px solid rgba(107,227,164,0.8);
+  background: linear-gradient(180deg, #6BE3A4 0%, #4ecf8a 100%);
+  color: #042a1c; border-radius: 12px;
   font-family: inherit; font-size: 14px; font-weight: 700;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 14px rgba(0,0,0,0.40);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), 0 4px 14px rgba(107,227,164,0.35);
   -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s;
 }
 .po-btn-primary:hover { transform: translateY(-1px); }
 .po-btn-primary:active { transform: translateY(0) scale(0.98); }
@@ -571,8 +580,8 @@ img, video, canvas, svg { max-width: 100%; }
   -webkit-tap-highlight-color: transparent;
 }
 .po-modal-seg button.active {
-  background: linear-gradient(180deg, #ffffff 0%, #e8e5dd 100%);
-  color: #0a0a0b;
+  background: linear-gradient(180deg, #6BE3A4 0%, #4ecf8a 100%);
+  color: #042a1c;
 }
 .po-bw-toggle {
   display: flex; align-items: center; gap: 8px;
@@ -768,8 +777,8 @@ img, video, canvas, svg { max-width: 100%; }
 .po-tw-summary-sep { color: var(--text-4); margin: 0 4px; }
 .po-tw-summary-vol { font-size: 13px; color: var(--text-2); font-weight: 500; }
 .po-tw-done-btn {
-  background: linear-gradient(180deg, #ffffff 0%, #e8e5dd 100%);
-  color: #0a0a0b; border: none; border-radius: 999px;
+  background: linear-gradient(180deg, #6BE3A4 0%, #4ecf8a 100%);
+  color: #042a1c; border: none; border-radius: 999px;
   padding: 9px 16px;
   font-family: inherit; font-size: 12px; font-weight: 700;
   cursor: pointer;
@@ -1262,12 +1271,77 @@ img, video, canvas, svg { max-width: 100%; }
 }
 
 .hidden { display: none !important; }
+
+/* ---- PR Ticker ---- */
+.pr-ticker {
+  display: flex; align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  background: linear-gradient(90deg, rgba(107,227,164,0.07), rgba(125,211,252,0.04));
+  border: 1px solid rgba(107,227,164,0.16);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  min-height: 40px;
+}
+.pr-ticker.hidden { display: none !important; }
+.pr-ticker-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--good);
+  padding: 3px 10px;
+  background: rgba(107,227,164,0.08);
+  border-radius: 999px;
+  border: 1px solid rgba(107,227,164,0.22);
+}
+.pr-ticker-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 8px rgba(107,227,164,0.7);
+  animation: prLed 1.6s ease-in-out infinite;
+}
+@keyframes prLed { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.pr-ticker-viewport {
+  flex: 1; min-width: 0;
+  overflow: hidden; position: relative; height: 20px;
+  mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+}
+.pr-ticker-track {
+  display: inline-flex; align-items: center;
+  gap: 2.5rem; padding: 0 1rem;
+  white-space: nowrap;
+  animation: prScroll 28s linear infinite;
+  will-change: transform;
+}
+@keyframes prScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.pr-ticker:hover .pr-ticker-track { animation-play-state: paused; }
+.pr-item {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono); font-size: 12px;
+  font-variant-numeric: tabular-nums; color: var(--text-2);
+}
+.pr-item-arrow { color: var(--good); font-weight: 700; }
+.pr-item-name { color: var(--text-1); font-weight: 600; }
+.pr-item-sep { color: var(--text-4); }
+.pr-item-body strong { color: var(--text-1); }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <div class="po-shell">
+  <!-- Live PR ticker — injected by JS after state loads -->
+  <div class="pr-ticker hidden" id="prTicker">
+    <div class="pr-ticker-badge"><span class="pr-ticker-dot"></span>RECENT PRs</div>
+    <div class="pr-ticker-viewport">
+      <div class="pr-ticker-track" id="prTickerTrack"></div>
+    </div>
+  </div>
+
   <button class="po-day-pill" type="button" id="dayPill" title="Tap to switch the day filter to today's split">
     <span class="po-day-date" id="dayPillDate">—</span>
     <span class="po-day-sep">·</span>
@@ -2284,6 +2358,7 @@ img, video, canvas, svg { max-width: 100%; }
     saveState(); renderAll();
     // Strength changed → composition estimate may shift
     if (typeof wtRender === 'function') wtRender();
+    buildPrTicker();
     // Tiny pulse on the button so the user feels the save
     const btn = $('logBtn');
     btn.style.transition = 'transform 0.15s';
@@ -2989,21 +3064,6 @@ img, video, canvas, svg { max-width: 100%; }
       img.src = dataUrl;
     });
   }
-  async function uploadPhotoToStorage(dataUrl) {
-    if (!pcSupa) return null;
-    try {
-      const res = await fetch(dataUrl);
-      const blob = await res.blob();
-      const filename = 'photo_' + Date.now() + '_' +
-        Math.random().toString(36).slice(2, 10) + '.jpg';
-      const { error } = await pcSupa.storage
-        .from('progress-photos')
-        .upload(filename, blob, { contentType: 'image/jpeg', upsert: false });
-      if (error) return null;
-      const { data } = pcSupa.storage.from('progress-photos').getPublicUrl(filename);
-      return data ? data.publicUrl : null;
-    } catch (e) { return null; }
-  }
   function photoFmtDate(key) {
     const d = wtParseKey(key);
     const mons = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -3020,7 +3080,7 @@ img, video, canvas, svg { max-width: 100%; }
     } else {
       grid.innerHTML = photos.map(p =>
         '<button class="wt-photo-card" data-id="' + p.id + '" type="button">' +
-          '<img src="' + (p.url || p.dataUrl) + '" alt="">' +
+          '<img src="' + p.dataUrl + '" alt="">' +
           '<div class="wt-photo-overlay"></div>' +
           '<div class="wt-photo-meta">' +
             '<span class="wt-photo-date">' + photoFmtDate(p.dateKey) + '</span>' +
@@ -3061,15 +3121,6 @@ img, video, canvas, svg { max-width: 100%; }
       }
     }
     photosRender();
-    uploadPhotoToStorage(entry.dataUrl).then((url) => {
-      if (!url) return;
-      const e = photos.find(p => p.id === id);
-      if (!e) return;
-      e.url = url;
-      delete e.dataUrl;
-      photosSave();
-      photosRender();
-    });
   }
   function fileToPhoto(file) {
     const r = new FileReader();
@@ -3154,7 +3205,7 @@ img, video, canvas, svg { max-width: 100%; }
     const p = photos.find(x => x.id === id);
     if (!p) return;
     activePhotoId = id;
-    $('wtViewerImg').src = p.url || p.dataUrl;
+    $('wtViewerImg').src = p.dataUrl;
     $('wtViewerDate').textContent = photoFmtDate(p.dateKey).toUpperCase();
     $('wtViewerWeight').textContent = p.weight || '—';
     $('wtViewer').dataset.mode = 'single';
@@ -3204,8 +3255,8 @@ img, video, canvas, svg { max-width: 100%; }
     if (!A || !B) return;
     activePhotoId = activeId;
     comparePhotoId = otherId;
-    $('wtCmpImgA').src = A.url || A.dataUrl;
-    $('wtCmpImgB').src = B.url || B.dataUrl;
+    $('wtCmpImgA').src = A.dataUrl;
+    $('wtCmpImgB').src = B.dataUrl;
     $('wtCmpMetaA').textContent = photoFmtDate(A.dateKey) + ' · ' + (A.weight || '—');
     $('wtCmpMetaB').textContent = photoFmtDate(B.dateKey) + ' · ' + (B.weight || '—');
     // Headline — date arrow + weight delta
@@ -3278,11 +3329,62 @@ img, video, canvas, svg { max-width: 100%; }
   $('wtCmpSideB').addEventListener('click', cycleCompareTarget);
 
   // ============================================================
+  // LIVE PR TICKER
+  // Scans last 90 days for personal records (highest 1RM per exercise)
+  // and renders a scrolling marquee.
+  // ============================================================
+  function buildPrTicker() {
+    const now = Date.now();
+    const cutoff = now - 90 * 86400000;
+    const prs = [];
+    state.exercises.forEach(ex => {
+      const logs = (state.logs[ex.id] || []).filter(l => new Date(l.date).getTime() >= cutoff);
+      if (!logs.length) return;
+      let best = null;
+      logs.forEach(l => {
+        const val = ex.bw ? l.reps : estimate1RM(l.weight, l.reps);
+        if (!best || val > best.val) best = { val, log: l };
+      });
+      if (!best) return;
+      const allLogs = state.logs[ex.id] || [];
+      const allBest = allLogs.reduce((b, l) => {
+        const v = ex.bw ? l.reps : estimate1RM(l.weight, l.reps);
+        return v > (b ? b.val : 0) ? { val: v } : b;
+      }, null);
+      // Only count it as a PR if the recent best equals the all-time best
+      if (!allBest || Math.abs(best.val - allBest.val) < 0.5) {
+        prs.push({ ex, best });
+      }
+    });
+    const ticker = $('prTicker');
+    const track = $('prTickerTrack');
+    if (!prs.length) { ticker.classList.add('hidden'); return; }
+    ticker.classList.remove('hidden');
+    // Double the items for seamless loop
+    const items = prs.concat(prs).map(({ ex, best }) => {
+      const val = ex.bw
+        ? (best.log.reps + ' reps')
+        : (Math.round(best.val) + state.units + ' est. 1RM');
+      const dateStr = new Date(best.log.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      return '<span class="pr-item">'
+        + '<span class="pr-item-arrow">↑</span>'
+        + '<span class="pr-item-name">' + escape(ex.name) + '</span>'
+        + '<span class="pr-item-sep">·</span>'
+        + '<span class="pr-item-body"><strong>' + val + '</strong></span>'
+        + '<span class="pr-item-sep">·</span>'
+        + '<span class="pr-item-body">' + dateStr + '</span>'
+        + '</span>';
+    }).join('');
+    track.innerHTML = items;
+  }
+
+  // ============================================================
   // BOOT
   // ============================================================
   renderAll();
   wtRender();
   photosRender();
+  buildPrTicker();
 
   // ============================================================
   // CLOUD SYNC via Supabase  (OPTIONAL — leave blank for local-only)
@@ -3338,14 +3440,7 @@ img, video, canvas, svg { max-width: 100%; }
     for (const k of PC_SYNCED_KEYS) {
       const v = localStorage.getItem(k);
       if (v == null) continue;
-      let val;
-      try { val = JSON.parse(v); } catch { continue; }
-      if (k === 'po_coach_photos' && Array.isArray(val)) {
-        val = val
-          .filter((p) => p && p.url)
-          .map((p) => ({ id: p.id, url: p.url, dateKey: p.dateKey, weight: p.weight }));
-      }
-      out[k] = val;
+      try { out[k] = JSON.parse(v); } catch {}
     }
     return out;
   }
@@ -3380,19 +3475,6 @@ img, video, canvas, svg { max-width: 100%; }
     let changed = false;
     try {
       for (const k of PC_SYNCED_KEYS) {
-        if (k === 'po_coach_photos') {
-          let localPhotos = [];
-          try { localPhotos = JSON.parse(localStorage.getItem(k) || '[]'); } catch {}
-          const remotePhotos = Array.isArray(remote[k]) ? remote[k] : [];
-          const remoteIds = new Set(remotePhotos.map((p) => p && p.id));
-          const localOnly = localPhotos.filter((p) => p && !p.url && !remoteIds.has(p.id));
-          const merged = [...remotePhotos, ...localOnly];
-          const incoming = JSON.stringify(merged);
-          if (localStorage.getItem(k) !== incoming) {
-            try { _pcOrigSet(k, incoming); changed = true; } catch {}
-          }
-          continue;
-        }
         if (k in remote) {
           const incoming = JSON.stringify(remote[k]);
           const local = localStorage.getItem(k);
