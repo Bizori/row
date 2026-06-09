@@ -1,0 +1,2 @@
+garminconnect>=0.2.19
+supabase>=2.3.0
