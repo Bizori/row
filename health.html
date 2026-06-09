@@ -478,270 +478,110 @@ main {
 
 
 /* ============================================================
-   WHOOP CARD
+   GARMIN CARD
    ============================================================ */
-.whoop-section { margin-bottom: 48px; }
-.whoop-card {
-  padding: 22px 22px 18px;
+.garmin-section { margin-bottom: 48px; }
+.garmin-card {
+  padding: 20px;
   background: rgba(255,255,255,0.025);
   border: 1px solid var(--glass-border);
-  border-radius: 22px;
+  border-radius: 20px;
   box-shadow: var(--glass-shadow);
 }
-.whoop-brand { display: inline-flex; align-items: center; gap: 8px; }
-.whoop-brand-mark {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: #FFFFFF; color: #0A0A0B;
-  font-weight: 900; font-size: 12px;
-  display: inline-flex; align-items: center; justify-content: center;
-  letter-spacing: -0.04em; box-shadow: 0 0 12px rgba(255,255,255,0.20);
+.garmin-brand {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
 }
-.whoop-brand-text { font-weight: 800; font-size: 13px; letter-spacing: 0.18em; color: var(--text-primary); }
-.whoop-disconnected {
-  display: flex; flex-direction: column; align-items: center;
-  text-align: center; padding: 18px 8px 8px; gap: 6px;
+.garmin-brand-mark {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #00A6FF; color: #fff;
+  font-weight: 800; font-size: 13px;
+  display: grid; place-items: center;
 }
-.whoop-disconnected .whoop-brand { margin-bottom: 14px; }
-.whoop-disconnected-title { font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; margin-top: 2px; }
-.whoop-disconnected-sub { font-size: 13px; color: var(--text-tertiary); max-width: 280px; line-height: 1.5; margin-bottom: 18px; }
-.whoop-connect-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 8px; padding: 12px 22px; border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.85);
-  background: linear-gradient(180deg, #FFFFFF 0%, #E8E5DD 100%);
-  color: #0A0A0B; font-family: inherit; font-size: 13.5px;
-  font-weight: 700; letter-spacing: 0.005em; cursor: pointer;
-  transition: transform 0.12s, box-shadow 0.18s, background 0.18s;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 6px 20px rgba(0,0,0,0.45);
+.garmin-brand-text {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--text-primary);
 }
-.whoop-connect-btn:hover {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F2F0EA 100%);
-  transform: translateY(-1px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.65), 0 8px 24px rgba(0,0,0,0.55);
+.garmin-header-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.garmin-updated { font-size: 11px; color: var(--text-tertiary); }
+.garmin-refresh-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-tertiary); padding: 4px; border-radius: 6px;
+  display: flex; align-items: center; transition: color 0.2s;
 }
-.whoop-connect-btn:active { transform: translateY(0) scale(0.98); }
-.whoop-auth-status { font-size: 11px; color: var(--text-tertiary); margin-top: 12px; min-height: 14px; font-style: italic; }
-.whoop-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
-.whoop-live-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6BE3A4; margin-left: 4px; }
-.whoop-live-dot { width: 6px; height: 6px; border-radius: 50%; background: #6BE3A4; box-shadow: 0 0 8px rgba(107,227,164,0.65); animation: whoop-pulse 1.6s ease-in-out infinite; }
-@keyframes whoop-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(0.85); }
+.garmin-refresh-btn:hover { color: var(--text-primary); }
+.garmin-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
 }
-.whoop-header-right { display: flex; align-items: center; gap: 10px; }
-.whoop-updated { font-size: 11px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
-.whoop-refresh-btn {
-  width: 32px; height: 32px; border-radius: 50%;
-  border: 1px solid var(--glass-border); background: rgba(255,255,255,0.04);
-  color: var(--text-secondary); cursor: pointer; font-family: inherit;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.18s, color 0.18s, transform 0.12s; flex-shrink: 0;
+@media (max-width: 400px) { .garmin-grid { grid-template-columns: repeat(2, 1fr); } }
+.garmin-cell {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 14px 12px 12px;
+  display: flex; flex-direction: column; gap: 4px;
 }
-.whoop-refresh-btn:hover { background: rgba(255,255,255,0.10); color: var(--text-primary); }
-.whoop-refresh-btn:active { transform: rotate(180deg); }
-.whoop-refresh-btn svg { display: block; }
-.whoop-ring-wrap { position: relative; width: 240px; max-width: 78%; margin: 0 auto 24px; aspect-ratio: 1; }
-.whoop-ring { width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 0 24px rgba(255,255,255,0.05)); }
-.whoop-ring-track { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 12; }
-.whoop-ring-fill { fill: none; stroke: #FFFFFF; stroke-width: 12; stroke-linecap: round; stroke-dasharray: 603.19; stroke-dashoffset: 603.19; transition: stroke-dashoffset 0.8s cubic-bezier(0.22,1,0.36,1), stroke 0.4s, filter 0.4s; }
-.whoop-ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-.whoop-ring-num { font-size: 60px; font-weight: 700; letter-spacing: -0.04em; color: var(--text-primary); line-height: 1; font-variant-numeric: tabular-nums; }
-.whoop-ring-unit { font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-tertiary); margin-top: 10px; }
-.whoop-ring-label { font-size: 12.5px; font-weight: 600; margin-top: 6px; letter-spacing: -0.005em; }
-.whoop-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding-top: 22px; border-top: 1px solid var(--border-soft); }
-.whoop-stat { position: relative; background: rgba(255,255,255,0.025); border: 1px solid var(--border-soft); border-radius: 12px; padding: 12px 10px; text-align: center; transition: background 0.18s; }
-.whoop-stat:hover { background: rgba(255,255,255,0.05); }
-.whoop-stat-label { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; margin-bottom: 8px; }
-.whoop-stat-value { font-size: 22px; font-weight: 700; color: var(--text-primary); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
-.whoop-stat-sub { font-size: 10px; color: var(--text-tertiary); margin-top: 5px; font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
-@media (max-width: 480px) {
-  .whoop-stats { grid-template-columns: repeat(2, 1fr); }
-  .whoop-stat-value { font-size: 20px; }
+.garmin-cell-label {
+  font-size: 10.5px; font-weight: 600; color: var(--text-tertiary);
+  letter-spacing: 0.05em; text-transform: uppercase;
 }
-.whoop-verdict { margin-top: 18px; padding: 16px 18px; background: rgba(255,255,255,0.025); border: 1px solid var(--border-soft); border-left: 2px solid rgba(255,255,255,0.40); border-radius: 0 12px 12px 0; }
-.whoop-verdict-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.whoop-verdict-eyebrow { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700; }
-.whoop-verdict-badge { font-size: 9.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid; }
-.whoop-verdict-headline { font-size: 15px; font-weight: 600; color: var(--text-primary); line-height: 1.4; margin-bottom: 12px; letter-spacing: -0.01em; }
-.whoop-verdict-reasons { font-size: 12.5px; color: var(--text-secondary); line-height: 1.65; }
-.whoop-verdict-avoid { font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
-.whoop-verdict-avoid-label { color: #FF8A8A; font-weight: 700; }
-.whoop-disconnect-btn { display: block; margin: 16px auto 0; padding: 7px 14px; background: transparent; border: 1px solid transparent; color: var(--text-tertiary); font-size: 11px; font-family: inherit; font-weight: 500; letter-spacing: 0.04em; border-radius: 999px; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
-.whoop-disconnect-btn:hover { color: var(--text-secondary); border-color: var(--border-soft); }
-.whoop-calibrating { display: flex; align-items: center; gap: 8px; padding: 9px 14px; margin-bottom: 16px; background: rgba(242,192,99,0.08); border: 1px solid rgba(242,192,99,0.28); border-radius: 10px; color: #F2C063; font-size: 11.5px; font-weight: 500; }
-.whoop-cal-dot { width: 6px; height: 6px; border-radius: 50%; background: #F2C063; box-shadow: 0 0 8px rgba(242,192,99,0.55); animation: whoop-pulse 1.6s ease-in-out infinite; flex-shrink: 0; }
-.whoop-stages { margin-bottom: 22px; padding-top: 22px; border-top: 1px solid var(--border-soft); }
-.whoop-stages-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-.whoop-stages-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-tertiary); }
-.whoop-stages-meta { font-size: 11px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
-.whoop-stages-bar { display: flex; height: 10px; background: rgba(255,255,255,0.04); border-radius: 999px; overflow: hidden; margin-bottom: 12px; border: 1px solid var(--border-soft); }
-.whoop-stage { height: 100%; transition: width 0.7s cubic-bezier(0.22,1,0.36,1); }
-.whoop-stage-rem { background: #FFFFFF; } .whoop-stage-deep { background: #B8B6B0; } .whoop-stage-light { background: #76746E; } .whoop-stage-awake { background: #38362F; }
-.whoop-stages-legend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.whoop-stages-leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); font-weight: 500; }
-.whoop-stages-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-.whoop-stages-dot.d-rem { background: #FFFFFF; } .whoop-stages-dot.d-deep { background: #B8B6B0; } .whoop-stages-dot.d-light { background: #76746E; } .whoop-stages-dot.d-awake { background: #38362F; border: 1px solid var(--border); }
-.whoop-stages-num { margin-left: auto; color: var(--text-primary); font-weight: 700; font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: 11px; }
-@media (max-width: 480px) { .whoop-stages-legend { grid-template-columns: repeat(2, 1fr); } }
-.whoop-bio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
-.whoop-bio-item { position: relative; display: flex; flex-direction: column; gap: 4px; padding: 11px 12px; background: rgba(255,255,255,0.025); border: 1px solid var(--border-soft); border-radius: 12px; text-align: center; transition: background 0.18s; }
-.whoop-bio-item:hover { background: rgba(255,255,255,0.05); }
-.whoop-bio-label { font-size: 9.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-tertiary); }
-.whoop-bio-val { font-size: 14px; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-@media (max-width: 380px) { .whoop-bio { grid-template-columns: 1fr; } }
-.whoop-zone { position: absolute; top: 9px; right: 9px; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.12); transition: background 0.3s, box-shadow 0.3s; }
-.whoop-zone.z-good { background: #6BE3A4; box-shadow: 0 0 7px rgba(107,227,164,0.55); }
-.whoop-zone.z-norm { background: rgba(255,255,255,0.30); }
-.whoop-zone.z-warn { background: #F2C063; box-shadow: 0 0 7px rgba(242,192,99,0.55); }
-.whoop-zone.z-bad  { background: #FF8A8A; box-shadow: 0 0 7px rgba(255,138,138,0.55); }
-.whoop-legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 14px; padding: 10px 12px; background: rgba(255,255,255,0.02); border-radius: 999px; border: 1px solid var(--border-soft); }
-.whoop-legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 600; color: var(--text-tertiary); letter-spacing: 0.04em; }
-.whoop-legend-item .whoop-zone { position: static; display: inline-block; }
+.garmin-cell-value {
+  font-size: 22px; font-weight: 700; color: var(--text-primary); line-height: 1;
+}
+.garmin-cell-sub { font-size: 11px; color: var(--text-tertiary); }
+.garmin-no-data {
+  text-align: center; padding: 24px 16px;
+  font-size: 13px; color: var(--text-tertiary);
+}
 </style>
 </head>
 <body>
 
 <main>
-  <section class="whoop-section">
-    <div class="section-title">Whoop</div>
-    <div class="card whoop-card">
-
-      <!-- DISCONNECTED -->
-      <div id="whoopDisconnected" class="whoop-disconnected">
-        <div class="whoop-brand">
-          <span class="whoop-brand-mark">W</span>
-          <span class="whoop-brand-text">WHOOP</span>
+  <section class="garmin-section">
+    <div class="section-title">Garmin</div>
+    <div class="card garmin-card">
+      <div class="garmin-brand">
+        <span class="garmin-brand-mark">G</span>
+        <span class="garmin-brand-text">Garmin Connect</span>
+        <div class="garmin-header-right">
+          <span id="garminUpdated" class="garmin-updated">—</span>
+          <button id="garminRefreshBtn" class="garmin-refresh-btn" title="Refresh" aria-label="Refresh">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 4v6h-6"/><path d="M20.49 15A9 9 0 1 1 5.64 5.64L23 10"/>
+            </svg>
+          </button>
         </div>
-        <div class="whoop-disconnected-title">Not connected</div>
-        <div class="whoop-disconnected-sub">Link your account to see live recovery, sleep, and strain.</div>
-        <button id="whoopConnectBtn" class="whoop-connect-btn" type="button">
-          Connect WHOOP
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 5 20 12 13 19"/>
-          </svg>
-        </button>
-        <div id="whoopAuthStatus" class="whoop-auth-status"></div>
       </div>
 
-      <!-- CONNECTED -->
-      <div id="whoopConnected" class="whoop-connected" style="display:none">
-        <div class="whoop-header">
-          <div class="whoop-brand">
-            <span class="whoop-brand-mark">W</span>
-            <span class="whoop-brand-text">WHOOP</span>
-            <span class="whoop-live-tag"><span class="whoop-live-dot"></span>live</span>
-          </div>
-          <div class="whoop-header-right">
-            <span id="whoopUpdated" class="whoop-updated">loading…</span>
-            <button id="whoopRefreshBtn" class="whoop-refresh-btn" title="Refresh" aria-label="Refresh">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 4v6h-6"/><path d="M20.49 15A9 9 0 1 1 5.64 5.64L23 10"/>
-              </svg>
-            </button>
-          </div>
-        </div>
+      <div id="garminNoData" class="garmin-no-data" style="display:none">
+        No data yet — sync runs every 4 hours
+      </div>
 
-        <div id="whoopCalibrating" class="whoop-calibrating" style="display:none">
-          <span class="whoop-cal-dot"></span>
-          WHOOP is still calibrating — early scores may shift over the next few weeks
+      <div id="garminGrid" class="garmin-grid">
+        <div class="garmin-cell">
+          <div class="garmin-cell-label">Body Battery</div>
+          <div class="garmin-cell-value" id="garminRecovery">—</div>
+          <div class="garmin-cell-sub" id="garminRecoverySub">recovery</div>
         </div>
-
-        <div id="whoopRecoveryCard" class="whoop-ring-wrap">
-          <svg class="whoop-ring" viewBox="0 0 220 220" aria-hidden="true">
-            <circle class="whoop-ring-track" cx="110" cy="110" r="96" />
-            <circle class="whoop-ring-fill" cx="110" cy="110" r="96" id="whoopRecoveryRingFill" />
-          </svg>
-          <div class="whoop-ring-center">
-            <div id="whoopRecoveryScore" class="whoop-ring-num">—</div>
-            <div class="whoop-ring-unit">recovery</div>
-            <div id="whoopRecoveryLabel" class="whoop-ring-label">—</div>
-          </div>
+        <div class="garmin-cell">
+          <div class="garmin-cell-label">Sleep</div>
+          <div class="garmin-cell-value" id="garminSleep">—</div>
+          <div class="garmin-cell-sub">duration</div>
         </div>
-
-        <div id="whoopStages" class="whoop-stages" style="display:none">
-          <div class="whoop-stages-head">
-            <span class="whoop-stages-eyebrow">Sleep stages</span>
-            <span class="whoop-stages-meta" id="whoopStagesMeta"></span>
-          </div>
-          <div class="whoop-stages-bar">
-            <div class="whoop-stage whoop-stage-rem"   id="whoopStageRem"   style="width:0%"></div>
-            <div class="whoop-stage whoop-stage-deep"  id="whoopStageDeep"  style="width:0%"></div>
-            <div class="whoop-stage whoop-stage-light" id="whoopStageLight" style="width:0%"></div>
-            <div class="whoop-stage whoop-stage-awake" id="whoopStageAwake" style="width:0%"></div>
-          </div>
-          <div class="whoop-stages-legend">
-            <div class="whoop-stages-leg"><span class="whoop-stages-dot d-rem"></span>REM <span id="whoopStageRemTxt" class="whoop-stages-num">—</span></div>
-            <div class="whoop-stages-leg"><span class="whoop-stages-dot d-deep"></span>Deep <span id="whoopStageDeepTxt" class="whoop-stages-num">—</span></div>
-            <div class="whoop-stages-leg"><span class="whoop-stages-dot d-light"></span>Light <span id="whoopStageLightTxt" class="whoop-stages-num">—</span></div>
-            <div class="whoop-stages-leg"><span class="whoop-stages-dot d-awake"></span>Awake <span id="whoopStageAwakeTxt" class="whoop-stages-num">—</span></div>
-          </div>
+        <div class="garmin-cell">
+          <div class="garmin-cell-label">Stress</div>
+          <div class="garmin-cell-value" id="garminStress">—</div>
+          <div class="garmin-cell-sub">avg today</div>
         </div>
-
-        <div class="whoop-stats">
-          <div class="whoop-stat">
-            <span class="whoop-zone" id="whoopZoneSleep" title=""></span>
-            <div class="whoop-stat-label">Sleep</div>
-            <div class="whoop-stat-value" id="whoopSleepScore">—</div>
-            <div class="whoop-stat-sub" id="whoopSleepDuration">—</div>
-          </div>
-          <div class="whoop-stat">
-            <span class="whoop-zone" id="whoopZoneStrain" title=""></span>
-            <div class="whoop-stat-label">Strain</div>
-            <div class="whoop-stat-value" id="whoopStrain">—</div>
-            <div class="whoop-stat-sub" id="whoopStrainDay">today</div>
-          </div>
-          <div class="whoop-stat">
-            <span class="whoop-zone" id="whoopZoneHrv" title=""></span>
-            <div class="whoop-stat-label">HRV</div>
-            <div class="whoop-stat-value" id="whoopHrv">—</div>
-            <div class="whoop-stat-sub">ms</div>
-          </div>
-          <div class="whoop-stat">
-            <span class="whoop-zone" id="whoopZoneRhr" title=""></span>
-            <div class="whoop-stat-label">RHR</div>
-            <div class="whoop-stat-value" id="whoopRhr">—</div>
-            <div class="whoop-stat-sub">bpm</div>
-          </div>
+        <div class="garmin-cell">
+          <div class="garmin-cell-label">Sleep Score</div>
+          <div class="garmin-cell-value" id="garminSleepScore">—</div>
+          <div class="garmin-cell-sub">out of 100</div>
         </div>
-
-        <div id="whoopBio" class="whoop-bio" style="display:none">
-          <div class="whoop-bio-item">
-            <span class="whoop-zone" id="whoopZoneSkin" title=""></span>
-            <span class="whoop-bio-label">Skin temp</span>
-            <span class="whoop-bio-val" id="whoopSkinTemp">—</span>
-          </div>
-          <div class="whoop-bio-item">
-            <span class="whoop-zone" id="whoopZoneSpo2" title=""></span>
-            <span class="whoop-bio-label">Blood O₂</span>
-            <span class="whoop-bio-val" id="whoopSpo2">—</span>
-          </div>
-          <div class="whoop-bio-item">
-            <span class="whoop-zone" id="whoopZoneResp" title=""></span>
-            <span class="whoop-bio-label">Resp rate</span>
-            <span class="whoop-bio-val" id="whoopResp">—</span>
-          </div>
+        <div class="garmin-cell">
+          <div class="garmin-cell-label">Resting HR</div>
+          <div class="garmin-cell-value" id="garminRhr">—</div>
+          <div class="garmin-cell-sub">bpm</div>
         </div>
-
-        <div class="whoop-legend">
-          <span class="whoop-legend-item"><span class="whoop-zone z-good"></span>Good</span>
-          <span class="whoop-legend-item"><span class="whoop-zone z-norm"></span>Normal</span>
-          <span class="whoop-legend-item"><span class="whoop-zone z-warn"></span>Watch</span>
-          <span class="whoop-legend-item"><span class="whoop-zone z-bad"></span>High / Low</span>
-        </div>
-
-        <div id="whoopVerdict" class="whoop-verdict" style="display:none">
-          <div class="whoop-verdict-head">
-            <span class="whoop-verdict-eyebrow">Today's call</span>
-            <span id="whoopVerdictBadge" class="whoop-verdict-badge"></span>
-          </div>
-          <div id="whoopVerdictHeadline" class="whoop-verdict-headline"></div>
-          <div id="whoopVerdictReasons" class="whoop-verdict-reasons"></div>
-          <div id="whoopVerdictAvoid" class="whoop-verdict-avoid" style="display:none">
-            <span class="whoop-verdict-avoid-label">Avoid today:</span> <span id="whoopVerdictAvoidText"></span>
-          </div>
-        </div>
-
-        <button id="whoopDisconnectBtn" class="whoop-disconnect-btn" type="button">Disconnect</button>
       </div>
     </div>
   </section>
@@ -1330,7 +1170,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   async function loadGarminData() {
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     const { data, error } = await sb
       .from('garmin_daily')
       .select('*')
@@ -1338,49 +1177,35 @@ document.addEventListener('DOMContentLoaded', function () {
       .limit(1)
       .maybeSingle();
 
-    if (error) {
-      console.error('Garmin data fetch failed:', error);
-      return;
-    }
-    if (!data) {
-      console.error('No rows found in garmin_daily table.');
+    if (error || !data) {
+      document.getElementById('garminNoData').style.display = '';
+      document.getElementById('garminGrid').style.display = 'none';
       return;
     }
 
-    const recovery = data.body_battery;
-    const stress   = data.avg_stress;
-    const sleepScore   = data.sleep_score;
-    const sleepSeconds = data.sleep_seconds;
-    const rhr = data.resting_hr;
+    document.getElementById('garminNoData').style.display = 'none';
+    document.getElementById('garminGrid').style.display = '';
 
-    if (recovery != null) {
-      document.getElementById('whoopRecoveryScore').textContent = recovery + '%';
-
-      const label = recovery >= 66 ? 'High' : recovery >= 34 ? 'Moderate' : 'Low';
-      document.getElementById('whoopRecoveryLabel').textContent = label;
-
-      const fill = document.getElementById('whoopRecoveryRingFill');
-      if (fill) fill.style.strokeDashoffset = (603.19 * (1 - recovery / 100)).toFixed(2);
+    if (data.body_battery != null) {
+      document.getElementById('garminRecovery').textContent = data.body_battery;
+      const level = data.body_battery >= 70 ? 'High' : data.body_battery >= 40 ? 'Moderate' : 'Low';
+      document.getElementById('garminRecoverySub').textContent = level;
     }
 
-    if (stress != null)     document.getElementById('whoopStrain').textContent = stress;
-    if (sleepScore != null) document.getElementById('whoopSleepScore').textContent = sleepScore;
-
-    if (sleepSeconds != null) {
-      const h = Math.floor(sleepSeconds / 3600);
-      const m = Math.floor((sleepSeconds % 3600) / 60);
-      document.getElementById('whoopSleepDuration').textContent = h + 'h ' + m + 'm';
+    if (data.sleep_seconds != null) {
+      const h = Math.floor(data.sleep_seconds / 3600);
+      const m = Math.floor((data.sleep_seconds % 3600) / 60);
+      document.getElementById('garminSleep').textContent = h + 'h ' + m + 'm';
     }
 
-    if (rhr != null) document.getElementById('whoopRhr').textContent = rhr;
+    if (data.avg_stress != null)  document.getElementById('garminStress').textContent = data.avg_stress;
+    if (data.sleep_score != null) document.getElementById('garminSleepScore').textContent = data.sleep_score;
+    if (data.resting_hr != null)  document.getElementById('garminRhr').textContent = data.resting_hr;
 
-    const updated = document.getElementById('whoopUpdated');
-    if (updated && data.date) updated.textContent = data.date;
-
-    document.getElementById('whoopDisconnected').style.display = 'none';
-    document.getElementById('whoopConnected').style.display = '';
+    if (data.date) document.getElementById('garminUpdated').textContent = data.date;
   }
 
+  document.getElementById('garminRefreshBtn').addEventListener('click', loadGarminData);
   loadGarminData();
 });
 </script>
