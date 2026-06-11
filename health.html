@@ -211,6 +211,48 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui), -ap
 .synced { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 @media (max-width: 560px) { .footer { flex-direction:column; align-items:flex-start; } .footerActions { flex-wrap: wrap; } }
 
+/* ===== SLEEP BREAKDOWN CARD ===== */
+.sleepCard { margin-top: var(--space-4); padding: var(--space-5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--card-shadow); display:flex; flex-direction:column; gap: var(--space-4); }
+.sleepCardHead { display:flex; align-items:flex-start; justify-content:space-between; gap: var(--space-4); flex-wrap:wrap; }
+.sleepCardEye { font-family: var(--font-mono); font-size: 10px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color: var(--muted-strong); margin-bottom: 6px; }
+.sleepScoreNum { font-family: var(--font-display); font-size: clamp(2.8rem,7vw,4rem); font-weight:600; line-height:1; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; }
+.sleepScoreTier { font-family: var(--font-display); font-size: var(--text-base); font-weight:600; letter-spacing:-0.01em; margin-top:4px; }
+.sleepScoreBreak { display:flex; flex-direction:column; gap:6px; flex:1; min-width:180px; }
+.sleepBreakRow { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.sleepBreakLabel { font-family: var(--font-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color: var(--muted); }
+.sleepBreakBar { flex:1; height:4px; background: var(--track); border-radius:999px; overflow:hidden; }
+.sleepBreakFill { height:100%; border-radius:999px; transition: width 700ms var(--ease-premium); }
+.sleepBreakVal { font-family: var(--font-mono); font-size:11px; font-weight:600; color: var(--fg); min-width:28px; text-align:right; }
+
+/* Sleep stages */
+.sleepStagesWrap { display:flex; flex-direction:column; gap:8px; }
+.sleepStagesSub { font-family: var(--font-mono); font-size:10px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color: var(--muted-strong); }
+.sleepStagesBar { display:flex; height:22px; border-radius:8px; overflow:hidden; gap:2px; }
+.sleepSeg { display:flex; align-items:center; justify-content:center; transition: width 800ms var(--ease-premium); min-width:0; overflow:hidden; position:relative; border-radius:4px; }
+.sleepSegLabel { font-family: var(--font-mono); font-size:9px; font-weight:700; letter-spacing:0.06em; color:rgba(0,0,0,0.7); white-space:nowrap; overflow:hidden; padding:0 4px; }
+.sleepStagesLegend { display:flex; flex-wrap:wrap; gap:10px 16px; }
+.sleepStageLeg { display:inline-flex; align-items:center; gap:5px; font-size:11px; color: var(--muted-strong); }
+.sleepStageLeg span.dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.sleepStageLeg strong { color: var(--fg); font-weight:600; font-variant-numeric:tabular-nums; }
+
+/* Secondary metrics */
+.sleepMetrics { display:grid; grid-template-columns:repeat(4,1fr); gap: var(--space-3); }
+@media (max-width:560px) { .sleepMetrics { grid-template-columns:repeat(2,1fr); } }
+.sleepMetric { display:flex; flex-direction:column; gap:2px; padding: var(--space-3); background: var(--surface-2); border-radius: var(--radius-md); }
+.sleepMetricVal { font-family: var(--font-display); font-size: var(--text-xl); font-weight:600; letter-spacing:-0.02em; color: var(--fg); font-variant-numeric:tabular-nums; }
+.sleepMetricLabel { font-family: var(--font-mono); font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color: var(--muted); }
+.sleepMetricUnit { font-size:11px; color: var(--muted); }
+
+/* 7-day trend */
+.sleepTrend { display:flex; flex-direction:column; gap:6px; }
+.sleepTrendSub { font-family: var(--font-mono); font-size:10px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color: var(--muted-strong); }
+.sleepTrendBars { display:flex; align-items:flex-end; gap:4px; height:40px; }
+.sleepTrendBar { flex:1; border-radius:3px 3px 0 0; transition: height 600ms var(--ease-premium); position:relative; min-height:3px; }
+.sleepTrendBar[data-today="true"] { opacity:1; box-shadow:0 0 8px var(--brand-glow); }
+.sleepTrendBar::after { content:attr(data-val); position:absolute; bottom:calc(100% + 3px); left:50%; transform:translateX(-50%); font-family: var(--font-mono); font-size:9px; color: var(--muted); white-space:nowrap; }
+.sleepTrendDates { display:flex; gap:4px; }
+.sleepTrendDate { flex:1; text-align:center; font-family: var(--font-mono); font-size:9px; color: var(--muted); }
+
 /* No-data state */
 .noDataCard { margin-top: var(--space-8); max-width: 520px; display:flex; flex-direction:column; gap: var(--space-4); padding: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--card-shadow); }
 .noDataTitle { font-size: var(--text-lg); line-height: 1.45; color: var(--fg); margin: 0; }
@@ -356,6 +398,66 @@ body { background: var(--bg); color: var(--fg); font-family: var(--font-ui), -ap
         <div id="verdictReasons" class="verdictReasons"></div>
       </div>
 
+      <!-- Sleep breakdown card -->
+      <div id="sleepCard" class="sleepCard" style="display:none">
+
+        <div class="sleepCardHead">
+          <!-- Score -->
+          <div>
+            <div class="sleepCardEye">Sleep Score</div>
+            <div class="sleepScoreNum" id="sleepScoreNum">—</div>
+            <div class="sleepScoreTier" id="sleepScoreTier"></div>
+          </div>
+          <!-- Score breakdown bars -->
+          <div class="sleepScoreBreak" id="sleepScoreBreak"></div>
+        </div>
+
+        <!-- Stages bar -->
+        <div class="sleepStagesWrap" id="sleepStagesWrap" style="display:none">
+          <div class="sleepStagesSub">Sleep Stages</div>
+          <div class="sleepStagesBar">
+            <div class="sleepSeg" id="segDeep"  style="background:#8B7CFF;width:0%"><span class="sleepSegLabel" id="segDeepLbl"></span></div>
+            <div class="sleepSeg" id="segRem"   style="background:#46E0A8;width:0%"><span class="sleepSegLabel" id="segRemLbl"></span></div>
+            <div class="sleepSeg" id="segLight" style="background:#60A5FA;width:0%"><span class="sleepSegLabel" id="segLightLbl"></span></div>
+            <div class="sleepSeg" id="segAwake" style="background:#FB7185;width:0%"><span class="sleepSegLabel" id="segAwakeLbl"></span></div>
+          </div>
+          <div class="sleepStagesLegend">
+            <span class="sleepStageLeg"><span class="dot" style="background:#8B7CFF"></span>Deep <strong id="legDeep">—</strong></span>
+            <span class="sleepStageLeg"><span class="dot" style="background:#46E0A8"></span>REM <strong id="legRem">—</strong></span>
+            <span class="sleepStageLeg"><span class="dot" style="background:#60A5FA"></span>Light <strong id="legLight">—</strong></span>
+            <span class="sleepStageLeg"><span class="dot" style="background:#FB7185"></span>Awake <strong id="legAwake">—</strong></span>
+          </div>
+        </div>
+
+        <!-- Secondary metrics -->
+        <div class="sleepMetrics">
+          <div class="sleepMetric">
+            <div class="sleepMetricVal" id="smDuration">—</div>
+            <div class="sleepMetricLabel">Duration</div>
+          </div>
+          <div class="sleepMetric" id="smSpO2Wrap">
+            <div class="sleepMetricVal" id="smSpO2">—<span class="sleepMetricUnit">%</span></div>
+            <div class="sleepMetricLabel">SpO₂</div>
+          </div>
+          <div class="sleepMetric" id="smBreathWrap">
+            <div class="sleepMetricVal" id="smBreath">—<span class="sleepMetricUnit"> br/m</span></div>
+            <div class="sleepMetricLabel">Breathing</div>
+          </div>
+          <div class="sleepMetric" id="smStressWrap">
+            <div class="sleepMetricVal" id="smStress">—</div>
+            <div class="sleepMetricLabel">Sleep Stress</div>
+          </div>
+        </div>
+
+        <!-- 7-day trend -->
+        <div class="sleepTrend" id="sleepTrend" style="display:none">
+          <div class="sleepTrendSub">7-day trend</div>
+          <div class="sleepTrendBars" id="sleepTrendBars"></div>
+          <div class="sleepTrendDates" id="sleepTrendDates"></div>
+        </div>
+
+      </div>
+
       <!-- Footer -->
       <div class="footer">
         <div class="legend">
@@ -446,6 +548,96 @@ applyTheme(currentTheme);
     return h + 'h ' + String(m).padStart(2, '0') + 'm';
   }
 
+  /* ---- sleep score calculation ---- */
+  function calcSleepScore(d) {
+    const { sleep_score, sleep_seconds, deep_sleep_seconds, light_sleep_seconds,
+            rem_sleep_seconds, awake_seconds, sleep_stress, spo2_avg } = d;
+    if (!sleep_seconds) return { score: sleep_score, components: [] };
+
+    const hours = sleep_seconds / 3600;
+    const hasStages = deep_sleep_seconds != null && rem_sleep_seconds != null;
+
+    // Duration score: 7–9h is optimal
+    let durScore;
+    if (hours >= 7 && hours <= 9)       durScore = 100;
+    else if (hours >= 6 && hours < 7)   durScore = Math.round(60 + (hours - 6) * 40);
+    else if (hours > 9 && hours <= 10)  durScore = Math.round(100 - (hours - 9) * 40);
+    else if (hours < 6)                 durScore = Math.round(Math.max(0, hours * 10));
+    else                                durScore = Math.round(Math.max(0, 60 - (hours - 10) * 30));
+
+    // Deep sleep score: 20–25% of sleep = 100
+    let deepScore = null;
+    if (deep_sleep_seconds != null) {
+      const pct = deep_sleep_seconds / sleep_seconds * 100;
+      if (pct >= 20 && pct <= 25)     deepScore = 100;
+      else if (pct >= 13 && pct < 20) deepScore = Math.round(60 + (pct - 13) * (40 / 7));
+      else if (pct > 25 && pct <= 30) deepScore = Math.round(100 - (pct - 25) * 8);
+      else                            deepScore = Math.round(Math.max(0, pct * 3));
+    }
+
+    // REM score: 20–25% of sleep = 100
+    let remScore = null;
+    if (rem_sleep_seconds != null) {
+      const pct = rem_sleep_seconds / sleep_seconds * 100;
+      if (pct >= 20 && pct <= 25)     remScore = 100;
+      else if (pct >= 13 && pct < 20) remScore = Math.round(60 + (pct - 13) * (40 / 7));
+      else if (pct > 25 && pct <= 30) remScore = Math.round(100 - (pct - 25) * 8);
+      else                            remScore = Math.round(Math.max(0, pct * 3));
+    }
+
+    // Efficiency: sleep / (sleep + awake)
+    let effScore = null;
+    if (awake_seconds != null) {
+      const eff = sleep_seconds / (sleep_seconds + awake_seconds);
+      effScore = Math.round(Math.min(100, eff * 105)); // >95% eff = 100
+    }
+
+    // SpO2 score: ≥95% = 100
+    let spo2Score = null;
+    if (spo2_avg != null) {
+      if (spo2_avg >= 95)       spo2Score = 100;
+      else if (spo2_avg >= 90)  spo2Score = Math.round(60 + (spo2_avg - 90) * 8);
+      else                      spo2Score = Math.round(Math.max(0, spo2_avg * 0.5));
+    }
+
+    // Sleep stress score: <20 = great, higher is worse
+    let stressScore = null;
+    if (sleep_stress != null) {
+      if (sleep_stress < 20)       stressScore = 100;
+      else if (sleep_stress < 40)  stressScore = Math.round(100 - (sleep_stress - 20) * 2.5);
+      else                         stressScore = Math.round(Math.max(0, 50 - (sleep_stress - 40)));
+    }
+
+    // Weighted composite
+    const garmin = sleep_score != null ? sleep_score : null;
+    const components = [];
+    let total = 0, weight = 0;
+
+    function add(label, val, w, color) {
+      if (val == null) return;
+      total += val * w; weight += w;
+      components.push({ label, val, color });
+    }
+    add('Garmin Score',  garmin,     hasStages ? 0.30 : 0.50, 'var(--brand)');
+    add('Duration',      durScore,   hasStages ? 0.22 : 0.32, 'var(--pos)');
+    add('Deep Sleep',    deepScore,  0.18, '#8B7CFF');
+    add('REM Sleep',     remScore,   0.15, '#46E0A8');
+    add('Efficiency',    effScore,   0.10, '#60A5FA');
+    add('SpO₂',         spo2Score,  0.03, '#A78BFA');
+    add('Sleep Stress',  stressScore, 0.02, '#FBBF24');
+
+    const score = weight > 0 ? Math.min(100, Math.round(total / weight)) : (sleep_score || null);
+    return { score, components };
+  }
+
+  function sleepTier(s) {
+    if (s == null) return { label: '—', color: 'var(--muted)' };
+    if (s >= 85) return { label: 'Excellent', color: '#46E0A8' };
+    if (s >= 70) return { label: 'Good',      color: 'var(--brand)' };
+    if (s >= 55) return { label: 'Fair',      color: 'var(--warn)' };
+    return        { label: 'Poor',            color: 'var(--neg)' };
+  }
+
   function showErr(msg) {
     const el = $('errBanner');
     el.textContent = msg || '';
@@ -480,6 +672,80 @@ applyTheme(currentTheme);
     $('tickerWrap').innerHTML = '<div class="ticker" role="status" aria-label="Health live metrics">'
       + '<div class="tickerEyebrow"><span class="tickerPulse" aria-hidden></span>Garmin · Live</div>'
       + '<div class="tickerScroll"><div class="tickerTrack">' + cells + '</div></div></div>';
+  }
+
+  /* ---- populate sleep card ---- */
+  function renderSleepCard(data, trend) {
+    const { sleep_score, sleep_seconds, deep_sleep_seconds, light_sleep_seconds,
+            rem_sleep_seconds, awake_seconds, spo2_avg, breathing_rate, sleep_stress } = data;
+
+    if (sleep_score == null && sleep_seconds == null) return;
+    $('sleepCard').style.display = '';
+
+    // Composite score
+    const { score, components } = calcSleepScore(data);
+    const tier = sleepTier(score);
+    $('sleepScoreNum').textContent = score != null ? score : '—';
+    $('sleepScoreNum').style.color = tier.color;
+    $('sleepScoreTier').textContent = tier.label;
+    $('sleepScoreTier').style.color = tier.color;
+
+    // Score breakdown bars
+    const breakEl = $('sleepScoreBreak');
+    breakEl.innerHTML = components.map(c =>
+      '<div class="sleepBreakRow">' +
+        '<span class="sleepBreakLabel">' + c.label + '</span>' +
+        '<div class="sleepBreakBar"><div class="sleepBreakFill" style="width:' + c.val + '%;background:' + c.color + '"></div></div>' +
+        '<span class="sleepBreakVal">' + c.val + '</span>' +
+      '</div>'
+    ).join('');
+
+    // Sleep stages bar
+    const hasStages = deep_sleep_seconds != null && rem_sleep_seconds != null;
+    if (hasStages) {
+      $('sleepStagesWrap').style.display = '';
+      const total = (deep_sleep_seconds || 0) + (light_sleep_seconds || 0) +
+                    (rem_sleep_seconds  || 0) + (awake_seconds  || 0);
+      function segPct(s) { return total > 0 ? Math.round(s / total * 100) : 0; }
+      function hm(s)     { if (!s) return '—'; return Math.floor(s/3600) + 'h ' + String(Math.floor((s%3600)/60)).padStart(2,'0') + 'm'; }
+      const dp = segPct(deep_sleep_seconds  || 0);
+      const rp = segPct(rem_sleep_seconds   || 0);
+      const lp = segPct(light_sleep_seconds || 0);
+      const ap = segPct(awake_seconds       || 0);
+      $('segDeep').style.width  = dp + '%'; $('segDeepLbl').textContent  = dp > 8 ? dp + '%' : '';
+      $('segRem').style.width   = rp + '%'; $('segRemLbl').textContent   = rp > 8 ? rp + '%' : '';
+      $('segLight').style.width = lp + '%'; $('segLightLbl').textContent = lp > 8 ? lp + '%' : '';
+      $('segAwake').style.width = ap + '%'; $('segAwakeLbl').textContent = ap > 8 ? ap + '%' : '';
+      $('legDeep').textContent  = hm(deep_sleep_seconds);
+      $('legRem').textContent   = hm(rem_sleep_seconds);
+      $('legLight').textContent = hm(light_sleep_seconds);
+      $('legAwake').textContent = hm(awake_seconds);
+    }
+
+    // Secondary metrics
+    $('smDuration').textContent = sleep_seconds != null ? formatSleepSecs(sleep_seconds) : '—';
+    if (spo2_avg != null)      { $('smSpO2').childNodes[0].textContent   = spo2_avg.toFixed(1); }
+    if (breathing_rate != null){ $('smBreath').childNodes[0].textContent = breathing_rate.toFixed(1); }
+    if (sleep_stress != null)  { $('smStress').textContent               = sleep_stress + '/100'; }
+
+    // 7-day trend
+    if (trend && trend.length > 1) {
+      $('sleepTrend').style.display = '';
+      const vals = trend.map(r => r.sleep_score).filter(v => v != null);
+      const max  = Math.max(...vals, 1);
+      $('sleepTrendBars').innerHTML = trend.map((r, i) => {
+        const v    = r.sleep_score;
+        const h    = v != null ? Math.round((v / max) * 36) : 3;
+        const col  = v != null ? sleepTier(v).color : 'var(--track)';
+        const tod  = i === trend.length - 1;
+        return '<div class="sleepTrendBar" style="height:' + h + 'px;background:' + col + '" ' +
+               'data-val="' + (v != null ? v : '—') + '" data-today="' + tod + '"></div>';
+      }).join('');
+      $('sleepTrendDates').innerHTML = trend.map(r => {
+        const d = new Date(r.date + 'T12:00:00');
+        return '<div class="sleepTrendDate">' + d.toLocaleDateString('en-US',{weekday:'short'}).slice(0,1) + '</div>';
+      }).join('');
+    }
   }
 
   /* ---- main data load ---- */
@@ -556,6 +822,14 @@ applyTheme(currentTheme);
 
       /* ---- ticker ---- */
       buildTicker(data);
+
+      /* ---- sleep card ---- */
+      const { data: trend } = await sb
+        .from('garmin_daily')
+        .select('date,sleep_score')
+        .order('date', { ascending: false })
+        .limit(7);
+      renderSleepCard(data, trend ? trend.slice().reverse() : null);
 
       /* ---- publish to suite localStorage for supplement recommender ---- */
       try {
