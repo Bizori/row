@@ -1,16 +1,28 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050506">
-<title>Fitness Coach</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Dashboard" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="icon" type="image/svg+xml" href="icon.svg" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<style id="pwa-mobile">
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+img{max-width:100%;height:auto}
+@media (max-width:480px){input,select,textarea{font-size:16px !important}}
+</style>
+<meta name="theme-color" content="#0C0C12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="topbar.js" defer></script>
-<script src="sync.js" defer></script>
-<link rel="stylesheet" href="theme.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("patron_theme")||"nocturne");}catch(e){document.documentElement.setAttribute("data-theme","nocturne");}</script>
+<title>Fitness · Dashboard</title>
 
 <!-- =============================================================
      EDIT THIS BLOCK TO MAKE THE APP YOURS.
@@ -99,20 +111,66 @@ const CONFIG = {
 <style>
 :root {
   color-scheme: dark;
-  --bg-card: var(--surface);
-  --text-1: var(--fg);
-  --text-2: var(--muted-strong);
-  --text-3: var(--muted);
-  --text-4: rgba(243,242,248,0.25);
+  --bg: #0C0C12;
+  --bg-card: #15151F;
+  --text-1: #F3F2F8;
+  --text-2: rgba(243,242,248,0.74);
+  --text-3: rgba(243,242,248,0.50);
+  --text-4: rgba(243,242,248,0.30);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.17);
   --accent: #8B7CFF;
-  --good: var(--pos);
-  --bad: var(--neg);
+  --good: #46E0A8;
+  --warn: #FBBF24;
+  --bad: #FB7185;
+  --brand: #8B7CFF; --brand-2: #C7BBFF; --brand-ink: #130E2E;
+  --brand-soft: rgba(139,124,255,0.12); --brand-line: rgba(139,124,255,0.28); --brand-glow: rgba(139,124,255,0.42);
+  --good-rgb: 70,224,168;
+  --fill-1: rgba(255,255,255,0.028);
+  --fill-2: rgba(255,255,255,0.05);
+  --fill-3: rgba(255,255,255,0.07);
+  --fill-4: rgba(255,255,255,0.10);
+  --body-glow: rgba(139,124,255,0.10);
+  --tabbar-grad: linear-gradient(180deg, rgba(10,10,16,0) 0%, rgba(10,10,16,0.82) 40%, rgba(10,10,16,0.95) 100%);
+  --tabbar-pill: rgba(26,26,36,0.82);
+  --font: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SF Mono, Menlo, Consolas, monospace;
+}
+[data-theme="aurora"] {
+  color-scheme: dark;
+  --bg: #080913; --bg-card: #12131F;
+  --text-1: #EEF0FF; --text-2: rgba(220,225,255,0.76); --text-3: rgba(220,225,255,0.52); --text-4: rgba(220,225,255,0.30);
+  --border: rgba(150,160,255,0.11); --border-strong: rgba(150,160,255,0.22);
+  --accent: #8B7BFF; --good: #4FE3D0; --warn: #FFC65C; --bad: #FF6FA5;
+  --brand: #8B7BFF; --brand-2: #B9ABFF; --brand-ink: #0A0922;
+  --brand-soft: rgba(139,123,255,0.15); --brand-line: rgba(139,123,255,0.32); --brand-glow: rgba(124,107,255,0.6);
+  --good-rgb: 79,227,208;
+  --fill-1: rgba(150,160,255,0.05); --fill-2: rgba(150,160,255,0.08); --fill-3: rgba(150,160,255,0.11); --fill-4: rgba(150,160,255,0.15);
+  --body-glow: rgba(124,107,255,0.18);
+  --tabbar-grad: linear-gradient(180deg, rgba(8,9,19,0) 0%, rgba(8,9,19,0.82) 40%, rgba(8,9,19,0.96) 100%);
+  --tabbar-pill: rgba(18,19,32,0.85);
+}
+[data-theme="daylight"] {
+  color-scheme: light;
+  --bg: #F3F2FA; --bg-card: #FFFFFF;
+  --text-1: #171622; --text-2: rgba(23,22,34,0.72); --text-3: rgba(23,22,34,0.52); --text-4: rgba(23,22,34,0.34);
+  --border: rgba(23,22,60,0.10); --border-strong: rgba(23,22,60,0.18);
+  --accent: #6A45FF; --good: #0E9E64; --warn: #B4690E; --bad: #E11D63;
+  --brand: #6A45FF; --brand-2: #8E6BFF; --brand-ink: #FFFFFF;
+  --brand-soft: rgba(106,69,255,0.08); --brand-line: rgba(106,69,255,0.24); --brand-glow: rgba(106,69,255,0.28);
+  --good-rgb: 14,158,100;
+  --fill-1: rgba(23,22,60,0.028); --fill-2: rgba(23,22,60,0.05); --fill-3: rgba(23,22,60,0.07); --fill-4: rgba(23,22,60,0.10);
+  --body-glow: rgba(106,69,255,0.07);
+  --tabbar-grad: linear-gradient(180deg, rgba(243,242,250,0) 0%, rgba(243,242,250,0.85) 40%, rgba(243,242,250,0.97) 100%);
+  --tabbar-pill: rgba(255,255,255,0.92);
 }
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0;
-  color: var(--fg);
-  font-family: var(--font-ui);
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in srgb, var(--body-glow), var(--bg)) 0%, var(--bg) 60%);
+  color: var(--text-1);
+  font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   min-height: 100vh;
@@ -143,7 +201,7 @@ img, video, canvas, svg { max-width: 100%; }
   display: flex;
   justify-content: center;
   padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, rgba(10,10,11,0) 0%, rgba(10,10,11,0.78) 38%, rgba(10,10,11,0.94) 100%);
+  background: var(--tabbar-grad);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   pointer-events: none;
@@ -155,7 +213,7 @@ img, video, canvas, svg { max-width: 100%; }
   max-width: 460px;
   gap: 6px;
   padding: 6px;
-  background: rgba(20, 20, 22, 0.72);
+  background: var(--tabbar-pill);
   border: 1px solid var(--border);
   border-radius: 18px;
   box-shadow: 0 12px 36px rgba(0,0,0,0.55);
@@ -180,9 +238,9 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .tab:hover { color: var(--text-1); }
 .tab[aria-current="page"] {
-  color: var(--text-1);
-  background: rgba(255,255,255,0.06);
-  border-color: rgba(255,255,255,0.10);
+  color: var(--brand);
+  background: var(--brand-soft);
+  border-color: var(--brand-line);
 }
 .tab-icon {
   width: 18px;
@@ -195,7 +253,7 @@ img, video, canvas, svg { max-width: 100%; }
 .po-day-pill {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 6px 12px;
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--text-2);
@@ -207,7 +265,7 @@ img, video, canvas, svg { max-width: 100%; }
   -webkit-tap-highlight-color: transparent;
 }
 .po-day-pill:hover {
-  background: rgba(255,255,255,0.07);
+  background: var(--fill-3);
   border-color: var(--border-strong);
   color: var(--text-1);
 }
@@ -223,12 +281,11 @@ img, video, canvas, svg { max-width: 100%; }
 .po-title {
   font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
   margin: 0;
-  font-family: 'Orbitron', sans-serif;
 }
 .po-icon-btn {
   width: 38px; height: 38px;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   border-radius: 10px;
   color: var(--text-2);
@@ -236,16 +293,14 @@ img, video, canvas, svg { max-width: 100%; }
   transition: background 0.18s, color 0.18s, border-color 0.18s;
   -webkit-tap-highlight-color: transparent;
 }
-.po-icon-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-1); }
+.po-icon-btn:hover { background: var(--fill-4); color: var(--text-1); }
 
 .card {
-  background: rgba(255,255,255,0.025);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
   padding: 20px;
   margin-bottom: 14px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 }
 
 /* ----- Filters (Gym + Day segmented controls) ----- */
@@ -260,7 +315,7 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .po-seg-control {
   display: flex; flex: 1;
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   border-radius: 12px; padding: 4px; gap: 3px;
 }
@@ -271,11 +326,11 @@ img, video, canvas, svg { max-width: 100%; }
   cursor: pointer; transition: background 0.15s, color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
-.po-seg-btn:hover { color: var(--text-2); background: rgba(255,255,255,0.04); }
+.po-seg-btn:hover { color: var(--text-2); background: var(--fill-2); }
 .po-seg-btn.active {
   background: var(--brand);
   color: var(--brand-ink);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 12px var(--brand-glow);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 4px 12px rgba(0,0,0,0.35);
 }
 
 /* ----- Sub-section title ----- */
@@ -307,24 +362,24 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .po-ex-select:focus {
   outline: none; border-color: rgba(255,255,255,0.40);
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.06);
+  box-shadow: 0 0 0 3px var(--fill-3);
 }
 .po-ex-select:disabled { opacity: 0.5; }
 .po-btn-icon {
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   color: var(--text-2); border-radius: 12px;
   font-size: 16px; cursor: pointer;
   transition: background 0.18s, border-color 0.18s, color 0.18s;
   flex-shrink: 0;
   -webkit-tap-highlight-color: transparent;
 }
-.po-btn-icon:hover { background: rgba(255,255,255,0.10); color: var(--text-1); }
+.po-btn-icon:hover { background: var(--fill-4); color: var(--text-1); }
 .po-btn-icon:disabled { opacity: 0.4; cursor: not-allowed; }
 .po-no-ex {
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px dashed var(--border);
   border-radius: 12px; padding: 16px; text-align: center;
   font-size: 13px; color: var(--text-3); margin-top: 10px;
@@ -332,7 +387,7 @@ img, video, canvas, svg { max-width: 100%; }
 
 /* ----- Bodyweight banner ----- */
 .po-bw-banner {
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   color: var(--text-2);
   font-size: 11px; font-weight: 700; letter-spacing: 0.10em;
@@ -345,7 +400,7 @@ img, video, canvas, svg { max-width: 100%; }
 .po-last-set {
   display: none; align-items: center; gap: 12px;
   padding: 11px 14px;
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   border-radius: 10px;
   margin-bottom: 12px; font-size: 12px;
@@ -390,7 +445,7 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .po-field input:focus {
   outline: none; border-color: rgba(255,255,255,0.40);
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.06);
+  box-shadow: 0 0 0 3px var(--fill-3);
 }
 .po-weight-row {
   display: grid; grid-template-columns: auto 1fr auto; gap: 6px; align-items: stretch;
@@ -398,14 +453,14 @@ img, video, canvas, svg { max-width: 100%; }
 .po-w-btn {
   padding: 0 16px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   color: var(--text-1);
   border-radius: 12px; font-family: inherit;
   font-size: 20px; font-weight: 700; cursor: pointer;
   min-width: 48px;
   -webkit-tap-highlight-color: transparent;
 }
-.po-w-btn:hover { background: rgba(255,255,255,0.10); }
+.po-w-btn:hover { background: var(--fill-4); }
 .po-w-btn:active { transform: scale(0.94); }
 .po-reps-row {
   display: grid;
@@ -422,7 +477,10 @@ img, video, canvas, svg { max-width: 100%; }
   -webkit-tap-highlight-color: transparent;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.po-reps-pill:hover { background: rgba(255,255,255,0.06); color: var(--text-1); }
+.po-reps-pill:hover { background: var(--fill-3); color: var(--text-1); }
+.po-reps-input { width: 100%; margin-top: 8px; padding: 11px 12px; background: var(--fill-2, rgba(255,255,255,0.04)); border: 1px solid var(--line, rgba(255,255,255,0.13)); border-radius: 10px; color: var(--text-1, #fff); font-family: inherit; font-size: 15px; text-align: center; outline: none; font-variant-numeric: tabular-nums; }
+.po-reps-input::placeholder { color: var(--text-3, rgba(255,255,255,0.4)); font-size: 13px; }
+.po-reps-input:focus { border-color: var(--brand); }
 .po-reps-pill.active {
   background: var(--brand);
   color: var(--brand-ink); border-color: transparent;
@@ -437,34 +495,33 @@ img, video, canvas, svg { max-width: 100%; }
   color: var(--brand-ink); border-radius: 12px;
   font-family: inherit; font-size: 14px; font-weight: 700;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 14px var(--brand-glow);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 4px 14px rgba(0,0,0,0.40);
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s, filter 0.18s;
 }
-.po-btn-primary:hover { transform: translateY(-1px); filter: brightness(1.08); box-shadow: 0 0 26px var(--brand-glow); }
+.po-btn-primary:hover { transform: translateY(-1px); }
 .po-btn-primary:active { transform: translateY(0) scale(0.98); }
 .po-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
 .po-btn-secondary {
   padding: 12px 18px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   color: var(--text-1); border-radius: 12px;
   font-family: inherit; font-size: 13px; font-weight: 600;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.po-btn-secondary:hover { background: rgba(255,255,255,0.10); }
+.po-btn-secondary:hover { background: var(--fill-4); }
 
 /* ----- Prescription card ----- */
 .po-rx-card {
   padding: 18px 20px; border-radius: 14px;
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   position: relative;
 }
-.po-rx-card.po-rx-up   { background: linear-gradient(180deg, rgba(110,231,183,0.08), rgba(255,255,255,0.025)); border-color: rgba(110,231,183,0.18); }
-.po-rx-card.po-rx-down { background: linear-gradient(180deg, rgba(255,138,138,0.08), rgba(255,255,255,0.025)); border-color: rgba(255,138,138,0.18); }
+.po-rx-card.po-rx-up   { background: linear-gradient(180deg, rgba(var(--good-rgb),0.08), var(--fill-1)); border-color: rgba(var(--good-rgb),0.18); }
+.po-rx-card.po-rx-down { background: linear-gradient(180deg, rgba(255,138,138,0.08), var(--fill-1)); border-color: rgba(255,138,138,0.18); }
 .po-rx-label {
   font-size: 10.5px; color: var(--text-3); font-weight: 700;
   letter-spacing: 0.10em; text-transform: uppercase; margin-bottom: 6px;
@@ -478,10 +535,10 @@ img, video, canvas, svg { max-width: 100%; }
   display: inline-block; padding: 4px 10px; border-radius: 999px;
   font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: rgba(255,255,255,0.06); color: var(--text-2);
+  background: var(--fill-3); color: var(--text-2);
   margin-bottom: 10px;
 }
-.po-rx-tag.up   { background: rgba(110,231,183,0.14); color: var(--good); }
+.po-rx-tag.up   { background: rgba(var(--good-rgb),0.14); color: var(--good); }
 .po-rx-tag.down { background: rgba(255,138,138,0.14); color: var(--bad); }
 .po-rx-tag.hold { background: rgba(251,191,36,0.14); color: var(--warn); }
 .po-rx-reason {
@@ -497,7 +554,7 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .po-stat-box {
   padding: 14px 12px;
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   border-radius: 12px; text-align: center;
 }
@@ -514,7 +571,7 @@ img, video, canvas, svg { max-width: 100%; }
 /* ----- Sparkline ----- */
 .po-spark-wrap { position: relative; }
 .po-spark-svg { width: 100%; height: 60px; display: block; }
-.po-spark-line { fill: none; stroke: var(--text-1); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.po-spark-line { fill: none; stroke: var(--brand); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .po-spark-fill { fill: url(#sparkGrad); }
 .po-spark-empty {
   text-align: center; font-size: 11px; color: var(--text-3);
@@ -562,7 +619,7 @@ img, video, canvas, svg { max-width: 100%; }
 .po-modal .po-field { margin-bottom: 12px; }
 .po-modal-seg {
   display: flex; gap: 4px;
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   border-radius: 10px; padding: 3px;
 }
@@ -602,7 +659,7 @@ img, video, canvas, svg { max-width: 100%; }
 .po-set-row {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 10px;
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   border-radius: 8px;
 }
@@ -620,14 +677,14 @@ img, video, canvas, svg { max-width: 100%; }
 .po-set-row .po-mini-btn:hover { color: var(--bad); }
 .po-add-row-btn {
   width: 100%; margin-top: 6px;
-  padding: 10px; background: rgba(255,255,255,0.025);
+  padding: 10px; background: var(--fill-1);
   border: 1px dashed var(--border);
   color: var(--text-2);
   border-radius: 8px; cursor: pointer;
   font-family: inherit; font-size: 12px;
   -webkit-tap-highlight-color: transparent;
 }
-.po-add-row-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-1); }
+.po-add-row-btn:hover { background: var(--fill-2); color: var(--text-1); }
 
 /* Rotation editor list */
 .rot-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
@@ -636,14 +693,14 @@ img, video, canvas, svg { max-width: 100%; }
   grid-template-columns: auto 1fr auto auto auto auto;
   gap: 6px; align-items: center;
   padding: 8px 10px;
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   border-radius: 8px;
   transition: border-color 0.15s, background 0.15s;
 }
 .rot-row.is-today {
-  background: linear-gradient(180deg, rgba(110,231,183,0.10), rgba(255,255,255,0.025));
-  border-color: rgba(110,231,183,0.30);
+  background: linear-gradient(180deg, rgba(var(--good-rgb),0.10), var(--fill-1));
+  border-color: rgba(var(--good-rgb),0.30);
 }
 .rot-row-num {
   font-size: 11px; color: var(--text-3);
@@ -666,17 +723,17 @@ img, video, canvas, svg { max-width: 100%; }
 .rot-row .rot-today-tag {
   font-size: 8px; font-weight: 800; letter-spacing: 0.10em;
   color: var(--good); padding: 2px 6px; border-radius: 999px;
-  background: rgba(110,231,183,0.16);
+  background: rgba(var(--good-rgb),0.16);
 }
 .rot-row .rot-today-btn {
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   color: var(--text-3); font-size: 9px; font-weight: 700;
   letter-spacing: 0.06em; padding: 4px 8px; border-radius: 999px;
   cursor: pointer; text-transform: uppercase;
   -webkit-tap-highlight-color: transparent;
 }
-.rot-row .rot-today-btn:hover { color: var(--good); border-color: rgba(110,231,183,0.30); }
+.rot-row .rot-today-btn:hover { color: var(--good); border-color: rgba(var(--good-rgb),0.30); }
 
 @media (max-width: 480px) {
   /* === Mobile / iPhone polish === */
@@ -743,7 +800,7 @@ img, video, canvas, svg { max-width: 100%; }
 
 /* Today's Workout + Past Workouts */
 .po-tw {
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
@@ -771,8 +828,8 @@ img, video, canvas, svg { max-width: 100%; }
 .po-tw-summary-sep { color: var(--text-4); margin: 0 4px; }
 .po-tw-summary-vol { font-size: 13px; color: var(--text-2); font-weight: 500; }
 .po-tw-done-btn {
-  background: linear-gradient(180deg, #6BE3A4 0%, #4ecf8a 100%);
-  color: #042a1c; border: none; border-radius: 999px;
+  background: var(--brand);
+  color: var(--brand-ink); border: none; border-radius: 999px;
   padding: 9px 16px;
   font-family: inherit; font-size: 12px; font-weight: 700;
   cursor: pointer;
@@ -782,7 +839,7 @@ img, video, canvas, svg { max-width: 100%; }
 .po-tw-done-btn:hover { transform: translateY(-1px); }
 .po-tw-done-btn:active { transform: scale(0.98); }
 .po-tw-done-btn.is-done {
-  background: rgba(110,231,183,0.16);
+  background: rgba(var(--good-rgb),0.16);
   color: var(--good);
 }
 .po-tw-list {
@@ -792,7 +849,7 @@ img, video, canvas, svg { max-width: 100%; }
 .po-tw-row {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 12px;
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 13px;
@@ -819,10 +876,10 @@ img, video, canvas, svg { max-width: 100%; }
   letter-spacing: 0.04em;
   -webkit-tap-highlight-color: transparent;
 }
-.po-tw-past-toggle:hover { background: rgba(255,255,255,0.04); color: var(--text-1); }
+.po-tw-past-toggle:hover { background: var(--fill-2); color: var(--text-1); }
 .po-tw-past-count {
   display: inline-block; margin-left: 6px;
-  background: rgba(255,255,255,0.06); color: var(--text-2);
+  background: var(--fill-3); color: var(--text-2);
   padding: 1px 7px; border-radius: 999px;
   font-size: 11px; font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -838,7 +895,7 @@ img, video, canvas, svg { max-width: 100%; }
   display: flex; flex-direction: column; gap: 6px;
 }
 .po-tw-past-day {
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 12px;
@@ -858,7 +915,7 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .po-tw-past-day-done {
   display: inline-block; padding: 2px 7px; border-radius: 999px;
-  background: rgba(110,231,183,0.14); color: var(--good);
+  background: rgba(var(--good-rgb),0.14); color: var(--good);
   font-size: 9px; font-weight: 800; letter-spacing: 0.08em;
 }
 .po-tw-past-empty {
@@ -875,15 +932,15 @@ img, video, canvas, svg { max-width: 100%; }
   display: flex; align-items: center; gap: 16px; margin-bottom: 14px;
 }
 .wt-divider::before, .wt-divider::after {
-  content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.10);
+  content: ''; flex: 1; height: 1px; background: var(--fill-4);
 }
 .wt-divider span {
   font-size: 11px; letter-spacing: 0.22em; font-weight: 600;
-  color: rgba(255,255,255,0.85);
+  color: var(--brand-line);
 }
 .wt-card {
   background: var(--bg-card);
-  border: 1px solid rgba(110,231,183,0.10);
+  border: 1px solid rgba(var(--good-rgb),0.10);
   border-radius: 18px;
   padding: 22px 20px 18px;
 }
@@ -925,12 +982,12 @@ img, video, canvas, svg { max-width: 100%; }
   height: 130px; display: block;
   margin-left: 36px; width: calc(100% - 36px);
 }
-.wt-grid { stroke: rgba(255,255,255,0.05); stroke-width: 1; }
+.wt-grid { stroke: var(--fill-2); stroke-width: 1; }
 .wt-area { fill: url(#wtFill); }
 .wt-line { fill: none; stroke: var(--good); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.wt-avg-line { fill: none; stroke: rgba(110,231,183,0.45); stroke-width: 1.5; stroke-dasharray: 4 3; opacity: 0.6; }
+.wt-avg-line { fill: none; stroke: rgba(var(--good-rgb),0.45); stroke-width: 1.5; stroke-dasharray: 4 3; opacity: 0.6; }
 .wt-dot { fill: var(--good); stroke: var(--bg-card); stroke-width: 1.5; }
-.wt-dot-today { fill: #fff; stroke: var(--good); stroke-width: 2; }
+.wt-dot-today { fill: var(--brand); stroke: var(--good); stroke-width: 2; }
 .wt-meta {
   text-align: center; font-size: 11px; color: var(--text-3);
   margin-top: 8px;
@@ -947,14 +1004,14 @@ img, video, canvas, svg { max-width: 100%; }
   width: 14px; height: 2px; background: var(--good); border-radius: 1px;
 }
 .wt-legend-dot-avg {
-  background: transparent; border-top: 2px dashed rgba(110,231,183,0.45);
+  background: transparent; border-top: 2px dashed rgba(var(--good-rgb),0.45);
   height: 2px;
 }
 
 /* Composition estimate */
 .wt-comp {
   margin-top: 18px; padding: 14px 16px;
-  background: rgba(255,255,255,0.025);
+  background: var(--fill-1);
   border: 1px solid var(--border);
   border-radius: 12px;
 }
@@ -980,7 +1037,7 @@ img, video, canvas, svg { max-width: 100%; }
 .wt-comp-bars {
   display: flex; height: 10px; border-radius: 5px;
   overflow: hidden; margin-bottom: 8px;
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
 }
 .wt-comp-bar {
   height: 100%; transition: width 0.3s ease;
@@ -995,14 +1052,14 @@ img, video, canvas, svg { max-width: 100%; }
 /* Locked state */
 .wt-locked {
   display: flex; align-items: center; justify-content: space-between;
-  background: rgba(110,231,183,0.04);
-  border: 1px solid rgba(110,231,183,0.16);
+  background: rgba(var(--good-rgb),0.04);
+  border: 1px solid rgba(var(--good-rgb),0.16);
   border-radius: 12px; padding: 12px 14px; margin-top: 14px;
 }
 .wt-locked-info { display: flex; align-items: center; gap: 12px; }
 .wt-locked-check {
   width: 30px; height: 30px;
-  background: rgba(110,231,183,0.12);
+  background: rgba(var(--good-rgb),0.12);
   color: var(--good);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -1027,17 +1084,17 @@ img, video, canvas, svg { max-width: 100%; }
   align-items: center; gap: 10px;
 }
 .wt-input {
-  background: rgba(255,255,255,0.05);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   border-radius: 10px;
   color: var(--text-1);
   font-family: inherit; font-size: 16px; font-weight: 500;
   padding: 11px 13px; width: 100%; outline: none;
 }
-.wt-input:focus { border-color: rgba(110,231,183,0.4); }
+.wt-input:focus { border-color: rgba(var(--good-rgb),0.4); }
 .wt-unit-static { color: var(--text-3); font-size: 13px; }
 .wt-save-btn {
-  background: var(--good); color: #000;
+  background: var(--brand); color: var(--brand-ink);
   border: none; border-radius: 10px;
   padding: 11px 18px; font-family: inherit;
   font-size: 13px; font-weight: 700; cursor: pointer;
@@ -1048,7 +1105,7 @@ img, video, canvas, svg { max-width: 100%; }
 .wt-progress-link {
   display: flex; align-items: center; justify-content: space-between;
   background: var(--bg-card);
-  border: 1px solid rgba(110,231,183,0.10);
+  border: 1px solid rgba(var(--good-rgb),0.10);
   border-radius: 16px;
   padding: 18px 20px;
   color: var(--text-1);
@@ -1057,7 +1114,7 @@ img, video, canvas, svg { max-width: 100%; }
   transition: border-color 0.2s, transform 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
-.wt-progress-link:hover { border-color: rgba(110,231,183,0.25); }
+.wt-progress-link:hover { border-color: rgba(var(--good-rgb),0.25); }
 .wt-progress-link:active { transform: scale(0.99); }
 .wt-progress-label {
   font-size: 11px; letter-spacing: 0.20em; font-weight: 600;
@@ -1085,7 +1142,7 @@ img, video, canvas, svg { max-width: 100%; }
 }
 .wt-back {
   width: 40px; height: 40px;
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   border-radius: 50%;
   color: var(--text-1); cursor: pointer;
@@ -1106,9 +1163,9 @@ img, video, canvas, svg { max-width: 100%; }
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.wt-overlay-primary { background: var(--good); color: #000; }
+.wt-overlay-primary { background: var(--brand); color: var(--brand-ink); }
 .wt-overlay-secondary {
-  background: rgba(255,255,255,0.04);
+  background: var(--fill-2);
   border: 1px solid var(--border);
   color: var(--text-1);
 }
@@ -1123,7 +1180,7 @@ img, video, canvas, svg { max-width: 100%; }
   position: relative; aspect-ratio: 3 / 4;
   border-radius: 12px; overflow: hidden;
   background: linear-gradient(135deg, #1a1a24, #0a0f0a);
-  cursor: pointer; border: 1px solid rgba(110,231,183,0.08);
+  cursor: pointer; border: 1px solid rgba(var(--good-rgb),0.08);
   font-family: inherit;
   -webkit-tap-highlight-color: transparent;
 }
@@ -1210,8 +1267,8 @@ img, video, canvas, svg { max-width: 100%; }
 .wt-viewer-close { color: var(--text-1); }
 .wt-viewer-delete { color: var(--bad); border-color: rgba(248,113,113,0.3); }
 .wt-viewer-delete.is-confirm { background: rgba(248,113,113,0.10); }
-.wt-viewer-compare { color: var(--good); border-color: rgba(110,231,183,0.30); }
-.wt-viewer-back    { color: var(--good); border-color: rgba(110,231,183,0.30); }
+.wt-viewer-compare { color: var(--good); border-color: rgba(var(--good-rgb),0.30); }
+.wt-viewer-back    { color: var(--good); border-color: rgba(var(--good-rgb),0.30); }
 
 /* Mode toggle: hide the inactive mode */
 .wt-viewer .wt-viewer-single,
@@ -1248,7 +1305,7 @@ img, video, canvas, svg { max-width: 100%; }
   font-variant-numeric: tabular-nums;
 }
 .wt-compare-other { cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.wt-compare-other:hover img { outline: 1px solid rgba(110,231,183,0.30); }
+.wt-compare-other:hover img { outline: 1px solid rgba(var(--good-rgb),0.30); }
 .wt-compare-headline {
   text-align: center; padding: 14px 8px 12px;
   font-size: 14px; font-weight: 600;
@@ -1266,246 +1323,71 @@ img, video, canvas, svg { max-width: 100%; }
 
 .hidden { display: none !important; }
 
-/* ---- PR Ticker ---- */
-.pr-ticker {
-  display: flex; align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  margin-bottom: 18px;
-  background: linear-gradient(90deg, rgba(107,227,164,0.07), rgba(125,211,252,0.04));
-  border: 1px solid rgba(107,227,164,0.16);
-  border-radius: 12px;
-  overflow: hidden;
-  position: relative;
-  min-height: 40px;
+/* --- Patron display type --- */
+.po-title, .wt-num, .po-rx-headline, .po-tw-summary-num, .po-stat-val,
+.wt-overlay-title, .po-modal h3, .wt-viewer-weight, .wt-comp-headline {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }
-.pr-ticker.hidden { display: none !important; }
-.pr-ticker-badge {
-  display: inline-flex; align-items: center; gap: 7px;
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--good);
-  padding: 3px 10px;
-  background: rgba(107,227,164,0.08);
-  border-radius: 999px;
-  border: 1px solid rgba(107,227,164,0.22);
+.po-title { font-weight: 600; }
+/* --- Theme switcher --- */
+.po-header-right { display: flex; align-items: center; gap: 10px; }
+.themeSeg { display: inline-flex; align-items: center; background: var(--fill-1); border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 2px; }
+.themeBtn { appearance: none; background: transparent; border: 0; color: var(--text-3); font-family: var(--font); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; padding: 5px 10px 5px 7px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.18s, color 0.18s; -webkit-tap-highlight-color: transparent; }
+.themeBtn:hover { color: var(--text-2); }
+.themeSwatch { width: 11px; height: 11px; border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong) inset; flex-shrink: 0; }
+.themeBtnActive, .themeBtnActive:hover { background: var(--brand-soft); color: var(--text-1); }
+.themeBtnActive .themeSwatch { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--brand); }
+@media (max-width: 560px) {
+  .themeBtn .themeBtnLabel { display: none; }
+  .themeBtn { padding: 6px; }
 }
-.pr-ticker-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--good);
-  box-shadow: 0 0 8px rgba(107,227,164,0.7);
-  animation: prLed 1.6s ease-in-out infinite;
-}
-@keyframes prLed { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-.pr-ticker-viewport {
-  flex: 1; min-width: 0;
-  overflow: hidden; position: relative; height: 20px;
-  mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
-}
-.pr-ticker-track {
-  display: inline-flex; align-items: center;
-  gap: 2.5rem; padding: 0 1rem;
-  white-space: nowrap;
-  animation: prScroll 28s linear infinite;
-  will-change: transform;
-}
-@keyframes prScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.pr-ticker:hover .pr-ticker-track { animation-play-state: paused; }
-.pr-item {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-family: var(--font-mono); font-size: 12px;
-  font-variant-numeric: tabular-nums; color: var(--text-2);
-}
-.pr-item-arrow { color: var(--good); font-weight: 700; }
-.pr-item-name { color: var(--text-1); font-weight: 600; }
-.pr-item-sep { color: var(--text-4); }
-.pr-item-body strong { color: var(--text-1); }
+
+/* Live lift ticker — nasdaq-style scrolling strip of real PRs from logged sets */
+.ltHost { margin: 0 0 16px; }
+.lt { display:flex; align-items:stretch; background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px; overflow:hidden; }
+.lt-badge { display:inline-flex; align-items:center; gap:7px; flex-shrink:0; padding:0 14px; font-family: var(--font-mono, ui-monospace, monospace); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color: var(--good); border-right:1px solid var(--border); background: rgba(var(--good-rgb,70,224,168),.06); }
+.lt-dot { width:6px; height:6px; border-radius:50%; background: var(--good); box-shadow:0 0 8px var(--good); animation: ltPulse 1.6s ease-in-out infinite; }
+@keyframes ltPulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.lt-vp { flex:1; overflow:hidden; position:relative; min-width:0; -webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent); mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent); }
+.lt-track { display:inline-flex; align-items:center; gap:28px; padding:10px 16px; white-space:nowrap; animation: ltScroll 30s linear infinite; will-change:transform; }
+@keyframes ltScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.lt:hover .lt-track { animation-play-state: paused; }
+.lt-item { display:inline-flex; align-items:center; gap:7px; font-size:13px; font-variant-numeric:tabular-nums; }
+.lt-arrow { font-weight:700; }
+.lt-up .lt-arrow { color: var(--good); }
+.lt-down .lt-arrow { color: var(--warn); }
+.lt-name { font-weight:600; color: var(--fg); }
+.lt-sep { color: var(--muted, rgba(243,242,248,.5)); opacity:.6; }
+.lt-body { color: var(--muted-strong, rgba(243,242,248,.74)); }
+.lt-body strong { color: var(--fg); font-weight:700; }
+@media (prefers-reduced-motion: reduce) { .lt-track, .lt-dot { animation: none; } }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 <body>
 
 <div class="po-shell">
-  <!-- Live PR ticker — injected by JS after state loads -->
-  <div class="pr-ticker hidden" id="prTicker">
-    <div class="pr-ticker-badge"><span class="pr-ticker-dot"></span>RECENT PRs</div>
-    <div class="pr-ticker-viewport">
-      <div class="pr-ticker-track" id="prTickerTrack"></div>
-    </div>
-  </div>
-
   <button class="po-day-pill" type="button" id="dayPill" title="Tap to switch the day filter to today's split">
     <span class="po-day-date" id="dayPillDate">—</span>
     <span class="po-day-sep">·</span>
     <span class="po-day-split" id="dayPillSplit">—</span>
   </button>
 
-  <!-- WEIGHT + PROGRESS PHOTOS -->
-  <div class="wt-section">
-    <div class="wt-divider"><span>WEIGHT</span></div>
-
-    <div class="wt-card">
-      <div class="wt-row">
-        <span class="wt-num" id="wtNum">—</span>
-        <span class="wt-unit" id="wtUnit">kg</span>
-      </div>
-      <div class="wt-delta hidden" id="wtDelta"></div>
-      <div class="wt-streak hidden" id="wtStreak">🔥<span id="wtStreakNum">0 day streak</span></div>
-
-      <div class="wt-empty" id="wtEmpty">Log your first weight to start tracking.</div>
-
-      <div class="wt-chart-wrap hidden" id="wtChartWrap">
-        <div class="wt-chart-yaxis">
-          <span id="wtYAxisMax">—</span>
-          <span id="wtYAxisMin">—</span>
-        </div>
-        <svg class="wt-chart" viewBox="0 0 320 130" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="wtFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#6ee7b7" stop-opacity="0.25"/>
-              <stop offset="100%" stop-color="#6ee7b7" stop-opacity="0"/>
-            </linearGradient>
-            <filter id="wtGlow"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-          <line class="wt-grid" x1="0" y1="20" x2="320" y2="20"></line>
-          <line class="wt-grid" x1="0" y1="65" x2="320" y2="65"></line>
-          <line class="wt-grid" x1="0" y1="110" x2="320" y2="110"></line>
-          <g id="wtChartContent"></g>
-        </svg>
-        <div class="wt-meta" id="wtMeta">0 entries</div>
-      </div>
-
-      <div class="wt-legend hidden" id="wtLegend">
-        <span class="wt-legend-item"><span class="wt-legend-dot"></span>DAILY</span>
-        <span class="wt-legend-item"><span class="wt-legend-dot wt-legend-dot-avg"></span>7-DAY AVG</span>
-      </div>
-
-      <!-- Composition estimate — uses strength trend + weight trend to guess
-           how much of recent weight change was muscle vs fat. -->
-      <div class="wt-comp hidden" id="wtComp">
-        <div class="wt-comp-h">
-          <span class="wt-comp-label">Composition estimate</span>
-          <span class="wt-comp-window" id="wtCompWindow">last 30d</span>
-        </div>
-        <div class="wt-comp-headline" id="wtCompHeadline">—</div>
-        <div class="wt-comp-bars" id="wtCompBars"></div>
-        <div class="wt-comp-foot" id="wtCompFoot">—</div>
-      </div>
-
-      <div class="wt-locked hidden" id="wtLocked">
-        <div class="wt-locked-info">
-          <span class="wt-locked-check">✓</span>
-          <div>
-            <div class="wt-locked-label">LOGGED TODAY</div>
-            <div class="wt-locked-value" id="wtLockedValue">— kg</div>
-          </div>
-        </div>
-        <button class="wt-edit-btn" id="wtEditBtn">Edit</button>
-      </div>
-
-      <div class="wt-input-row" id="wtInputRow">
-        <div class="wt-input-top">
-          <input type="number" step="0.1" class="wt-input" id="wtInput" placeholder="Enter weight" inputmode="decimal" aria-label="Today's weight">
-          <span class="wt-unit-static" id="wtUnitStatic">kg</span>
-          <button class="wt-save-btn" id="wtSaveBtn">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <button class="wt-progress-link" id="wtProgressLink" type="button" aria-label="Open progress photos">
-      <div>
-        <div class="wt-progress-label">PROGRESS PHOTOS</div>
-        <div class="wt-progress-count" id="wtProgressCount">0 photos</div>
-      </div>
-      <span class="wt-progress-arrow">→</span>
-    </button>
-  </div>
-
-  <!-- Progress photos overlay -->
-  <div class="wt-overlay" id="wtOverlay" aria-hidden="true">
-    <div class="wt-overlay-inner">
-      <div class="wt-overlay-h">
-        <button class="wt-back" id="wtBack" aria-label="Back">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        <div class="wt-overlay-title">Progress</div>
-      </div>
-      <div class="wt-overlay-actions">
-        <button class="wt-overlay-action wt-overlay-primary" id="wtTakePhotoBtn">Take Photo</button>
-        <button class="wt-overlay-action wt-overlay-secondary" id="wtFromLibraryBtn">From Library</button>
-      </div>
-      <input type="file" id="wtFileCamera" accept="image/*" capture="environment" style="display:none">
-      <input type="file" id="wtFileLibrary" accept="image/*" style="display:none">
-      <div class="wt-photo-grid" id="wtPhotoGrid">
-        <div class="wt-photo-empty">No photos yet · tap Take Photo to start</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Camera modal -->
-  <div class="wt-cam" id="wtCam" aria-hidden="true">
-    <div class="wt-cam-stage">
-      <video class="wt-cam-video" id="wtCamVideo" autoplay playsinline muted></video>
-      <canvas id="wtCamCanvas" style="display:none"></canvas>
-    </div>
-    <div class="wt-cam-actions">
-      <button class="wt-cam-btn" id="wtCamCancel">Cancel</button>
-      <button class="wt-cam-shutter" id="wtCamShutter" aria-label="Capture"></button>
-      <button class="wt-cam-btn" id="wtCamFlip" aria-label="Flip camera">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Photo viewer — has two modes: single (one photo) and compare (two photos side-by-side) -->
-  <div class="wt-viewer" id="wtViewer" data-mode="single" aria-hidden="true">
-
-    <!-- SINGLE MODE -->
-    <div class="wt-viewer-single">
-      <div class="wt-viewer-stage">
-        <img id="wtViewerImg" alt="" style="max-width:100%; max-height:100%; object-fit:contain;">
-      </div>
-      <div class="wt-viewer-meta">
-        <div class="wt-viewer-date" id="wtViewerDate">—</div>
-        <div class="wt-viewer-weight" id="wtViewerWeight">—</div>
-      </div>
-      <div class="wt-viewer-actions">
-        <button class="wt-viewer-btn wt-viewer-compare" id="wtViewerCompare">Compare</button>
-        <button class="wt-viewer-btn wt-viewer-close" id="wtViewerClose">Close</button>
-        <button class="wt-viewer-btn wt-viewer-delete" id="wtViewerDelete">Delete</button>
-      </div>
-    </div>
-
-    <!-- COMPARE MODE -->
-    <div class="wt-viewer-compare-view">
-      <div class="wt-compare-stage">
-        <div class="wt-compare-side" id="wtCmpSideA">
-          <img id="wtCmpImgA" alt="">
-          <div class="wt-compare-meta-line" id="wtCmpMetaA">—</div>
-        </div>
-        <button type="button" class="wt-compare-side wt-compare-other" id="wtCmpSideB" title="Tap to compare to a different photo" aria-label="Compare to a different photo">
-          <img id="wtCmpImgB" alt="">
-          <div class="wt-compare-meta-line" id="wtCmpMetaB">—</div>
-        </button>
-      </div>
-      <div class="wt-compare-headline" id="wtCompareHeadline">—</div>
-      <div class="wt-viewer-actions">
-        <button class="wt-viewer-btn wt-viewer-back" id="wtCompareBack">← Back</button>
-        <button class="wt-viewer-btn wt-viewer-close" id="wtCompareClose">Close</button>
-        <button class="wt-viewer-btn wt-viewer-delete" id="wtCompareDelete">Delete</button>
-      </div>
-    </div>
-
-  </div>
-
+  <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;align-self:flex-start;margin-bottom:14px;padding:6px 13px 6px 9px;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:999px;color:var(--brand);font-size:12px;font-weight:600;letter-spacing:.01em;text-decoration:none">← Dashboard</a>
   <div class="po-header">
     <h1 class="po-title" id="appTitle">Progressive Overload Coach</h1>
+    <div class="po-header-right">
+      <div class="themeSeg" role="radiogroup" aria-label="Theme"><button type="button" class="themeBtn" data-theme="nocturne"><span class="themeSwatch" style="background:#8B7CFF"></span><span class="themeBtnLabel">Nocturne</span></button><button type="button" class="themeBtn" data-theme="aurora"><span class="themeSwatch" style="background:linear-gradient(135deg,#8B7BFF,#4FE3D0)"></span><span class="themeBtnLabel">Aurora</span></button><button type="button" class="themeBtn" data-theme="daylight"><span class="themeSwatch" style="background:#6A45FF"></span><span class="themeBtnLabel">Daylight</span></button></div>
     <button class="po-icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
+    </div>
   </div>
+
+  <!-- Live lift ticker — real PRs/progress from your logged sets (last 90 days) -->
+  <div id="liftTicker" class="ltHost" style="display:none"></div>
 
   <div class="card">
     <!-- Filters -->
@@ -1566,6 +1448,7 @@ img, video, canvas, svg { max-width: 100%; }
             <button type="button" class="po-reps-pill" data-v="11">11</button>
             <button type="button" class="po-reps-pill" data-v="12">12</button>
           </div>
+          <input type="number" id="repsInput" min="1" max="100" inputmode="numeric" class="po-reps-input" placeholder="or type a rep count" aria-label="Type a custom rep count">
         </div>
       </div>
       <button class="po-btn-primary" id="logBtn">Log set</button>
@@ -1748,6 +1631,18 @@ img, video, canvas, svg { max-width: 100%; }
         <button class="po-btn-secondary" id="setReset" style="color:var(--bad);border-color:rgba(255,138,138,0.3)">Reset all</button>
       </div>
       <input type="file" id="setImportFile" accept=".json" style="display:none">
+    </div>
+
+    <div class="po-set-section">
+      <h4>Cloud sync (optional)</h4>
+      <p style="font-size:12px;color:var(--text-secondary,rgba(255,255,255,.55));margin:0 0 10px;line-height:1.5">Sync across devices with <strong>your own</strong> free <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--brand)">Supabase</a> project. Leave blank to keep everything on this device. Setup steps in README.md.</p>
+      <input id="setSupaUrl" type="text" placeholder="https://YOUR-PROJECT.supabase.co" autocomplete="off" spellcheck="false" style="width:100%;padding:9px 11px;margin-bottom:8px;background:var(--input-bg,rgba(255,255,255,.04));border:1px solid var(--border,rgba(255,255,255,.13));border-radius:8px;color:var(--text-primary,#fff);font-family:inherit;font-size:13px;outline:none">
+      <input id="setSupaKey" type="password" placeholder="sb_publishable_…" autocomplete="off" spellcheck="false" style="width:100%;padding:9px 11px;margin-bottom:8px;background:var(--input-bg,rgba(255,255,255,.04));border:1px solid var(--border,rgba(255,255,255,.13));border-radius:8px;color:var(--text-primary,#fff);font-family:inherit;font-size:13px;outline:none">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="po-btn-secondary" id="setSupaSave">Save &amp; sync</button>
+        <button class="po-btn-secondary" id="setSupaClear">Disconnect</button>
+      </div>
+      <div id="setSupaStatus" style="font-size:11px;color:var(--text-tertiary,rgba(255,255,255,.4));margin-top:8px"></div>
     </div>
 
     <div class="po-modal-actions">
@@ -2123,6 +2018,46 @@ img, video, canvas, svg { max-width: 100%; }
     }
     row.innerHTML = html;
     row.dataset.value = String(active);
+    const ri = document.getElementById('repsInput'); if (ri) ri.value = ''; // pills now reflect the value
+  }
+
+  // Real lift progress for the scrolling ticker — each exercise's latest logged
+  // set vs the previous one (last 90 days). PRs (weight/rep gains) listed first.
+  function liftTickerData() {
+    const now = Date.now(), cutoff = now - 90 * 86400000, out = [];
+    (state.exercises || []).forEach(ex => {
+      const logs = ((state.logs && state.logs[ex.id]) || [])
+        .filter(l => l && typeof l.weight === 'number' && typeof l.reps === 'number' && l.date);
+      if (logs.length < 2) return;
+      logs.sort((a, b) => new Date(a.date) - new Date(b.date));
+      const cur = logs[logs.length - 1];
+      if (new Date(cur.date).getTime() < cutoff) return;
+      const prev = logs[logs.length - 2];
+      let kind;
+      if (cur.weight > prev.weight) kind = 'pr_weight';
+      else if (cur.weight === prev.weight && cur.reps > prev.reps) kind = 'pr_reps';
+      else if (cur.weight < prev.weight) kind = 'down';
+      else return; // no change / rep regress — skip
+      out.push({ name: ex.name, kind, cur, prev });
+    });
+    out.sort((a, b) => (a.kind === 'down' ? 1 : 0) - (b.kind === 'down' ? 1 : 0));
+    return out;
+  }
+  function renderLiftTicker() {
+    const host = $('liftTicker'); if (!host) return;
+    const items = liftTickerData();
+    if (!items.length) { host.style.display = 'none'; host.innerHTML = ''; return; } // no Gym data → hide
+    host.style.display = '';
+    const u = state.units;
+    const itemHtml = s => {
+      const up = s.kind !== 'down', arrow = up ? '↑' : '↓';
+      let body;
+      if (s.kind === 'pr_reps') body = s.prev.reps + ' → <strong>' + s.cur.reps + '</strong> reps @ ' + s.cur.weight + u;
+      else body = s.prev.weight + u + ' → <strong>' + s.cur.weight + u + '</strong>';
+      return '<span class="lt-item ' + (up ? 'lt-up' : 'lt-down') + '"><span class="lt-arrow">' + arrow + '</span><span class="lt-name">' + escape(s.name) + '</span><span class="lt-sep">·</span><span class="lt-body">' + body + '</span></span>';
+    };
+    const seq = items.map(itemHtml).join('');
+    host.innerHTML = '<div class="lt"><div class="lt-badge"><span class="lt-dot"></span>lifts · 90d</div><div class="lt-vp"><div class="lt-track">' + seq + seq + '</div></div></div>';
   }
 
   function renderAll() {
@@ -2132,6 +2067,7 @@ img, video, canvas, svg { max-width: 100%; }
     renderRx(); renderStats(); renderSparkline(); renderHistory();
     renderTodaysWorkout();
     renderPastWorkouts();
+    renderLiftTicker();
     // Pre-fill weight input with last logged weight (or starting weight)
     const ex = getCurrentEx();
     if (ex && !ex.bw) {
@@ -2338,6 +2274,13 @@ img, video, canvas, svg { max-width: 100%; }
     $('repsRow').querySelectorAll('.po-reps-pill').forEach(x => x.classList.remove('active'));
     p.classList.add('active');
     $('repsRow').dataset.value = p.dataset.v;
+    if ($('repsInput')) $('repsInput').value = ''; // pill chosen → clear manual entry (data-value holds it)
+  });
+  if ($('repsInput')) $('repsInput').addEventListener('input', () => {
+    const v = parseInt($('repsInput').value, 10);
+    if (!(v > 0)) return;
+    $('repsRow').dataset.value = String(v);
+    $('repsRow').querySelectorAll('.po-reps-pill').forEach(x => x.classList.toggle('active', parseInt(x.dataset.v, 10) === v));
   });
   $('logBtn').addEventListener('click', () => {
     const ex = getCurrentEx();
@@ -2352,7 +2295,6 @@ img, video, canvas, svg { max-width: 100%; }
     saveState(); renderAll();
     // Strength changed → composition estimate may shift
     if (typeof wtRender === 'function') wtRender();
-    buildPrTicker();
     // Tiny pulse on the button so the user feels the save
     const btn = $('logBtn');
     btn.style.transition = 'transform 0.15s';
@@ -2617,7 +2559,21 @@ img, video, canvas, svg { max-width: 100%; }
   }
   $('settingsBtn').addEventListener('click', () => {
     renderSettings();
+    const su = $('setSupaUrl'), sk = $('setSupaKey'), ss = $('setSupaStatus');
+    if (su) su.value = localStorage.getItem('po_supabase_url') || '';
+    if (sk) sk.value = localStorage.getItem('po_supabase_key') || '';
+    if (ss) ss.textContent = localStorage.getItem('po_supabase_url') ? '✓ Synced to your Supabase project.' : 'Local-only — data stays on this device.';
     $('setModalBg').classList.add('show');
+  });
+  if ($('setSupaSave')) $('setSupaSave').addEventListener('click', () => {
+    const u = ($('setSupaUrl').value || '').trim(), k = ($('setSupaKey').value || '').trim();
+    if (u && k) { localStorage.setItem('po_supabase_url', u); localStorage.setItem('po_supabase_key', k); }
+    else { localStorage.removeItem('po_supabase_url'); localStorage.removeItem('po_supabase_key'); }
+    location.reload(); // re-read the keys and (re)connect sync
+  });
+  if ($('setSupaClear')) $('setSupaClear').addEventListener('click', () => {
+    localStorage.removeItem('po_supabase_url'); localStorage.removeItem('po_supabase_key');
+    location.reload();
   });
   $('setModalClose').addEventListener('click', () => {
     $('setModalBg').classList.remove('show');
@@ -2731,6 +2687,7 @@ img, video, canvas, svg { max-width: 100%; }
   }
 
   function wtRender() {
+    if (!$('wtNum')) return; // weight card moved to Progress page
     const last = wtEntries[wtEntries.length - 1] || null;
     const todayKey = wtDateKey(new Date());
     const todayEntry = wtEntries.find(e => e.dateKey === todayKey);
@@ -2999,15 +2956,15 @@ img, video, canvas, svg { max-width: 100%; }
   }
 
   // Wire weight UI
-  $('wtSaveBtn').addEventListener('click', () => {
+  $('wtSaveBtn')?.addEventListener('click', () => {
     const v = parseFloat($('wtInput').value);
     if (isNaN(v) || v <= 0) return;
     wtSaveEntry(v);
   });
-  $('wtInput').addEventListener('keydown', (e) => {
+  $('wtInput')?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') $('wtSaveBtn').click();
   });
-  $('wtEditBtn').addEventListener('click', () => {
+  $('wtEditBtn')?.addEventListener('click', () => {
     $('wtLocked').classList.add('hidden');
     $('wtInputRow').classList.remove('hidden');
     const todayEntry = wtEntries.find(e => e.dateKey === wtDateKey(new Date()));
@@ -3068,13 +3025,14 @@ img, video, canvas, svg { max-width: 100%; }
     return last ? (last.weight.toFixed(1) + ' ' + state.units) : '—';
   }
   function photosRender() {
+    if (!$('wtPhotoGrid')) return; // photos moved to Progress page
     const grid = $('wtPhotoGrid');
     if (!photos.length) {
       grid.innerHTML = '<div class="wt-photo-empty">No photos yet · tap Take Photo to start</div>';
     } else {
       grid.innerHTML = photos.map(p =>
         '<button class="wt-photo-card" data-id="' + p.id + '" type="button">' +
-          '<img src="' + p.dataUrl + '" alt="">' +
+          '<img src="' + (p.url || p.dataUrl) + '" alt="">' +
           '<div class="wt-photo-overlay"></div>' +
           '<div class="wt-photo-meta">' +
             '<span class="wt-photo-date">' + photoFmtDate(p.dateKey) + '</span>' +
@@ -3091,6 +3049,24 @@ img, video, canvas, svg { max-width: 100%; }
     else if (photos.length === 1) $('wtProgressCount').textContent = '1 photo · latest ' + photoFmtDate(photos[0].dateKey);
     else $('wtProgressCount').textContent = photos.length + ' photos · latest ' + photoFmtDate(photos[0].dateKey);
   }
+  // Upload a compressed data URL to the Supabase Storage bucket
+  // 'progress-photos' and return its public URL (or null on failure).
+  async function uploadPhotoToStorage(dataUrl) {
+    if (!pcSupa) return null;
+    try {
+      const res = await fetch(dataUrl);
+      const blob = await res.blob();
+      const filename = 'photo_' + Date.now() + '_' +
+        Math.random().toString(36).slice(2, 10) + '.jpg';
+      const { error } = await pcSupa.storage
+        .from('progress-photos')
+        .upload(filename, blob, { contentType: 'image/jpeg', upsert: false });
+      if (error) return null;
+      const { data } = pcSupa.storage.from('progress-photos').getPublicUrl(filename);
+      return data ? data.publicUrl : null;
+    } catch (e) { return null; }
+  }
+
   async function photosAdd(dataUrl) {
     let compressed = dataUrl;
     try { compressed = await compressPhotoDataUrl(dataUrl); } catch {}
@@ -3103,8 +3079,6 @@ img, video, canvas, svg { max-width: 100%; }
     };
     photos.unshift(entry);
     if (!photosSave()) {
-      // Storage was full even after compression — try once more at lower
-      // quality before giving up.
       try {
         entry.dataUrl = await compressPhotoDataUrl(dataUrl, 800, 0.6);
       } catch {}
@@ -3115,6 +3089,20 @@ img, video, canvas, svg { max-width: 100%; }
       }
     }
     photosRender();
+
+    // Background: upload to Supabase Storage. Once we have a public URL,
+    // drop the base64 dataUrl locally and push to sibling devices via the
+    // normal sync path — only the URL ends up in the row, so the payload
+    // stays tiny.
+    uploadPhotoToStorage(entry.dataUrl).then((url) => {
+      if (!url) return;
+      const e = photos.find(p => p.id === id);
+      if (!e) return;
+      e.url = url;
+      delete e.dataUrl;
+      photosSave();
+      photosRender();
+    });
   }
   function fileToPhoto(file) {
     const r = new FileReader();
@@ -3122,12 +3110,12 @@ img, video, canvas, svg { max-width: 100%; }
     r.readAsDataURL(file);
   }
 
-  $('wtProgressLink').addEventListener('click', () => {
+  $('wtProgressLink')?.addEventListener('click', () => {
     photosRender();
     $('wtOverlay').classList.add('is-open');
     document.body.style.overflow = 'hidden';
   });
-  $('wtBack').addEventListener('click', () => {
+  $('wtBack')?.addEventListener('click', () => {
     $('wtOverlay').classList.remove('is-open');
     document.body.style.overflow = '';
   });
@@ -3158,30 +3146,30 @@ img, video, canvas, svg { max-width: 100%; }
     $('wtCamVideo').srcObject = null;
     $('wtCam').classList.remove('is-open');
   }
-  $('wtTakePhotoBtn').addEventListener('click', async () => {
+  $('wtTakePhotoBtn')?.addEventListener('click', async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try { await openCam(); return; } catch (e) {}
     }
     $('wtFileCamera').click();
   });
-  $('wtFileCamera').addEventListener('change', (e) => {
+  $('wtFileCamera')?.addEventListener('change', (e) => {
     const f = e.target.files && e.target.files[0];
     if (f) fileToPhoto(f);
     e.target.value = '';
   });
-  $('wtFromLibraryBtn').addEventListener('click', () => $('wtFileLibrary').click());
-  $('wtFileLibrary').addEventListener('change', (e) => {
+  $('wtFromLibraryBtn')?.addEventListener('click', () => $('wtFileLibrary').click());
+  $('wtFileLibrary')?.addEventListener('change', (e) => {
     const f = e.target.files && e.target.files[0];
     if (f) fileToPhoto(f);
     e.target.value = '';
   });
-  $('wtCamCancel').addEventListener('click', closeCam);
-  $('wtCamFlip').addEventListener('click', async () => {
+  $('wtCamCancel')?.addEventListener('click', closeCam);
+  $('wtCamFlip')?.addEventListener('click', async () => {
     camFacing = camFacing === 'environment' ? 'user' : 'environment';
     if (camStream) camStream.getTracks().forEach(t => t.stop());
     try { await openCam(); } catch (e) {}
   });
-  $('wtCamShutter').addEventListener('click', () => {
+  $('wtCamShutter')?.addEventListener('click', () => {
     const video = $('wtCamVideo'), canvas = $('wtCamCanvas');
     if (!video.videoWidth) return;
     canvas.width = video.videoWidth; canvas.height = video.videoHeight;
@@ -3199,7 +3187,7 @@ img, video, canvas, svg { max-width: 100%; }
     const p = photos.find(x => x.id === id);
     if (!p) return;
     activePhotoId = id;
-    $('wtViewerImg').src = p.dataUrl;
+    $('wtViewerImg').src = p.url || p.dataUrl;
     $('wtViewerDate').textContent = photoFmtDate(p.dateKey).toUpperCase();
     $('wtViewerWeight').textContent = p.weight || '—';
     $('wtViewer').dataset.mode = 'single';
@@ -3249,8 +3237,8 @@ img, video, canvas, svg { max-width: 100%; }
     if (!A || !B) return;
     activePhotoId = activeId;
     comparePhotoId = otherId;
-    $('wtCmpImgA').src = A.dataUrl;
-    $('wtCmpImgB').src = B.dataUrl;
+    $('wtCmpImgA').src = A.url || A.dataUrl;
+    $('wtCmpImgB').src = B.url || B.dataUrl;
     $('wtCmpMetaA').textContent = photoFmtDate(A.dateKey) + ' · ' + (A.weight || '—');
     $('wtCmpMetaB').textContent = photoFmtDate(B.dateKey) + ' · ' + (B.weight || '—');
     // Headline — date arrow + weight delta
@@ -3302,17 +3290,17 @@ img, video, canvas, svg { max-width: 100%; }
     closePhoto();
   }
 
-  $('wtViewerClose').addEventListener('click', closePhoto);
-  $('wtCompareClose').addEventListener('click', closePhoto);
-  $('wtViewerDelete').addEventListener('click', () => deleteActivePhoto($('wtViewerDelete')));
-  $('wtCompareDelete').addEventListener('click', () => deleteActivePhoto($('wtCompareDelete')));
-  $('wtViewerCompare').addEventListener('click', () => {
+  $('wtViewerClose')?.addEventListener('click', closePhoto);
+  $('wtCompareClose')?.addEventListener('click', closePhoto);
+  $('wtViewerDelete')?.addEventListener('click', () => deleteActivePhoto($('wtViewerDelete')));
+  $('wtCompareDelete')?.addEventListener('click', () => deleteActivePhoto($('wtCompareDelete')));
+  $('wtViewerCompare')?.addEventListener('click', () => {
     if (!activePhotoId) return;
     const otherId = defaultCompareFor(activePhotoId);
     if (!otherId) { alert('Need at least one other photo to compare.'); return; }
     openCompare(activePhotoId, otherId);
   });
-  $('wtCompareBack').addEventListener('click', () => {
+  $('wtCompareBack')?.addEventListener('click', () => {
     if (activePhotoId) {
       $('wtViewer').dataset.mode = 'single';
     } else {
@@ -3320,57 +3308,7 @@ img, video, canvas, svg { max-width: 100%; }
     }
   });
   // Tap the right-hand "other" photo to cycle through different comparison targets
-  $('wtCmpSideB').addEventListener('click', cycleCompareTarget);
-
-  // ============================================================
-  // LIVE PR TICKER
-  // Scans last 90 days for personal records (highest 1RM per exercise)
-  // and renders a scrolling marquee.
-  // ============================================================
-  function buildPrTicker() {
-    const now = Date.now();
-    const cutoff = now - 90 * 86400000;
-    const prs = [];
-    state.exercises.forEach(ex => {
-      const logs = (state.logs[ex.id] || []).filter(l => new Date(l.date).getTime() >= cutoff);
-      if (!logs.length) return;
-      let best = null;
-      logs.forEach(l => {
-        const val = ex.bw ? l.reps : estimate1RM(l.weight, l.reps);
-        if (!best || val > best.val) best = { val, log: l };
-      });
-      if (!best) return;
-      const allLogs = state.logs[ex.id] || [];
-      const allBest = allLogs.reduce((b, l) => {
-        const v = ex.bw ? l.reps : estimate1RM(l.weight, l.reps);
-        return v > (b ? b.val : 0) ? { val: v } : b;
-      }, null);
-      // Only count it as a PR if the recent best equals the all-time best
-      if (!allBest || Math.abs(best.val - allBest.val) < 0.5) {
-        prs.push({ ex, best });
-      }
-    });
-    const ticker = $('prTicker');
-    const track = $('prTickerTrack');
-    if (!prs.length) { ticker.classList.add('hidden'); return; }
-    ticker.classList.remove('hidden');
-    // Double the items for seamless loop
-    const items = prs.concat(prs).map(({ ex, best }) => {
-      const val = ex.bw
-        ? (best.log.reps + ' reps')
-        : (Math.round(best.val) + state.units + ' est. 1RM');
-      const dateStr = new Date(best.log.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-      return '<span class="pr-item">'
-        + '<span class="pr-item-arrow">↑</span>'
-        + '<span class="pr-item-name">' + escape(ex.name) + '</span>'
-        + '<span class="pr-item-sep">·</span>'
-        + '<span class="pr-item-body"><strong>' + val + '</strong></span>'
-        + '<span class="pr-item-sep">·</span>'
-        + '<span class="pr-item-body">' + dateStr + '</span>'
-        + '</span>';
-    }).join('');
-    track.innerHTML = items;
-  }
+  $('wtCmpSideB')?.addEventListener('click', cycleCompareTarget);
 
   // ============================================================
   // BOOT
@@ -3378,213 +3316,29 @@ img, video, canvas, svg { max-width: 100%; }
   renderAll();
   wtRender();
   photosRender();
-  buildPrTicker();
-
-  // ============================================================
-  // CLOUD SYNC via Supabase  (OPTIONAL — leave blank for local-only)
-  // ------------------------------------------------------------
-  // Stores your gym state as one JSONB row in the public.app_state
-  // table, keyed by APP_KEY. Supabase's realtime channel pushes
-  // changes to every device the instant they happen.
-  //
-  // SETUP (5 minutes, all in a browser):
-  //   1. Make a free account at https://supabase.com
-  //   2. Create a new project
-  //   3. In your project: Settings → API → copy your Project URL +
-  //      "Publishable" key (the one starting with `sb_publishable_`)
-  //   4. Paste them below, replacing the two placeholder strings
-  //   5. Open the SQL Editor and run the SQL block from README.md
-  //
-  // If you leave the placeholders unchanged the app still works,
-  // just only on this device (data stays in your browser).
-  // ============================================================
-  const SUPABASE_URL = 'https://ktqywwwrszmkwznhakbw.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_ru0xehlRpZQbSLLyeB9FHQ_T6ZAonPm';
-  const APP_KEY = 'po-coach';
-  const PC_SYNCED_KEYS = ['po_coach_v1', 'po_coach_workout_done', 'po_coach_weights', 'po_coach_photos'];
-
-  let pcSupa = null;
-  let pcPushTimer = null;
-  let pcSuppressSync = false;
-  let pcPendingRemote = null;
-  // JSON of the last state we sent or received — used to ignore
-  // realtime echoes of our own pushes so we don't infinite-loop.
-  let pcLastSyncedJson = null;
-
-  const _pcOrigSet = localStorage.setItem.bind(localStorage);
-  const _pcOrigRemove = localStorage.removeItem.bind(localStorage);
-  // Wrap setItem/removeItem so a sync-side error can NEVER prevent the
-  // underlying write from happening. The original call always runs;
-  // any error in the sync scheduling is swallowed.
-  localStorage.setItem = function(k, v) {
-    _pcOrigSet(k, v);
-    try {
-      if (!pcSuppressSync && PC_SYNCED_KEYS.indexOf(k) !== -1) pcSchedulePush();
-    } catch (e) {}
-  };
-  localStorage.removeItem = function(k) {
-    _pcOrigRemove(k);
-    try {
-      if (!pcSuppressSync && PC_SYNCED_KEYS.indexOf(k) !== -1) pcSchedulePush();
-    } catch (e) {}
-  };
-
-  function pcCollectState() {
-    const out = {};
-    for (const k of PC_SYNCED_KEYS) {
-      const v = localStorage.getItem(k);
-      if (v == null) continue;
-      try { out[k] = JSON.parse(v); } catch {}
-    }
-    return out;
-  }
-
-  function pcIsUserEditing() {
-    const ae = document.activeElement;
-    if (!ae) return false;
-    const tag = ae.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
-    if (ae.getAttribute && ae.getAttribute('contenteditable') === 'true') return true;
-    return false;
-  }
-
-  function pcRerender() {
-    // Reload every closure variable that mirrors a synced localStorage
-    // key — otherwise renderAll/wtRender/photosRender would read stale
-    // in-memory copies from before the remote pull.
-    try { state = loadState(); } catch {}
-    try { wtEntries = wtLoad(); } catch {}
-    try {
-      const raw = localStorage.getItem(PHOTO_KEY);
-      photos = raw ? JSON.parse(raw) : [];
-    } catch { photos = []; }
-    try { renderAll(); } catch {}
-    try { wtRender(); } catch {}
-    try { photosRender(); } catch {}
-  }
-
-  function pcApplyRemoteState(remote) {
-    if (!remote || typeof remote !== 'object') return false;
-    pcSuppressSync = true;
-    let changed = false;
-    try {
-      for (const k of PC_SYNCED_KEYS) {
-        if (k in remote) {
-          const incoming = JSON.stringify(remote[k]);
-          const local = localStorage.getItem(k);
-          if (local !== incoming) { try { _pcOrigSet(k, incoming); changed = true; } catch {} }
-        } else if (localStorage.getItem(k) != null) {
-          try { _pcOrigRemove(k); changed = true; } catch {}
-        }
-      }
-    } finally {
-      pcSuppressSync = false;
-    }
-    if (changed) { try { pcRerender(); } catch (e) {} }
-    return changed;
-  }
-
-  function pcMaybeApplyRemote(remote) {
-    if (pcIsUserEditing()) { pcPendingRemote = remote; return; }
-    pcApplyRemoteState(remote);
-  }
-
-  function pcApplyPendingIfReady() {
-    if (pcPendingRemote && !pcIsUserEditing()) {
-      const r = pcPendingRemote;
-      pcPendingRemote = null;
-      pcApplyRemoteState(r);
-    }
-  }
-
-  async function pcPushNow() {
-    if (!pcSupa) return;
-    const state = pcCollectState();
-    const json = JSON.stringify(state);
-    if (json === pcLastSyncedJson) return;
-    try {
-      const { error } = await pcSupa
-        .from('app_state')
-        .upsert(
-          { key: APP_KEY, data: state, updated_at: new Date().toISOString() },
-          { onConflict: 'key' }
-        );
-      if (!error) pcLastSyncedJson = json;
-    } catch (_) {}
-  }
-
-  function pcSchedulePush() {
-    if (pcSuppressSync) return;
-    clearTimeout(pcPushTimer);
-    pcPushTimer = setTimeout(pcPushNow, 250);
-  }
-
-  // Backup push on unload via fetch keepalive so a fast refresh
-  // doesn't lose the latest change before the debounced push fires.
-  function pcFlushPushOnUnload() {
-    if (!pcSupa) return;
-    const state = pcCollectState();
-    const json = JSON.stringify(state);
-    if (json === pcLastSyncedJson) return;
-    try {
-      fetch(SUPABASE_URL + '/rest/v1/app_state?on_conflict=key', {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': 'application/json',
-          'Prefer': 'resolution=merge-duplicates',
-        },
-        body: JSON.stringify({ key: APP_KEY, data: state, updated_at: new Date().toISOString() }),
-        keepalive: true,
-      }).catch(() => {});
-      pcLastSyncedJson = json;
-    } catch (_) {}
-  }
-
-  // Initial sync: connect Supabase, pull current state, subscribe to
-  // realtime updates so other devices' changes appear instantly.
-  (async function pcInitCloudSync() {
-    if (!window.supabase || !SUPABASE_URL || !SUPABASE_KEY) return;
-    // Skip if the placeholder values are still in place (local-only mode)
-    if (SUPABASE_URL.indexOf('PASTE-') === 0 || SUPABASE_KEY.indexOf('PASTE-') === 0) return;
-    pcSupa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    try {
-      const { data, error } = await pcSupa
-        .from('app_state').select('data').eq('key', APP_KEY).maybeSingle();
-      if (!error && data && data.data && Object.keys(data.data).length > 0) {
-        pcLastSyncedJson = JSON.stringify(data.data);
-        pcMaybeApplyRemote(data.data);
-      } else if (Object.keys(pcCollectState()).length > 0) {
-        pcSchedulePush();
-      }
-    } catch (_) {}
-    pcSupa.channel('app_state_' + APP_KEY)
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'app_state',
-        filter: 'key=eq.' + APP_KEY,
-      }, (payload) => {
-        if (!payload.new || !payload.new.data) return;
-        const incoming = JSON.stringify(payload.new.data);
-        if (incoming === pcLastSyncedJson) return; // echo of our own push
-        pcLastSyncedJson = incoming;
-        pcMaybeApplyRemote(payload.new.data);
-      })
-      .subscribe();
-  })();
-
-  document.addEventListener('focusout', () => {
-    setTimeout(pcApplyPendingIfReady, 0);
-  }, true);
-  window.addEventListener('pagehide', pcFlushPushOnUnload);
-  window.addEventListener('beforeunload', pcFlushPushOnUnload);
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) pcFlushPushOnUnload();
-  });
 })();
 </script>
 
+<script>(function(){function cur(){try{return localStorage.getItem("patron_theme")||"nocturne";}catch(e){return "nocturne";}}function paint(){var c=cur();document.querySelectorAll(".themeBtn").forEach(function(b){b.classList.toggle("themeBtnActive",b.dataset.theme===c);});}document.addEventListener("click",function(e){var b=e.target.closest(".themeBtn");if(!b)return;var n=b.dataset.theme;document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("patron_theme",n);}catch(e){}paint();});paint();})();</script>
+
+<script src="icons.js"></script>
+<script src="sync.js" defer></script>
+<script src="topbar.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof initCloudSync === 'function') {
+    initCloudSync({
+      appKey: 'gym',
+      syncedPrefixes: ['gym:'],
+      onApplied: function() {
+        // trigger a re-render if the page has one
+        if (typeof loadWorkout === 'function') loadWorkout();
+        if (typeof renderAll === 'function') renderAll();
+        window.dispatchEvent(new Event('storage'));
+      }
+    });
+  }
+});
+</script>
 </body>
 </html>
