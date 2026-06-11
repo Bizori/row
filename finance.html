@@ -3,9 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#0C0C12">
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Finances</title>
+<meta name="apple-mobile-web-app-title" content="Dashboard" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="icon" type="image/svg+xml" href="icon.svg" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<title>Finance · Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1547,7 +1554,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 <!-- ===== BACK BUTTON ===== -->
 <a href="index.html" class="fin-back-btn" aria-label="Back to dashboard">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-  <span>Back</span>
+  <span>Dashboard</span>
 </a>
 
 <!-- ===== FINANCE TICKER (rotating subscription renewals) ===== -->
@@ -3414,7 +3421,34 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   safeRenderTicker();
   setInterval(safeRenderTicker, 1500);
 
+  // ============================================================
+  // CLOUD SYNC — expose a global renderFinance for the sync callback.
+  // ============================================================
+  window.renderFinance = function() {
+    try {
+      renderAllNetWorth();
+      renderSubs();
+      renderWishlist();
+      renderOrders();
+    } catch (e) { console.error('renderFinance failed', e); }
+  };
+
 })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="sync.js" defer></script>
+<script>
+/* Cloud sync bootstrap */
+document.addEventListener('DOMContentLoaded', function() {
+  try { if (window.self !== window.top) return; } catch(e) { return; }
+  if (typeof initCloudSync !== 'function') return;
+  initCloudSync({
+    appKey: 'finance',
+    syncedPrefixes: ['finance:'],
+    onApplied: function() { if (typeof window.renderFinance === 'function') window.renderFinance(); }
+  });
+});
 </script>
 
 </body>

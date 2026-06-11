@@ -1,1296 +1,605 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0C0C12">
-<meta name="color-scheme" content="dark">
-<title>Daily Stack — Customizable Template</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js" defer></script>
-<script src="topbar.js" defer></script>
-<link rel="stylesheet" href="theme.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#0C0C12" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Patron" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="icon" type="image/svg+xml" href="icon.svg" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<style id="pwa-mobile">
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+img{max-width:100%;height:auto}
+@media (max-width:480px){input,select,textarea{font-size:16px !important}}
+@supports (padding:max(0px)){body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}}
+</style>
+<title>Health · Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("patron_theme")||"nocturne");}catch(e){document.documentElement.setAttribute("data-theme","nocturne");}</script>
 <style>
+
+/* ============================================================
+ * Health — Patron design system: soft-dark electric-violet
+ * modern-fintech skin. Same token system + 3 themes as the suite.
+ * ============================================================ */
+
 :root {
   color-scheme: dark;
-  --bg-card: var(--surface);
-  --bg-secondary: var(--surface);
-  --bg-input: rgba(0,0,0,0.28);
-  --bg-input-focus: rgba(0,0,0,0.36);
-  --bg-dropdown: rgba(15,15,18,0.96);
-
-  --border-soft: var(--border);
-  --border-strong: rgba(255,255,255,0.14);
-
-  --text-primary: var(--fg);
-  --text-secondary: var(--muted-strong);
-  --text-tertiary: var(--muted);
-  --text-quaternary: rgba(243,242,248,0.25);
-
-  --accent: var(--brand);
-  --accent-glow: var(--brand-glow);
-  --warning: #FF8A4D;
-  --warning-bg: rgba(163,45,45,0.10);
-  --tag-stack: #D8AB30;
-  --tag-stack-bg: rgba(216,171,48,0.15);
-
-  --font: var(--font-ui);
+  --bg: #0C0C12; --bg-elevated: #15151F;
+  --surface: rgba(255,255,255,0.028); --surface-2: rgba(255,255,255,0.055);
+  --fg: #F3F2F8; --muted: rgba(243,242,248,0.50); --muted-strong: rgba(243,242,248,0.74);
+  --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.17);
+  --brand: #8B7CFF; --brand-2: #C7BBFF; --brand-ink: #130E2E;
+  --brand-soft: rgba(139,124,255,0.12); --brand-line: rgba(139,124,255,0.28); --brand-glow: rgba(139,124,255,0.42);
+  --pos: #46E0A8; --pos-soft: rgba(70,224,168,0.12); --pos-line: rgba(70,224,168,0.26);
+  --neg: #FB7185; --neg-soft: rgba(251,113,133,0.12); --neg-line: rgba(251,113,133,0.26);
+  --warn: #FBBF24; --warn-soft: rgba(251,191,36,0.10); --warn-line: rgba(251,191,36,0.26);
+  --track: rgba(255,255,255,0.06);
+  --card-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 18px 44px -30px rgba(0,0,0,0.85);
+  --glow-1: rgba(139,124,255,0.12); --glow-2: rgba(70,224,168,0.05);
+  --grain-opacity: 0.05; --overlay: rgba(6,6,12,0.66);
+  --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+  --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-10:2.5rem; --space-12:3rem; --space-16:4rem;
+  --radius-sm: 8px; --radius-md: 11px; --radius-lg: 18px; --radius-pill: 999px;
+  --text-xs:.75rem; --text-sm:.875rem; --text-base:1rem; --text-lg:1.125rem;
+  --text-xl:1.375rem; --text-2xl:1.75rem; --text-3xl:2.5rem;
+  --ease: cubic-bezier(0.2,0.8,0.2,1); --ease-premium: cubic-bezier(0.16,1,0.3,1);
+  --duration-fast:120ms; --duration:200ms;
+  --font-display:'Space Grotesk'; --font-ui:'Hanken Grotesk'; --font-mono:'JetBrains Mono'; --font-sans:'Hanken Grotesk';
+}
+[data-theme="aurora"] {
+  color-scheme: dark;
+  --bg: #080913; --bg-elevated: #12131F;
+  --surface: rgba(150,160,255,0.045); --surface-2: rgba(150,160,255,0.08);
+  --fg: #EEF0FF; --muted: rgba(220,225,255,0.52); --muted-strong: rgba(220,225,255,0.76);
+  --border: rgba(150,160,255,0.11); --border-strong: rgba(150,160,255,0.22);
+  --brand: #8B7BFF; --brand-2: #B9ABFF; --brand-ink: #0A0922;
+  --brand-soft: rgba(139,123,255,0.15); --brand-line: rgba(139,123,255,0.32); --brand-glow: rgba(124,107,255,0.6);
+  --pos: #4FE3D0; --pos-soft: rgba(79,227,208,0.13); --pos-line: rgba(79,227,208,0.28);
+  --neg: #FF6FA5; --neg-soft: rgba(255,111,165,0.13); --neg-line: rgba(255,111,165,0.28);
+  --warn: #FFC65C; --warn-soft: rgba(255,198,92,0.11); --warn-line: rgba(255,198,92,0.28);
+  --track: rgba(160,170,255,0.09);
+  --card-shadow: 0 0 0 1px rgba(140,130,255,0.05) inset, 0 22px 56px -28px rgba(78,60,210,0.55);
+  --glow-1: rgba(124,107,255,0.20); --glow-2: rgba(79,227,208,0.13);
+  --grain-opacity: 0.05; --overlay: rgba(5,6,16,0.7);
+}
+[data-theme="daylight"] {
+  color-scheme: light;
+  --bg: #F3F2FA; --bg-elevated: #FFFFFF;
+  --surface: #FFFFFF; --surface-2: #FAF9FF;
+  --fg: #171622; --muted: rgba(23,22,34,0.52); --muted-strong: rgba(23,22,34,0.72);
+  --border: rgba(23,22,60,0.10); --border-strong: rgba(23,22,60,0.18);
+  --brand: #6A45FF; --brand-2: #8E6BFF; --brand-ink: #FFFFFF;
+  --brand-soft: rgba(106,69,255,0.08); --brand-line: rgba(106,69,255,0.24); --brand-glow: rgba(106,69,255,0.28);
+  --pos: #0E9E64; --pos-soft: rgba(14,158,100,0.10); --pos-line: rgba(14,158,100,0.26);
+  --neg: #E11D63; --neg-soft: rgba(225,29,99,0.08); --neg-line: rgba(225,29,99,0.24);
+  --warn: #B4690E; --warn-soft: rgba(180,105,14,0.10); --warn-line: rgba(180,105,14,0.24);
+  --track: rgba(23,22,60,0.08);
+  --card-shadow: 0 1px 2px rgba(23,22,60,0.05), 0 16px 34px -24px rgba(23,22,60,0.24);
+  --glow-1: rgba(106,69,255,0.07); --glow-2: rgba(14,158,100,0.04);
+  --grain-opacity: 0.02; --overlay: rgba(28,26,52,0.4);
 }
 
 * { box-sizing: border-box; }
-html, body {
-  margin: 0; padding: 0;
-  background: var(--bg);
-  color: var(--text-secondary);
-  font-family: var(--font);
-  font-size: 15px; line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-body { min-height: 100vh; position: relative; overflow-x: hidden; }
+html, body { margin:0; padding:0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-ui), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: var(--text-base); -webkit-font-smoothing: antialiased; transition: background var(--duration) var(--ease); }
 
-@keyframes drift { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-22px,14px,0); } }
+.grain-overlay { position: relative; }
+.grain-overlay::after { content:''; position: fixed; inset:0; pointer-events:none; z-index:1; opacity: var(--grain-opacity); mix-blend-mode: overlay; background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); background-size: 200px 200px; }
 
-main {
-  position: relative; z-index: 2;
-  max-width: 720px; margin: 0 auto;
-  padding: 56px 20px 80px;
-  padding-top: max(56px, env(safe-area-inset-top, 56px));
-}
+.page { position: relative; min-height: 100dvh; background: var(--bg); color: var(--fg); padding: var(--space-8) var(--space-5) var(--space-16); isolation: isolate; }
+.page::before { content:''; position: absolute; inset:0; pointer-events:none; z-index:-1; background: radial-gradient(58% 42% at 82% 6%, var(--glow-1), transparent 70%), radial-gradient(48% 38% at 12% 92%, var(--glow-2), transparent 72%); }
+.shell { max-width: 980px; margin: 0 auto; }
 
-.section-title {
-  font-family: var(--font-mono);
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin: 0 4px 14px;
-  display: flex; align-items: center; gap: 12px;
-}
-.section-title::before { content: '≡'; font-size: 14px; opacity: 0.5; }
+/* Buttons */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap: var(--space-2); padding: 0.6875rem var(--space-4); border-radius: var(--radius-md); font-size: var(--text-sm); font-family: var(--font-ui); font-weight: 600; cursor: pointer; border: 1px solid transparent; background: transparent; color: var(--fg); transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease), color var(--duration) var(--ease), transform var(--duration-fast) var(--ease), box-shadow var(--duration) var(--ease), filter var(--duration) var(--ease); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: var(--brand); color: var(--brand-ink); font-weight: 700; }
+.btn-primary:hover:not(:disabled) { filter: brightness(1.08); box-shadow: 0 0 26px var(--brand-glow); }
+.btn-primary:active:not(:disabled) { transform: translateY(1px); }
+.btn-ghost { color: var(--fg); border: 1px solid var(--border); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--border-strong); background: var(--surface); }
+.btn-link { color: var(--muted-strong); padding: var(--space-2) var(--space-3); }
+.btn-link:hover { color: var(--fg); }
 
-.water-embed { margin-top: 56px; }
-.water-iframe {
-  display: block;
-  width: 100%;
-  height: 880px;
-  border: 0;
-  background: transparent;
-  border-radius: 16px;
-  overflow: hidden;
-  color-scheme: dark;
-}
-@media (max-width: 480px) {
-  .water-embed { margin-top: 40px; }
-  .water-iframe { height: 780px; }
-}
-
-.stack-card {
-  background: var(--bg-card);
-  border-radius: 16px;
-  padding: 22px 22px 18px;
-  backdrop-filter: blur(24px) saturate(1.2);
-  -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-}
-
-.stack-head { margin-bottom: 12px; }
-.sf-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 6px;
-}
-.sf-title {
-  font-size: 24px; font-weight: 700;
-  letter-spacing: -0.022em;
-  color: var(--text-primary);
-  line-height: 1.15; margin-bottom: 2px;
-  font-family: 'Orbitron', sans-serif;
-}
-.stack-progress-text {
-  font-family: var(--font-mono);
-  font-size: 12px; color: var(--text-tertiary);
-  font-variant-numeric: tabular-nums;
-  margin-top: 6px;
-}
-.stack-progress-track {
-  height: 5px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 999px; overflow: hidden;
-  margin: 14px 0 18px;
-}
-.stack-progress-fill {
-  height: 100%; width: 0%;
-  background: #FFFFFF; border-radius: 999px;
-  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.stack-window { margin-bottom: 14px; }
-.stack-window-header {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 8px; padding-bottom: 6px;
-  border-bottom: 1px solid var(--border-soft);
-}
-.stack-window-icon { font-size: 16px; }
-.stack-window-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
-.stack-window-time { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
-
-.stack-item {
-  display: grid;
-  grid-template-columns: 32px 1fr auto auto;
-  gap: 10px;
-  align-items: center;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--bg-secondary);
-  margin-bottom: 6px;
-  border: 1px solid transparent;
-  transition: background 0.2s, border-color 0.2s;
-}
-.stack-item:hover { background: rgba(255,255,255,0.05); }
-.stack-item.taken { background: var(--pos-soft); }
-.stack-item.taken .stack-item-name { text-decoration: line-through; color: var(--text-tertiary); }
-
-@keyframes pulse-red {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-  50%      { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-}
-.stack-item.missed {
-  border: 1px solid rgba(239, 68, 68, 0.45);
-  animation: pulse-red 1.5s ease-in-out infinite;
-}
-.stack-item.missed .stack-check { border-color: rgba(239, 68, 68, 0.55); }
-.stack-item.taken.missed { animation: none; border-color: transparent; }
-.stack-item.taken.missed .stack-check { border-color: var(--accent); }
-
-.stack-check {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  border: 2px solid var(--border-strong);
-  background: var(--bg-card);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; color: transparent;
-  transition: all 0.2s;
-  flex-shrink: 0; font-family: inherit; padding: 0;
-}
-.stack-check:hover { border-color: var(--brand); }
-.stack-check.checked {
-  background: var(--brand); border-color: var(--brand);
-  color: var(--brand-ink);
-  box-shadow: 0 0 12px var(--brand-glow);
-}
-
-.stack-item-body { min-width: 0; }
-.stack-item-name {
-  font-size: 14px; font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.2;
-  display: inline-flex; align-items: center;
-  gap: 8px; flex-wrap: wrap;
-  outline: none;
-}
-.stack-item-name[contenteditable="true"] {
-  outline: 1px solid rgba(255,255,255,0.25);
-  outline-offset: 4px; border-radius: 4px;
-}
-.stack-item-meta {
-  font-size: 11px; color: var(--text-tertiary);
-  margin-top: 2px; outline: none; cursor: text;
-}
-.stack-item-meta[contenteditable="true"] {
-  outline: 1px solid rgba(255,255,255,0.2);
-  outline-offset: 4px; border-radius: 4px;
-  color: var(--text-secondary);
-}
-.stack-item-meta:empty::before {
-  content: 'add notes…';
-  color: var(--text-quaternary);
-  font-style: italic;
-}
-
-.stack-item-tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  padding: 2px 7px; border-radius: 99px;
-  font-weight: 600; letter-spacing: 0.04em;
-  text-transform: lowercase;
-}
-.stack-item-tag.tag-stack { background: var(--tag-stack-bg); color: var(--tag-stack); }
-.stack-item-tag.tag-not-ordered { background: var(--warning-bg); color: var(--text-tertiary); }
-
-.stack-low-btn {
-  background: transparent;
-  border: 1px solid var(--border-strong);
-  color: var(--text-tertiary);
-  font-size: 10px;
-  padding: 5px 9px; border-radius: 6px;
-  cursor: pointer;
-  font-family: var(--font-mono);
-  font-weight: 600; letter-spacing: 0.04em;
-  white-space: nowrap;
-  display: inline-flex; align-items: center; gap: 4px;
-  transition: all 0.15s;
-}
-.stack-low-btn:hover { border-color: rgba(163,45,45,0.4); color: var(--warning); }
-.stack-low-btn.is-low {
-  background: var(--warning-bg);
-  border-color: rgba(163,45,45,0.4);
-  color: var(--warning);
-}
-
-.stack-item-del {
-  background: transparent;
-  border: 1px solid var(--border-strong);
-  color: var(--text-tertiary);
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px 10px; border-radius: 6px;
-  opacity: 0.7;
-  transition: opacity 0.15s, color 0.15s, border-color 0.15s, background 0.15s;
-  font-family: inherit;
-  line-height: 1;
-  min-width: 28px; min-height: 28px;
-  display: inline-flex; align-items: center; justify-content: center;
-}
-.stack-item:hover .stack-item-del { opacity: 1; }
-.stack-item-del:hover, .stack-item-del:active {
-  color: #FF6B6B;
-  border-color: rgba(239, 68, 68, 0.45);
-  background: rgba(239, 68, 68, 0.08);
-  opacity: 1;
-}
-
-.stack-window-empty {
-  font-size: 12px;
-  color: var(--text-quaternary);
-  font-style: italic;
-  padding: 8px 12px;
-}
-
-/* ====== TICKER — cycles missed + running low every 5s ====== */
-.stack-ticker {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  margin-bottom: 14px;
-  background: rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 10px;
-  font-size: 12px;
-  min-height: 36px;
-}
-.stack-ticker-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--pos);
-  flex-shrink: 0;
-  transition: background 0.3s;
-}
-.stack-ticker.status-low .stack-ticker-dot { background: #FF8A4D; }
-.stack-ticker.status-missed .stack-ticker-dot {
-  background: #FF6B6B;
-  animation: ticker-pulse 1.5s ease-in-out infinite;
-}
-@keyframes ticker-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
-  50%      { box-shadow: 0 0 0 5px rgba(239, 68, 68, 0); }
-}
-.stack-ticker-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  flex-shrink: 0;
-}
-.stack-ticker-sep { color: var(--text-quaternary); flex-shrink: 0; }
-.stack-ticker-msg {
-  flex: 1;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: opacity 0.28s;
-}
-.stack-ticker-msg.is-fading { opacity: 0; }
-.stack-ticker-count {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-tertiary);
-  font-variant-numeric: tabular-nums;
-  flex-shrink: 0;
-}
-
-.stack-add-wrap {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border-soft);
-}
-.stack-add-label { margin-bottom: 10px; }
-.stack-add-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 110px 90px;
-  gap: 6px;
-  align-items: center;
-}
-.stack-input {
-  font-size: 13px;
-  padding: 9px 11px;
-  border-radius: 10px;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-input);
-  color: var(--text-primary);
-  font-family: inherit;
-  transition: border-color 0.18s, background 0.18s;
-}
-.stack-input::placeholder { color: var(--text-tertiary); }
-.stack-input:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.40);
-  background: var(--bg-input-focus);
-}
-.stack-select { cursor: pointer; }
-.stack-add-btn {
-  font-size: 13px;
-  padding: 9px 11px;
-  border-radius: 10px;
-  border: 1px solid var(--brand-line);
-  background: var(--brand);
-  color: var(--brand-ink);
-  font-weight: 700;
-  letter-spacing: 0.005em;
-  cursor: pointer;
-  font-family: inherit;
-  transition: transform 0.12s, box-shadow 0.18s, filter 0.18s;
-}
-.stack-add-btn:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 0 26px var(--brand-glow);
-  transform: translateY(-1px);
-}
-.stack-add-btn:active { transform: translateY(0) scale(0.97); }
-
-/* ====== SEARCH AUTOCOMPLETE — appears below the form when typing in Name ====== */
-.stack-name-wrap { position: relative; }
-
-.stack-search-results {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  width: max(100%, 320px);
-  background: var(--bg-dropdown);
-  border: 1px solid var(--border-strong);
-  border-radius: 12px;
-  max-height: 280px;
-  overflow-y: auto;
-  backdrop-filter: blur(20px) saturate(1.2);
-  -webkit-backdrop-filter: blur(20px) saturate(1.2);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
-  z-index: 50;
-  padding: 6px;
-}
-.stack-search-results[hidden] { display: none; }
-
-.stack-result {
-  display: flex;
-  gap: 12px; align-items: center;
-  width: 100%;
-  padding: 9px 11px;
-  background: transparent; border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  color: var(--text-secondary);
-  transition: background 0.12s;
-}
-.stack-result:hover, .stack-result.is-focused { background: rgba(255, 255, 255, 0.06); }
-
-.stack-result-icon { font-size: 17px; flex-shrink: 0; width: 24px; text-align: center; }
-.stack-result-body { min-width: 0; flex: 1; }
-.stack-result-name {
-  font-size: 13px; font-weight: 600;
-  color: var(--text-primary); line-height: 1.2;
-}
-.stack-result-meta {
-  font-size: 11px; color: var(--text-tertiary);
-  margin-top: 2px;
-}
-
-.attribution {
-  text-align: center; margin-top: 28px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-quaternary);
-}
-
-@media (max-width: 600px) {
-  main { padding: 40px 16px 60px; }
-  .stack-card { padding: 18px 16px 14px; }
-  .stack-item { grid-template-columns: 28px 1fr auto; gap: 8px; }
-  .stack-item .stack-low-btn { grid-column: 2 / 4; margin-top: 4px; justify-self: start; }
-  .stack-add-row { grid-template-columns: 1fr 1fr; }
-  .stack-add-row .stack-add-btn { grid-column: 1 / -1; }
-  .stack-add-row .stack-select { grid-column: 1 / -1; }
-  .stack-search-results { width: 100%; }
-}
-
-::selection { background: rgba(224, 118, 88, 0.3); color: var(--text-primary); }
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
-
-/* ---- supplement variables ---- */
-:root {
-  --accent-hi: #F08A6C;
-  --success: var(--pos);
-  --danger: var(--neg);
-  --glass-border: var(--border);
-  --glass-shadow: var(--card-shadow);
-}
-
-
-/* ============================================================
-   GARMIN CARD
-   ============================================================ */
-.garmin-section { margin-bottom: 32px; }
-.garmin-card {
-  padding: 22px 22px 18px;
-  background: rgba(255,255,255,0.025);
-  border-radius: 22px;
-  box-shadow: 0 1px 0 0 rgba(255,255,255,0.06) inset, 0 12px 40px rgba(0,0,0,0.45), 0 1px 2px rgba(0,0,0,0.25);
-}
-/* Brand */
-.wh-brand { display:inline-flex; align-items:center; gap:8px; }
-.wh-brand-mark { width:22px; height:22px; border-radius:50%; background:#00A6FF; color:#fff; font-weight:900; font-size:12px; display:inline-flex; align-items:center; justify-content:center; letter-spacing:-0.04em; box-shadow:0 0 12px rgba(0,166,255,0.30); }
-.wh-brand-text { font-weight:800; font-size:13px; letter-spacing:0.18em; color:var(--text-primary); }
 /* Header */
-.wh-head { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
-.wh-live { display:inline-flex; align-items:center; gap:5px; font-size:9.5px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--pos); margin-left:4px; padding:3px 8px; border-radius:999px; background:var(--pos-soft); border:1px solid var(--pos-line); }
-.wh-live-dot { width:6px; height:6px; border-radius:50%; background:var(--pos); box-shadow:0 0 8px rgba(70,224,168,0.65); animation:wh-pulse 1.6s ease-in-out infinite; }
-@keyframes wh-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
-.wh-head-right { display:flex; align-items:center; gap:10px; }
-.wh-updated { font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); }
-.wh-refresh { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.4s, background 0.18s, color 0.18s; }
-.wh-refresh:hover { background:rgba(255,255,255,0.10); color:var(--text-primary); }
-.wh-refresh.spin { transform:rotate(360deg); }
-/* Ring */
-.wh-ring-wrap { position:relative; width:240px; max-width:78%; margin:0 auto 24px; aspect-ratio:1; }
-.wh-ring { width:100%; height:100%; transform:rotate(-90deg); filter:drop-shadow(0 0 24px rgba(255,255,255,0.05)); }
-.wh-ring-track { fill:none; stroke:rgba(255,255,255,0.06); stroke-width:12; }
-.wh-ring-fill { fill:none; stroke:#FFF; stroke-width:12; stroke-linecap:round; stroke-dasharray:603.19; stroke-dashoffset:603.19; transition:stroke-dashoffset 0.8s cubic-bezier(0.22,1,0.36,1), stroke 0.4s; }
-.wh-ring-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; }
-.wh-ring-num { font-size:60px; font-weight:700; letter-spacing:-0.04em; color:var(--text-primary); line-height:1; font-variant-numeric:tabular-nums; }
-.wh-ring-unit { font-size:10px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--text-tertiary); margin-top:10px; }
-.wh-ring-label { font-size:12.5px; font-weight:600; margin-top:6px; letter-spacing:-0.005em; }
-/* Stages */
-.wh-stages { margin-bottom:22px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.05); }
-.wh-stages-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
-.wh-stages-eye { font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-tertiary); }
-.wh-stages-meta { font-size:11px; color:var(--text-tertiary); font-family:var(--font-mono); }
-.wh-stages-bar { display:flex; height:10px; background:rgba(255,255,255,0.04); border-radius:999px; overflow:hidden; margin-bottom:12px; border:1px solid rgba(255,255,255,0.04); }
-.wh-stage { height:100%; transition:width 0.7s cubic-bezier(0.22,1,0.36,1); }
-.wh-stage-rem{background:#FFF} .wh-stage-deep{background:#B8B6B0} .wh-stage-light{background:#76746E} .wh-stage-awake{background:#38362F}
-.wh-stages-legend { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
-.wh-leg { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text-secondary); font-weight:500; }
-.wh-leg-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
-.wh-leg-dot.d-rem{background:#FFF} .wh-leg-dot.d-deep{background:#B8B6B0} .wh-leg-dot.d-light{background:#76746E} .wh-leg-dot.d-awake{background:#38362F; border:1px solid rgba(255,255,255,0.10);}
-.wh-leg-num { margin-left:auto; color:var(--text-primary); font-weight:700; font-family:var(--font-mono); font-size:11px; }
-@media (max-width:480px) { .wh-stages-legend { grid-template-columns:repeat(2,1fr); } }
-/* Stats */
-.wh-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.05); }
-.wh-stat { position:relative; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.04); border-radius:12px; padding:12px 10px; text-align:center; }
-.wh-stat-label { font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.14em; font-weight:700; margin-bottom:8px; }
-.wh-stat-val { font-size:22px; font-weight:700; color:var(--text-primary); line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-0.03em; }
-.wh-stat-sub { font-size:10px; color:var(--text-tertiary); margin-top:5px; font-family:var(--font-mono); }
-@media (max-width:480px) { .wh-stats { grid-template-columns:repeat(2,1fr); } .wh-stat-val { font-size:20px; } }
-/* Biomarkers */
-.wh-bio { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
-.wh-bio-item { position:relative; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.04); border-radius:12px; padding:11px 12px; text-align:center; }
-.wh-bio-label { display:block; font-size:9.5px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:4px; }
-.wh-bio-val { display:block; font-size:14px; font-weight:700; color:var(--text-primary); font-variant-numeric:tabular-nums; }
-@media (max-width:380px) { .wh-bio { grid-template-columns:1fr; } }
-/* Zone dot */
+.header { display:flex; flex-direction:column; gap: var(--space-4); margin-bottom: var(--space-2); }
+.headerTop { display:flex; align-items:center; justify-content:space-between; gap: var(--space-3); }
+.back { display:inline-flex; align-items:center; gap: var(--space-2); align-self:flex-start; padding: 6px 13px 6px 9px; background: var(--brand-soft); border: 1px solid var(--brand-line); border-radius: var(--radius-pill); color: var(--brand); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.01em; text-decoration: none; transition: background var(--duration) var(--ease-premium), border-color var(--duration) var(--ease-premium); }
+.back:hover { background: color-mix(in srgb, var(--brand) 18%, transparent); border-color: var(--brand); }
+.backArrow { font-size: 14px; line-height: 1; }
+.titleRow { display:flex; align-items:flex-end; justify-content:space-between; gap: var(--space-4); flex-wrap: wrap; }
+.title { font-family: var(--font-display); font-weight: 600; font-size: var(--text-3xl); line-height: 1.0; letter-spacing: -0.03em; color: var(--fg); margin: 0; }
+.subtitle { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin: 5px 0 0; }
+
+/* Theme switcher */
+.themeSeg { display:inline-flex; align-items:center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-pill); padding: 3px; gap: 2px; flex-shrink:0; }
+.themeBtn { appearance:none; background: transparent; border:0; color: var(--muted); font-family: var(--font-ui); font-size: 11px; font-weight: 600; letter-spacing: 0.02em; padding: 5px 11px 5px 8px; border-radius: var(--radius-pill); cursor: pointer; display:inline-flex; align-items:center; gap:6px; transition: background var(--duration) var(--ease-premium), color var(--duration) var(--ease-premium); }
+.themeBtn:hover { color: var(--muted-strong); }
+.themeSwatch { width: 11px; height: 11px; border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong) inset; flex-shrink:0; }
+.themeBtnActive, .themeBtnActive:hover { background: var(--brand-soft); color: var(--fg); }
+.themeBtnActive .themeSwatch { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--brand); }
+
+/* Ticker */
+.ticker { display:flex; align-items:center; gap: var(--space-3); margin-top: var(--space-5); padding: var(--space-2) var(--space-3); border: 1px solid var(--brand-line); border-radius: var(--radius-pill); background: var(--brand-soft); overflow:hidden; }
+.tickerEyebrow { display:inline-flex; align-items:center; gap: 8px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--brand); white-space:nowrap; padding-right: var(--space-3); border-right: 1px solid var(--border); flex-shrink:0; }
+.tickerPulse { width: 6px; height: 6px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 8px var(--brand-glow); animation: tickerPulse 1.6s ease-in-out infinite; }
+@keyframes tickerPulse { 0%,100% { opacity:1; transform: scale(1); } 50% { opacity:0.35; transform: scale(0.8); } }
+.tickerScroll { flex:1; overflow:hidden; position:relative; min-width:0; mask-image: linear-gradient(90deg, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 32px, #000 calc(100% - 32px), transparent 100%); }
+.tickerTrack { display:inline-flex; align-items:center; gap: var(--space-8); animation: tickerScroll 38s linear infinite; white-space:nowrap; padding-left: var(--space-4); will-change: transform; }
+@keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.tickerCell { display:inline-flex; align-items:center; gap: var(--space-2); font-variant-numeric: tabular-nums; white-space:nowrap; padding: 2px 10px; border-radius: var(--radius-sm); border: 1px solid transparent; }
+.tickerCell[data-tone="good"] { color: var(--pos); }
+.tickerCell[data-tone="watch"] { color: var(--warn); }
+.tickerCell[data-tone="urgent"] { color: var(--neg); animation: tickerUrgent 1.8s ease-in-out infinite; }
+.tickerSymbol { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-strong); }
+.tickerValue { font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--fg); padding: 1px 4px; border-radius: 3px; display:inline-flex; align-items:baseline; gap: 2px; }
+.tickerUnit { font-size: 9px; font-weight: 500; color: var(--muted); letter-spacing: 0.04em; }
+@keyframes tickerUrgent { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.ticker:hover .tickerTrack { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .tickerTrack, .tickerPulse, .tickerCell { animation: none !important; } }
+
+/* Connected panel */
+.panel { margin-top: var(--space-6); display:flex; flex-direction:column; gap: var(--space-5); }
+
+/* Recovery hero */
+.heroCard { display:grid; grid-template-columns: minmax(260px, 360px) 1fr; gap: var(--space-6); align-items:center; padding: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--card-shadow); }
+@media (max-width: 820px) { .heroCard { grid-template-columns: 1fr; gap: var(--space-5); } }
+.recoveryWrap { display:flex; justify-content:center; }
+.recoveryRing { position: relative; width: clamp(220px, 32vw, 300px); aspect-ratio: 1; display:grid; place-items:center; }
+.ringSvg { position:absolute; inset:0; width:100%; height:100%; transform: rotate(-90deg); }
+.ringTrack { fill:none; stroke: var(--track); stroke-width: 8; }
+.ringFill { fill:none; stroke: currentColor; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 720ms var(--ease-premium); filter: drop-shadow(0 0 12px currentColor); }
+.recoveryRing[data-tone="good"] .ringFill { color: var(--pos); }
+.recoveryRing[data-tone="watch"] .ringFill { color: var(--warn); }
+.recoveryRing[data-tone="low"] .ringFill { color: var(--neg); }
+.recoveryRing[data-tone="muted"] .ringFill { color: var(--muted); }
+.recoveryInner { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap: 2px; }
+.recoveryValue { font-family: var(--font-display); font-weight: 600; font-size: clamp(3.5rem, 7vw, 5rem); line-height: 1; letter-spacing: -0.03em; color: var(--fg); font-variant-numeric: tabular-nums; }
+.recoveryUnit { font-family: var(--font-display); font-weight: 500; font-size: var(--text-xl); color: var(--muted-strong); margin-top: -6px; }
+.recoveryLabel { margin-top: var(--space-2); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-strong); }
+.recoveryTier { margin-top: 3px; font-family: var(--font-display); font-weight: 600; font-size: var(--text-base); letter-spacing: -0.01em; color: var(--fg); }
+
+/* Right side of hero — last sync info */
+.heroRight { display:flex; flex-direction:column; gap: var(--space-4); }
+.serifTitle { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); color: var(--fg); letter-spacing: -0.02em; }
+.syncMeta { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); letter-spacing: 0.06em; }
+
+/* Stat grid */
+.grid { display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); }
+@media (max-width: 880px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stat { display:flex; flex-direction:column; gap: var(--space-2); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--card-shadow); transition: border-color var(--duration) var(--ease), background var(--duration) var(--ease), transform var(--duration) var(--ease); }
+.stat:hover { border-color: var(--border-strong); background: var(--surface-2); transform: translateY(-1px); }
+.statLabel { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-strong); }
+.statValueRow { display:flex; align-items:baseline; gap: 6px; }
+.statValue { font-family: var(--font-display); font-weight: 600; font-size: var(--text-3xl); line-height: 1; letter-spacing: -0.03em; color: var(--fg); font-variant-numeric: tabular-nums; }
+.statUnit { font-family: var(--font-display); font-weight: 500; font-size: var(--text-base); color: var(--muted-strong); }
+.statSub { font-size: var(--text-xs); color: var(--muted); letter-spacing: 0.02em; }
+.statDelta { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; padding: 3px 9px; border-radius: var(--radius-pill); align-self:flex-start; border: 1px solid var(--border); background: var(--surface-2); }
+.statDelta[data-tone="good"] { color: var(--pos); border-color: var(--pos-line); }
+.statDelta[data-tone="watch"] { color: var(--warn); border-color: var(--warn-line); }
+.statDelta[data-tone="low"] { color: var(--neg); border-color: var(--neg-line); }
+.statDelta[data-tone="neutral"] { color: var(--muted-strong); }
+
+/* Coach card */
+.coachCard { padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--card-shadow); transition: border-color var(--duration) var(--ease); }
+.coachCard:hover { border-color: var(--border-strong); }
+.cardHead { display:flex; align-items:baseline; justify-content:space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+.coachList { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap: var(--space-4); }
+.coachList li { display:grid; grid-template-columns: auto 1fr; gap: var(--space-3); align-items:flex-start; padding-left: var(--space-3); border-left: 1px solid var(--border); transition: border-color var(--duration) var(--ease); }
+.coachList li:hover { border-left-color: var(--brand); }
+.coachMark { color: var(--brand); font-size: var(--text-lg); line-height: 1.2; filter: drop-shadow(0 0 5px var(--brand-glow)); }
+.coachList strong { display:block; font-weight: 700; color: var(--fg); margin-bottom: 4px; font-size: var(--text-sm); line-height: 1.4; }
+.coachList li span:not(.coachMark) { color: var(--muted-strong); font-size: var(--text-sm); line-height: 1.55; }
+
+/* Footer */
+.footer { display:flex; align-items:center; justify-content:space-between; gap: var(--space-4); margin-top: var(--space-2); flex-wrap: wrap; }
+.legend { display:flex; align-items:center; gap: var(--space-3); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted-strong); letter-spacing: 0.06em; }
+.legendDot { display:inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+.legendDot[data-tone="good"] { background: var(--pos); box-shadow: 0 0 8px var(--pos-line); }
+.legendDot[data-tone="watch"] { background: var(--warn); }
+.legendDot[data-tone="low"] { background: var(--neg); }
+.footerActions { display:flex; align-items:center; gap: var(--space-3); }
+.synced { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 560px) { .footer { flex-direction:column; align-items:flex-start; } .footerActions { flex-wrap: wrap; } }
+
+/* No-data state */
+.noDataCard { margin-top: var(--space-8); max-width: 520px; display:flex; flex-direction:column; gap: var(--space-4); padding: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--card-shadow); }
+.noDataTitle { font-size: var(--text-lg); line-height: 1.45; color: var(--fg); margin: 0; }
+.noDataSub { font-size: var(--text-xs); color: var(--muted); margin: 0; letter-spacing: 0.04em; }
+
+/* Zone dots */
 .wh-zone { position:absolute; top:9px; right:9px; width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.12); }
 .wh-zone.z-good { background:var(--pos); box-shadow:0 0 7px rgba(70,224,168,0.55); }
 .wh-zone.z-norm { background:rgba(255,255,255,0.30); }
 .wh-zone.z-warn { background:var(--warn); box-shadow:0 0 7px rgba(251,191,36,0.55); }
 .wh-zone.z-bad  { background:var(--neg); box-shadow:0 0 7px rgba(251,113,133,0.55); }
-/* Legend */
-.wh-legend { display:flex; justify-content:center; flex-wrap:wrap; gap:14px; margin-top:14px; padding:10px 12px; background:rgba(255,255,255,0.02); border-radius:999px; border:1px solid rgba(255,255,255,0.04); }
-.wh-leg-item { display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:600; color:var(--text-tertiary); }
+
+/* Legend row */
+.wh-legend { display:flex; justify-content:center; flex-wrap:wrap; gap:14px; margin-top:14px; padding:10px 12px; background: var(--surface); border-radius:var(--radius-pill); border:1px solid var(--border); }
+.wh-leg-item { display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:600; color:var(--muted-strong); font-family: var(--font-mono); }
 .wh-leg-item .wh-zone { position:static; display:inline-block; }
-/* Today's Call */
-.wh-verdict { margin-top:18px; padding:16px 18px; background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.04); border-left:2px solid rgba(255,255,255,0.40); border-radius:0 12px 12px 0; }
-.wh-verdict-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-.wh-verdict-eye { font-size:10px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:0.18em; font-weight:700; }
-.wh-verdict-badge { font-size:9.5px; font-weight:800; padding:3px 9px; border-radius:999px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid; }
-.wh-verdict-badge.green  { color:var(--pos); border-color:var(--pos-line); background:var(--pos-soft); }
-.wh-verdict-badge.yellow { color:var(--warn); border-color:var(--warn-line); background:var(--warn-soft); }
-.wh-verdict-badge.red    { color:var(--neg); border-color:var(--neg-line); background:var(--neg-soft); }
-.wh-verdict-headline { font-size:15px; font-weight:600; color:var(--text-primary); line-height:1.4; margin-bottom:12px; }
-.wh-verdict-reasons { font-size:12.5px; color:var(--text-secondary); line-height:1.65; }
-/* Error / no-data */
-.wh-err { background:rgba(255,107,107,0.08); border:1px solid rgba(255,107,107,0.28); color:#FF8A8A; padding:10px 12px; border-radius:10px; font-size:11.5px; font-family:var(--font-mono); margin-bottom:14px; }
-.wh-nodata { text-align:center; padding:32px 8px; color:var(--text-tertiary); font-size:13px; }
+
+/* Verdict banner */
+.verdictCard { margin-top: var(--space-4); padding: var(--space-4) var(--space-5); background: var(--surface); border: 1px solid var(--border); border-left: 2px solid var(--brand-line); border-radius: 0 var(--radius-lg) var(--radius-lg) 0; }
+.verdictHead { display:flex; align-items:center; gap: var(--space-3); margin-bottom: var(--space-3); }
+.verdictEye { font-family: var(--font-mono); font-size: 10px; color: var(--muted-strong); text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700; }
+.verdictBadge { font-size: 9.5px; font-weight: 800; padding: 3px 9px; border-radius: var(--radius-pill); letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid; }
+.verdictBadge.green  { color: var(--pos); border-color: var(--pos-line); background: var(--pos-soft); }
+.verdictBadge.yellow { color: var(--warn); border-color: var(--warn-line); background: var(--warn-soft); }
+.verdictBadge.red    { color: var(--neg); border-color: var(--neg-line); background: var(--neg-soft); }
+.verdictHeadline { font-size: var(--text-base); font-weight: 600; color: var(--fg); line-height: 1.4; margin-bottom: var(--space-3); }
+.verdictReasons { font-size: var(--text-sm); color: var(--muted-strong); line-height: 1.65; }
+
+/* Stat card position relative for zone dot */
+.stat { position: relative; }
+
+/* Error banner */
+.errBanner { background: var(--neg-soft); border: 1px solid var(--neg-line); color: var(--neg); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); font-size: var(--text-xs); font-family: var(--font-mono); margin-bottom: var(--space-4); }
+
+/* Supplements section */
+.suppSection { margin-top: var(--space-8); }
+.sectionDivider { display:flex; align-items:center; gap: var(--space-4); margin-bottom: var(--space-5); }
+.sectionDivider::before, .sectionDivider::after { content:''; flex:1; height:1px; background: var(--border); }
+.sectionDividerLabel { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted-strong); }
+
 </style>
+<script src="icons.js?v=1"></script>
+<script src="theme.js"></script>
 </head>
 <body>
+<main class="page grain-overlay">
+  <div class="shell" id="app">
 
-<main>
-  <section class="garmin-section">
-    <div class="section-title">Garmin</div>
-    <div class="garmin-card">
-      <div id="whNoData" class="wh-nodata" style="display:none">No data yet — sync runs every 4 hours</div>
-      <div id="whConn" style="display:none">
-        <div class="wh-head">
-          <div class="wh-brand">
-            <span class="wh-brand-mark">G</span>
-            <span class="wh-brand-text">GARMIN</span>
-            <span class="wh-live"><span class="wh-live-dot"></span>daily sync</span>
-          </div>
-          <div class="wh-head-right">
-            <span id="whUpdated" class="wh-updated">—</span>
-            <button id="whRefresh" class="wh-refresh" type="button" aria-label="Refresh"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15A9 9 0 1 1 5.64 5.64L23 10"/></svg></button>
-          </div>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+      <div class="headerTop">
+        <a class="back" href="index.html"><span class="backArrow">←</span> Dashboard</a>
+        <div class="themeSeg" role="radiogroup" aria-label="Theme">
+          <button type="button" class="themeBtn" data-action="theme" data-theme="nocturne"><span class="themeSwatch" style="background:#8B7CFF"></span>Nocturne</button>
+          <button type="button" class="themeBtn" data-action="theme" data-theme="aurora"><span class="themeSwatch" style="background:linear-gradient(135deg,#8B7BFF,#4FE3D0)"></span>Aurora</button>
+          <button type="button" class="themeBtn" data-action="theme" data-theme="daylight"><span class="themeSwatch" style="background:#6A45FF"></span>Daylight</button>
         </div>
-        <div id="whErr" class="wh-err" style="display:none"></div>
-        <div class="wh-ring-wrap">
-          <svg class="wh-ring" viewBox="0 0 220 220" aria-hidden="true">
-            <circle class="wh-ring-track" cx="110" cy="110" r="96"/>
-            <circle class="wh-ring-fill" cx="110" cy="110" r="96" id="whRingFill"/>
-          </svg>
-          <div class="wh-ring-center">
-            <div id="whRecNum" class="wh-ring-num">—</div>
-            <div class="wh-ring-unit">body battery</div>
-            <div id="whRecLabel" class="wh-ring-label">—</div>
-          </div>
-        </div>
-        <div id="whStages" class="wh-stages" style="display:none">
-          <div class="wh-stages-head"><span class="wh-stages-eye">Sleep stages</span><span class="wh-stages-meta" id="whStagesMeta">—</span></div>
-          <div class="wh-stages-bar">
-            <div class="wh-stage wh-stage-rem"   id="whBarRem"   style="width:0%"></div>
-            <div class="wh-stage wh-stage-deep"  id="whBarDeep"  style="width:0%"></div>
-            <div class="wh-stage wh-stage-light" id="whBarLight" style="width:0%"></div>
-            <div class="wh-stage wh-stage-awake" id="whBarAwake" style="width:0%"></div>
-          </div>
-          <div class="wh-stages-legend">
-            <div class="wh-leg"><span class="wh-leg-dot d-rem"></span>REM<span class="wh-leg-num" id="whRem">—</span></div>
-            <div class="wh-leg"><span class="wh-leg-dot d-deep"></span>Deep<span class="wh-leg-num" id="whDeep">—</span></div>
-            <div class="wh-leg"><span class="wh-leg-dot d-light"></span>Light<span class="wh-leg-num" id="whLight">—</span></div>
-            <div class="wh-leg"><span class="wh-leg-dot d-awake"></span>Awake<span class="wh-leg-num" id="whAwake">—</span></div>
-          </div>
-        </div>
-        <div class="wh-stats">
-          <div class="wh-stat"><span class="wh-zone" id="whZoneSleep"></span><div class="wh-stat-label">Sleep</div><div class="wh-stat-val" id="whSleep">—</div><div class="wh-stat-sub" id="whSleepSub">score %</div></div>
-          <div class="wh-stat"><span class="wh-zone" id="whZoneStrain"></span><div class="wh-stat-label">Stress</div><div class="wh-stat-val" id="whStrain">—</div><div class="wh-stat-sub">avg /100</div></div>
-          <div class="wh-stat"><span class="wh-zone" id="whZoneRhr"></span><div class="wh-stat-label">RHR</div><div class="wh-stat-val" id="whRhr">—</div><div class="wh-stat-sub">bpm</div></div>
-        </div>
-        <div class="wh-legend">
-          <span class="wh-leg-item"><span class="wh-zone z-good"></span>Good</span>
-          <span class="wh-leg-item"><span class="wh-zone z-norm"></span>Normal</span>
-          <span class="wh-leg-item"><span class="wh-zone z-warn"></span>Watch</span>
-          <span class="wh-leg-item"><span class="wh-zone z-bad"></span>High / Low</span>
-        </div>
-        <div id="whVerdict" class="wh-verdict" style="display:none">
-          <div class="wh-verdict-head"><span class="wh-verdict-eye">Today's call</span><span id="whVerdictBadge" class="wh-verdict-badge"></span></div>
-          <div id="whVerdictHead" class="wh-verdict-headline"></div>
-          <div id="whVerdictReasons" class="wh-verdict-reasons"></div>
+      </div>
+      <div class="titleRow">
+        <div>
+          <h1 class="title">Health</h1>
+          <p class="subtitle">Recovery · sleep · stress · RHR</p>
         </div>
       </div>
     </div>
-  </section>
 
-  <div class="section-title">Daily Stack</div>
+    <!-- ===== TICKER (rendered by JS) ===== -->
+    <div id="tickerWrap"></div>
 
-  <div class="stack-card">
-    <div class="stack-ticker" id="stackTicker">
-      <span class="stack-ticker-dot"></span>
-      <span class="stack-ticker-label">STACK</span>
-      <span class="stack-ticker-sep">·</span>
-      <span class="stack-ticker-msg" id="stackTickerMsg">All caught up — keep it rolling</span>
-      <span class="stack-ticker-count" id="stackTickerCount">0/0</span>
+    <!-- ===== NO-DATA STATE ===== -->
+    <div id="noDataCard" class="noDataCard" style="display:none">
+      <p class="noDataTitle">No Garmin data yet</p>
+      <p class="noDataSub">Sync runs every 4 hours — check back soon.</p>
     </div>
 
-    <div class="stack-head">
-      <div class="sf-eyebrow">Daily stack</div>
-      <div class="sf-title">Tap each as you take it</div>
-      <div class="stack-progress-text" id="stackProgressText">— / — taken today · resets at 6 AM</div>
-    </div>
+    <!-- ===== CONNECTED PANEL ===== -->
+    <div id="connectedPanel" class="panel" style="display:none">
 
-    <div class="stack-progress-track">
-      <div id="stackProgressBar" class="stack-progress-fill"></div>
-    </div>
+      <div id="errBanner" class="errBanner" style="display:none"></div>
 
-    <div id="stackGroups"></div>
-
-    <div class="stack-add-wrap">
-      <div class="sf-eyebrow stack-add-label">Add to stack</div>
-      <div class="stack-add-row">
-        <div class="stack-name-wrap">
-          <input id="stackAddName" type="text" placeholder="Name (e.g. B-complex)" class="stack-input" autocomplete="off" spellcheck="false" />
-          <div id="stackSearchResults" class="stack-search-results" hidden></div>
+      <!-- Recovery hero -->
+      <div class="heroCard">
+        <div class="recoveryWrap">
+          <div class="recoveryRing" id="recoveryRing" data-tone="muted">
+            <svg viewBox="0 0 200 200" class="ringSvg" aria-hidden="true">
+              <circle cx="100" cy="100" r="92" class="ringTrack" />
+              <circle cx="100" cy="100" r="92" class="ringFill" id="ringFill" style="stroke-dasharray:578.05;stroke-dashoffset:578.05;" />
+            </svg>
+            <div class="recoveryInner">
+              <div class="recoveryValue" id="recoveryValue">—</div>
+              <div class="recoveryUnit">%</div>
+              <div class="recoveryLabel">Body Battery</div>
+              <div class="recoveryTier" id="recoveryTier">—</div>
+            </div>
+          </div>
         </div>
-        <input id="stackAddDose" type="text" placeholder="Dose (e.g. 1 cap)" class="stack-input" />
-        <select id="stackAddWindow" class="stack-input stack-select">
-          <option value="morning">Morning</option>
-          <option value="lunch">Lunch</option>
-          <option value="evening">Evening</option>
-          <option value="anytime">Anytime</option>
-        </select>
-        <button id="stackAddBtn" class="stack-add-btn">+ Add</button>
+        <div class="heroRight">
+          <div class="serifTitle">Garmin · Daily Sync</div>
+          <div class="syncMeta" id="syncMeta">—</div>
+          <div class="wh-legend" style="margin-top:8px;">
+            <span class="wh-leg-item"><span class="wh-zone z-good"></span>Good</span>
+            <span class="wh-leg-item"><span class="wh-zone z-norm"></span>Normal</span>
+            <span class="wh-leg-item"><span class="wh-zone z-warn"></span>Watch</span>
+            <span class="wh-leg-item"><span class="wh-zone z-bad"></span>High / Low</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <section id="water" class="water-embed">
-    <div class="section-title">Water Tracker</div>
-    <iframe src="po-water.html" class="water-iframe" loading="lazy" title="Water Tracker"></iframe>
-  </section>
+      <!-- Stat grid -->
+      <div class="grid">
+        <div class="stat">
+          <span class="wh-zone" id="zoneSleep"></span>
+          <div class="statLabel">Sleep</div>
+          <div class="statValueRow"><span class="statValue" id="statSleep">—</span><span class="statUnit">%</span></div>
+          <div class="statSub" id="statSleepSub">score</div>
+        </div>
+        <div class="stat">
+          <span class="wh-zone" id="zoneStress"></span>
+          <div class="statLabel">Avg Stress</div>
+          <div class="statValueRow"><span class="statValue" id="statStress">—</span><span class="statUnit">/100</span></div>
+          <div class="statSub">daily average</div>
+        </div>
+        <div class="stat">
+          <span class="wh-zone" id="zoneRhr"></span>
+          <div class="statLabel">RHR</div>
+          <div class="statValueRow"><span class="statValue" id="statRhr">—</span><span class="statUnit">bpm</span></div>
+          <div class="statSub">resting heart rate</div>
+        </div>
+        <div class="stat">
+          <div class="statLabel">Body Battery</div>
+          <div class="statValueRow"><span class="statValue" id="statBattery">—</span><span class="statUnit">%</span></div>
+          <div class="statSub">energy reserve</div>
+        </div>
+      </div>
 
-  <div class="attribution">// editable template · all data stays in your browser</div>
+      <!-- Verdict banner -->
+      <div id="verdictCard" class="verdictCard" style="display:none">
+        <div class="verdictHead">
+          <span class="verdictEye">Today's call</span>
+          <span id="verdictBadge" class="verdictBadge"></span>
+        </div>
+        <div id="verdictHeadline" class="verdictHeadline"></div>
+        <div id="verdictReasons" class="verdictReasons"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <div class="legend">
+          <span class="legendDot" data-tone="good"></span> Good
+          <span class="legendDot" data-tone="watch"></span> Watch
+          <span class="legendDot" data-tone="low"></span> Low
+        </div>
+        <div class="footerActions">
+          <span class="synced" id="footerSynced">—</span>
+          <button type="button" class="btn btn-ghost" id="refreshBtn">Refresh</button>
+        </div>
+      </div>
+
+    </div><!-- /connectedPanel -->
+
+  </div><!-- /shell -->
 </main>
 
 <script>
-(() => {
-  'use strict';
-
-  const storeGet = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
-  const storeSet = (k, v) => localStorage.setItem(k, JSON.stringify(v));
-
-  function getActiveDate() {
-    const now = new Date();
-    if (now.getHours() < 6) now.setDate(now.getDate() - 1);
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, '0');
-    const d = String(now.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
-
-  const TEMPLATE_VERSION = 5;
-
-  const STACK_DEFAULTS = [
-    { id: 'm1', name: 'XXXXX - Supplement of choice', dose: '', window: 'morning', note: 'how much MG, meal times, any data below', tag: null,    ordered: true  },
-    { id: 'm2', name: 'XXXXX - Supplement of choice', dose: '', window: 'morning', note: 'how much MG, meal times, any data below', tag: 'stack', ordered: true  },
-    { id: 'm3', name: 'XXXXX - Supplement of choice', dose: '', window: 'morning', note: 'how much MG, meal times, any data below', tag: null,    ordered: true  },
-    { id: 'l1', name: 'XXXXX - Supplement of choice', dose: '', window: 'lunch',   note: 'how much MG, meal times, any data below', tag: null,    ordered: true  },
-    { id: 'l2', name: 'XXXXX - Supplement of choice', dose: '', window: 'lunch',   note: 'how much MG, meal times, any data below', tag: null,    ordered: true  },
-    { id: 'e1', name: 'XXXXX - Supplement of choice', dose: '', window: 'evening', note: 'how much MG, meal times, any data below', tag: null,    ordered: true  },
-    { id: 'e2', name: 'XXXXX - Supplement of choice', dose: '', window: 'evening', note: 'how much MG, meal times, any data below', tag: 'not-ordered', ordered: false },
-    { id: 'e3', name: 'XXXXX - Supplement of choice', dose: '', window: 'evening', note: 'how much MG, meal times, any data below', tag: null,    ordered: true  },
-  ];
-
-  const STACK_WINDOWS = [
-    { key: 'morning', icon: '🌅', title: 'Morning', time: '7–10 AM', cutoffHour: 10 },
-    { key: 'lunch',   icon: '🍽️', title: 'Lunch',   time: '12–2 PM', cutoffHour: 14 },
-    { key: 'evening', icon: '🌙', title: 'Evening', time: '9–11 PM', cutoffHour: 23 },
-    { key: 'anytime', icon: '⏱️', title: 'Anytime', time: 'No fixed window', cutoffHour: null },
-  ];
-
-  // ====== SUPPLEMENT DATABASE — researched defaults ======
-  const SUPPLEMENT_DB = [
-    { name: 'Creatine monohydrate', dose: '5g', window: 'anytime', note: 'Daily — consistency matters more than timing', icon: '🏋️', aliases: ['creatine'] },
-    { name: 'Beta-alanine', dose: '2–5g', window: 'morning', note: 'Pre-workout — split doses to avoid tingles', icon: '🏋️', aliases: ['beta alanine'] },
-    { name: 'L-citrulline', dose: '6–8g', window: 'morning', note: '~30 min pre-workout for pump', icon: '🏋️', aliases: ['citrulline'] },
-    { name: 'BCAAs', dose: '5–10g', window: 'anytime', note: 'Around workout window', icon: '🏋️', aliases: ['bcaa'] },
-    { name: 'Whey protein', dose: '25–40g', window: 'anytime', note: 'Post-workout or to hit daily target', icon: '🥤', aliases: ['whey'] },
-    { name: 'Casein protein', dose: '25–40g', window: 'evening', note: 'Before bed for slow overnight aminos', icon: '🥤', aliases: ['casein'] },
-    { name: 'L-carnitine', dose: '1–2g', window: 'morning', note: 'With carbs for best uptake', icon: '🏋️', aliases: ['carnitine'] },
-    { name: 'Acetyl-L-carnitine', dose: '500mg–2g', window: 'morning', note: 'Cognitive variant — crosses BBB', icon: '🧠', aliases: ['alcar'] },
-    { name: 'HMB', dose: '3g', window: 'anytime', note: 'Split 3x daily — muscle preservation', icon: '🏋️', aliases: ['hmb'] },
-    { name: 'Glutamine', dose: '5g', window: 'anytime', note: 'Recovery — post-workout or before bed', icon: '🏋️', aliases: ['l-glutamine'] },
-    { name: 'Vitamin D3', dose: '2000–5000 IU', window: 'lunch', note: 'Fat-soluble — take with biggest meal', icon: '☀️', aliases: ['vit d', 'vitamin d', 'd3', 'cholecalciferol'] },
-    { name: 'Vitamin K2 (MK-7)', dose: '100–200 mcg', window: 'lunch', note: 'Pairs with D3 — same meal', icon: '💊', aliases: ['vit k', 'vitamin k', 'k2', 'mk7'] },
-    { name: 'Vitamin C', dose: '500–1000mg', window: 'morning', note: 'Water-soluble — split if over 500mg', icon: '🍊', aliases: ['vit c', 'ascorbic acid'] },
-    { name: 'Vitamin B12', dose: '500–1000mcg', window: 'morning', note: 'Methylcobalamin form preferred', icon: '⚡', aliases: ['b12', 'methylcobalamin'] },
-    { name: 'B-complex', dose: '1 cap', window: 'morning', note: 'All B vitamins — energy', icon: '⚡', aliases: ['b complex', 'b vitamins'] },
-    { name: 'Vitamin A', dose: '5000 IU', window: 'lunch', note: 'Fat-soluble — with fat', icon: '💊', aliases: ['vit a', 'retinol'] },
-    { name: 'Vitamin E', dose: '400 IU', window: 'lunch', note: 'Fat-soluble — with fat', icon: '💊', aliases: ['vit e', 'tocopherol'] },
-    { name: 'Folate', dose: '400–800mcg', window: 'morning', note: 'Methylfolate preferred', icon: '💊', aliases: ['folic acid', 'b9', 'methylfolate'] },
-    { name: 'Biotin', dose: '30mcg–5mg', window: 'anytime', note: 'Hair, skin, nails', icon: '💅', aliases: ['biotin', 'b7'] },
-    { name: 'Multivitamin', dose: '1 serving', window: 'lunch', note: 'Take with food', icon: '💊', aliases: ['multi', 'multivitamin'] },
-    { name: 'Magnesium glycinate', dose: '200–400mg', window: 'evening', note: '30–60 min before bed — sleep helper', icon: '🌙', aliases: ['magnesium', 'mag glycinate', 'bisglycinate'] },
-    { name: 'Magnesium L-threonate', dose: '144mg elemental', window: 'evening', note: 'Cognitive variant — crosses BBB', icon: '🧠', aliases: ['magtein', 'threonate'] },
-    { name: 'Magnesium citrate', dose: '200–400mg', window: 'evening', note: 'Also supports digestion', icon: '🌙', aliases: ['mag citrate'] },
-    { name: 'Zinc', dose: '15–30mg', window: 'evening', note: 'With food — not with calcium or iron', icon: '💊', aliases: ['zinc'] },
-    { name: 'Iron', dose: '18–65mg', window: 'morning', note: 'Empty stomach with vit C', icon: '💊', aliases: ['iron'] },
-    { name: 'Calcium', dose: '500mg', window: 'evening', note: 'With food — not with iron', icon: '🦴', aliases: ['calcium'] },
-    { name: 'Selenium', dose: '100–200mcg', window: 'anytime', note: 'Thyroid + antioxidant', icon: '💊', aliases: ['selenium'] },
-    { name: 'Iodine', dose: '150mcg', window: 'morning', note: 'Thyroid support', icon: '💊', aliases: ['iodine'] },
-    { name: 'Omega-3 (Fish oil)', dose: '2–3g EPA+DHA', window: 'lunch', note: 'With biggest fatty meal', icon: '🐟', aliases: ['omega 3', 'omega3', 'fish oil', 'epa', 'dha'] },
-    { name: 'Krill oil', dose: '500–1000mg', window: 'lunch', note: 'More absorbable than fish oil', icon: '🐟', aliases: ['krill'] },
-    { name: 'MCT oil', dose: '1–2 tbsp', window: 'morning', note: 'Fast energy — start low', icon: '🥥', aliases: ['mct'] },
-    { name: 'Flaxseed oil', dose: '1–2g', window: 'lunch', note: 'Plant omega-3 — with food', icon: '🌱', aliases: ['flax', 'flaxseed'] },
-    { name: 'L-theanine', dose: '100–200mg', window: 'morning', note: 'Stacks with caffeine 2:1', icon: '🧠', aliases: ['theanine'] },
-    { name: 'Caffeine', dose: '100–200mg', window: 'morning', note: 'Stack with L-theanine for cleaner focus', icon: '☕', aliases: ['caffeine'] },
-    { name: 'Rhodiola rosea', dose: '200–400mg', window: 'morning', note: 'Adaptogen — energy and stress', icon: '🌿', aliases: ['rhodiola'] },
-    { name: 'Lion\'s mane', dose: '500–1000mg', window: 'morning', note: 'Cognitive support — daily', icon: '🍄', aliases: ['lions mane', 'hericium'] },
-    { name: 'Bacopa monnieri', dose: '300–600mg', window: 'morning', note: 'With fat — long-term memory', icon: '🌿', aliases: ['bacopa'] },
-    { name: 'Ginkgo biloba', dose: '120–240mg', window: 'morning', note: 'Circulation and cognition', icon: '🌿', aliases: ['ginkgo'] },
-    { name: 'Alpha-GPC', dose: '300–600mg', window: 'morning', note: 'Choline — focus and learning', icon: '🧠', aliases: ['alpha gpc'] },
-    { name: 'Phosphatidylserine', dose: '100–300mg', window: 'evening', note: 'Cortisol regulation', icon: '🧠', aliases: ['ps'] },
-    { name: 'NAC', dose: '600–1800mg', window: 'morning', note: 'Glutathione precursor — split doses', icon: '💊', aliases: ['nac', 'n-acetyl cysteine'] },
-    { name: 'Melatonin', dose: '0.3–3mg', window: 'evening', note: '30–60 min before bed — start low', icon: '🌙', aliases: ['melatonin'] },
-    { name: 'Glycine', dose: '3g', window: 'evening', note: 'Body temp drop = better sleep onset', icon: '🌙', aliases: ['glycine'] },
-    { name: 'Apigenin', dose: '50mg', window: 'evening', note: 'From chamomile — before bed', icon: '🌙', aliases: ['apigenin'] },
-    { name: 'Ashwagandha', dose: '300–600mg', window: 'evening', note: 'KSM-66 form — stress and cortisol', icon: '🌿', aliases: ['ashwagandha', 'ksm-66'] },
-    { name: 'L-tryptophan', dose: '500mg–1g', window: 'evening', note: 'Serotonin precursor — sleep onset', icon: '🌙', aliases: ['tryptophan'] },
-    { name: 'GABA', dose: '500–750mg', window: 'evening', note: 'Calming — before bed', icon: '🌙', aliases: ['gaba'] },
-    { name: 'Valerian root', dose: '300–600mg', window: 'evening', note: 'Sleep onset support', icon: '🌙', aliases: ['valerian'] },
-    { name: 'Probiotics', dose: '10–50 billion CFU', window: 'morning', note: 'Empty stomach or with food', icon: '🦠', aliases: ['probiotic'] },
-    { name: 'Quercetin', dose: '500–1000mg', window: 'anytime', note: 'Pairs well with vitamin C', icon: '🌿', aliases: ['quercetin'] },
-    { name: 'Curcumin', dose: '500–1000mg', window: 'lunch', note: 'With black pepper + fat', icon: '🌿', aliases: ['curcumin', 'turmeric'] },
-    { name: 'Resveratrol', dose: '250–500mg', window: 'morning', note: 'With fat for absorption', icon: '🍇', aliases: ['resveratrol'] },
-    { name: 'CoQ10 / Ubiquinol', dose: '100–200mg', window: 'lunch', note: 'Fat-soluble — with biggest meal', icon: '💊', aliases: ['coq10', 'ubiquinol'] },
-    { name: 'Alpha lipoic acid', dose: '300–600mg', window: 'morning', note: 'Empty stomach for absorption', icon: '💊', aliases: ['ala', 'alpha lipoic'] },
-    { name: 'Glutathione', dose: '250–1000mg', window: 'morning', note: 'Liposomal form for absorption', icon: '💊', aliases: ['glutathione'] },
-    { name: 'Astaxanthin', dose: '4–12mg', window: 'lunch', note: 'Fat-soluble — with fatty meal', icon: '💊', aliases: ['astaxanthin'] },
-    { name: 'Berberine', dose: '500mg', window: 'lunch', note: 'Before meals — glucose support', icon: '💊', aliases: ['berberine'] },
-    { name: 'Milk thistle', dose: '200–400mg', window: 'anytime', note: 'Silymarin — liver support', icon: '🌿', aliases: ['milk thistle', 'silymarin'] },
-    { name: 'Spirulina', dose: '3–5g', window: 'morning', note: 'Algae — protein and antioxidants', icon: '🌱', aliases: ['spirulina'] },
-    { name: 'Chlorella', dose: '2–4g', window: 'morning', note: 'Algae — detox support', icon: '🌱', aliases: ['chlorella'] },
-    { name: 'Tongkat ali', dose: '200–400mg', window: 'morning', note: 'Cycle 8 weeks on/off', icon: '🌿', aliases: ['tongkat', 'longjack'] },
-    { name: 'Fadogia agrestis', dose: '600mg', window: 'morning', note: 'Cycle 8 weeks on/off', icon: '🌿', aliases: ['fadogia'] },
-    { name: 'DHEA', dose: '25–50mg', window: 'morning', note: 'Hormonal — consult doctor', icon: '💊', aliases: ['dhea'] },
-    { name: 'Pregnenolone', dose: '10–50mg', window: 'morning', note: 'Hormonal — consult doctor', icon: '💊', aliases: ['pregnenolone'] },
-    { name: 'Tribulus terrestris', dose: '250–750mg', window: 'morning', note: 'Libido and energy', icon: '🌿', aliases: ['tribulus'] },
-    { name: 'Maca root', dose: '1.5–3g', window: 'morning', note: 'Adaptogen — energy and libido', icon: '🌿', aliases: ['maca'] },
-    { name: 'Collagen peptides', dose: '10–20g', window: 'anytime', note: 'With vitamin C for synthesis', icon: '💅', aliases: ['collagen'] },
-    { name: 'Glucosamine', dose: '1500mg', window: 'lunch', note: 'With food', icon: '🦴', aliases: ['glucosamine'] },
-    { name: 'Chondroitin', dose: '1200mg', window: 'lunch', note: 'Often paired with glucosamine', icon: '🦴', aliases: ['chondroitin'] },
-    { name: 'MSM', dose: '1–3g', window: 'anytime', note: 'Joint support', icon: '🦴', aliases: ['msm'] },
-    { name: 'Hyaluronic acid', dose: '120–200mg', window: 'anytime', note: 'Skin and joint hydration', icon: '💅', aliases: ['hyaluronic', 'ha'] },
-    { name: 'Cordyceps', dose: '1–3g', window: 'morning', note: 'Energy and endurance', icon: '🍄', aliases: ['cordyceps'] },
-    { name: 'Reishi', dose: '1–2g', window: 'evening', note: 'Calming adaptogen', icon: '🍄', aliases: ['reishi', 'ganoderma'] },
-    { name: 'Chaga', dose: '1–2g', window: 'morning', note: 'Antioxidant and immune', icon: '🍄', aliases: ['chaga'] },
-  ];
-
-  let todayKey = `stack:taken:${getActiveDate()}`;
-
-  function getItems() {
-    const storedVersion = storeGet('stack:version');
-    const stored = storeGet('stack:items');
-    if (!stored || !Array.isArray(stored) || !stored.length || storedVersion !== TEMPLATE_VERSION) {
-      const fresh = JSON.parse(JSON.stringify(STACK_DEFAULTS));
-      storeSet('stack:items', fresh);
-      storeSet('stack:version', TEMPLATE_VERSION);
-      return fresh;
-    }
-    return stored;
-  }
-  function setItems(items) { storeSet('stack:items', items); }
-  function getTaken() { return storeGet(todayKey) || {}; }
-  function setTaken(map) { storeSet(todayKey, map); }
-  function getLow() { return storeGet('stack:low') || []; }
-  function setLow(arr) { storeSet('stack:low', arr); }
-
-  function toggleTaken(id) {
-    const taken = getTaken();
-    if (taken[id]) delete taken[id]; else taken[id] = Date.now();
-    setTaken(taken); render();
-  }
-  function toggleLow(id) {
-    const low = getLow();
-    if (low.includes(id)) setLow(low.filter(x => x !== id));
-    else { low.push(id); setLow(low); }
-    render();
-  }
-  function deleteItem(id) {
-    setItems(getItems().filter(i => i.id !== id));
-    const taken = getTaken();
-    delete taken[id];
-    setTaken(taken);
-    setLow(getLow().filter(x => x !== id));
-    render();
-  }
-  function addItem(name, dose, windowKey, note = '') {
-    const v = String(name || '').trim();
-    if (!v) return;
-    const items = getItems();
-    const id = 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-    items.push({
-      id, name: v,
-      dose: String(dose || '').trim(),
-      window: ['morning','lunch','evening','anytime'].includes(windowKey) ? windowKey : 'anytime',
-      note: String(note || '').trim(),
-      tag: null, ordered: true
-    });
-    setItems(items);
-    render();
-  }
-  function updateItem(id, field, value) {
-    const items = getItems();
-    const item = items.find(i => i.id === id);
-    if (!item) return;
-    item[field] = value;
-    setItems(items);
-  }
-
-  function render() {
-    const items = getItems();
-    const taken = getTaken();
-    const low = getLow();
-    const totalCount = items.length;
-    const takenCount = items.filter(i => taken[i.id]).length;
-    document.getElementById('stackProgressText').textContent =
-      `${takenCount} / ${totalCount} taken today · resets at 6 AM`;
-    const pct = totalCount === 0 ? 0 : (takenCount / totalCount) * 100;
-    document.getElementById('stackProgressBar').style.width = pct + '%';
-
-    const groupsEl = document.getElementById('stackGroups');
-    groupsEl.innerHTML = '';
-
-    const now = new Date();
-    const nowHour = now.getHours() + (now.getMinutes() / 60);
-
-    STACK_WINDOWS.forEach(win => {
-      const winItems = items.filter(i => (i.window || 'anytime') === win.key);
-      if (winItems.length === 0) return;
-
-      const group = document.createElement('div');
-      group.className = 'stack-window';
-      group.innerHTML = `
-        <div class="stack-window-header">
-          <span class="stack-window-icon">${win.icon}</span>
-          <span class="stack-window-title">${win.title}</span>
-          <span class="stack-window-time">${win.time}</span>
-        </div>`;
-
-      const isPastCutoff = win.cutoffHour !== null && nowHour > win.cutoffHour;
-
-      winItems.forEach(item => {
-        const isTaken = !!taken[item.id];
-        const isLow = low.includes(item.id);
-        const isMissed = !isTaken && isPastCutoff;
-
-        const row = document.createElement('div');
-        row.className = 'stack-item' + (isTaken ? ' taken' : '') + (isMissed ? ' missed' : '');
-
-        let tagHtml = '';
-        if (item.tag === 'stack') tagHtml = '<span class="stack-item-tag tag-stack">stack</span>';
-        else if (item.tag === 'not-ordered') tagHtml = '<span class="stack-item-tag tag-not-ordered">not ordered</span>';
-
-        row.innerHTML = `
-          <button class="stack-check ${isTaken ? 'checked' : ''}" data-action="toggle" data-id="${item.id}" aria-label="Mark taken">${isTaken ? '✓' : ''}</button>
-          <div class="stack-item-body">
-            <div class="stack-item-name" data-edit="name" data-id="${item.id}">
-              <span class="stack-item-name-text">${escapeHtml(item.name)}</span>${tagHtml}
-            </div>
-            <div class="stack-item-meta" data-edit="meta" data-id="${item.id}">${escapeHtml(metaText(item))}</div>
-          </div>
-          <button class="stack-low-btn ${isLow ? 'is-low' : ''}" data-action="low" data-id="${item.id}">↓ Running low</button>
-          <button class="stack-item-del" data-action="del" data-id="${item.id}" aria-label="Delete">×</button>`;
-
-        group.appendChild(row);
-      });
-
-      groupsEl.appendChild(group);
-    });
-
-    if (groupsEl.children.length === 0) {
-      groupsEl.innerHTML = `<div class="stack-window-empty">No items yet — add one below to start your stack.</div>`;
-    }
-
-    // Sync ticker after every render
-    renderTicker();
-  }
-
-  // ====== TICKER ======
-  let tickerIndex = 0;
-  let tickerInterval = null;
-  let cachedIssues = [];
-
-  function getStackIssues() {
-    const items = getItems();
-    const taken = getTaken();
-    const low = getLow();
-    const now = new Date();
-    const nowHour = now.getHours() + (now.getMinutes() / 60);
-
-    const missed = [];
-    const lowList = [];
-
-    items.forEach(item => {
-      const win = STACK_WINDOWS.find(w => w.key === (item.window || 'anytime'));
-      const isPastCutoff = win && win.cutoffHour !== null && nowHour > win.cutoffHour;
-      const isTaken = !!taken[item.id];
-      if (isPastCutoff && !isTaken) {
-        missed.push({
-          type: 'missed',
-          text: `${item.name} — missed ${win.title.toLowerCase()} dose`
-        });
-      }
-      if (low.includes(item.id)) {
-        lowList.push({
-          type: 'low',
-          text: `${item.name} — running low, reorder soon`
-        });
-      }
-    });
-
-    return [...missed, ...lowList];
-  }
-
-  function renderTicker() {
-    const issues = getStackIssues();
-    const tickerEl = document.getElementById('stackTicker');
-    const msgEl = document.getElementById('stackTickerMsg');
-    const countEl = document.getElementById('stackTickerCount');
-    const totalItems = getItems().length;
-
-    cachedIssues = issues;
-
-    if (issues.length === 0) {
-      msgEl.textContent = 'All caught up — keep it rolling';
-      tickerEl.classList.remove('status-low', 'status-missed');
-      countEl.textContent = `0/${totalItems}`;
-      tickerIndex = 0;
-      return;
-    }
-
-    const hasMissed = issues.some(i => i.type === 'missed');
-    tickerEl.classList.remove('status-low', 'status-missed');
-    tickerEl.classList.add(hasMissed ? 'status-missed' : 'status-low');
-
-    if (tickerIndex >= issues.length) tickerIndex = 0;
-    msgEl.textContent = issues[tickerIndex].text;
-    countEl.textContent = `${issues.length}/${totalItems}`;
-  }
-
-  function cycleTicker() {
-    if (cachedIssues.length <= 1) {
-      renderTicker();
-      return;
-    }
-    const msgEl = document.getElementById('stackTickerMsg');
-    msgEl.classList.add('is-fading');
-    setTimeout(() => {
-      tickerIndex++;
-      renderTicker();
-      msgEl.classList.remove('is-fading');
-    }, 280);
-  }
-
-  function startTicker() {
-    if (tickerInterval) clearInterval(tickerInterval);
-    tickerInterval = setInterval(cycleTicker, 5000);
-  }
-
-  function metaText(item) {
-    const parts = [];
-    if (item.dose) parts.push(item.dose);
-    if (item.note) parts.push(item.note);
-    return parts.join(' · ');
-  }
-  function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-
-  document.getElementById('stackGroups').addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action]');
-    if (!btn) return;
-    e.stopPropagation();
-    const id = btn.dataset.id;
-    if (btn.dataset.action === 'toggle') toggleTaken(id);
-    else if (btn.dataset.action === 'low') toggleLow(id);
-    else if (btn.dataset.action === 'del') deleteItem(id);
+/* ============================================================
+ * THEME SWITCHER
+ * ============================================================ */
+const THEMES = [
+  { key: 'nocturne', label: 'Nocturne', swatch: '#8B7CFF' },
+  { key: 'aurora',   label: 'Aurora',   swatch: 'linear-gradient(135deg,#8B7BFF,#4FE3D0)' },
+  { key: 'daylight', label: 'Daylight', swatch: '#6A45FF' },
+];
+let currentTheme = (function(){ try { return localStorage.getItem('patron_theme') || 'nocturne'; } catch(e){ return 'nocturne'; } })();
+if (!THEMES.some(t => t.key === currentTheme)) currentTheme = 'nocturne';
+function applyTheme(name) {
+  if (!THEMES.some(t => t.key === name)) name = 'nocturne';
+  currentTheme = name;
+  document.documentElement.setAttribute('data-theme', name);
+  try { localStorage.setItem('patron_theme', name); } catch(e){}
+  document.querySelectorAll('.themeBtn').forEach(b => {
+    b.classList.toggle('themeBtnActive', b.getAttribute('data-theme') === name);
   });
-  document.getElementById('stackGroups').addEventListener('pointerdown', (e) => {
-    const btn = e.target.closest('[data-action="del"]');
-    if (!btn) return;
-    e.preventDefault(); e.stopPropagation();
-    deleteItem(btn.dataset.id);
-  });
-  document.getElementById('stackGroups').addEventListener('click', (e) => {
-    const editEl = e.target.closest('[data-edit]');
-    if (!editEl) return;
-    if (e.target.closest('[data-action]')) return;
-    if (editEl.getAttribute('contenteditable') === 'true') return;
-    startEdit(editEl);
-  });
-
-  function startEdit(el) {
-    const id = el.dataset.id;
-    const field = el.dataset.edit;
-    if (field === 'name') {
-      const textSpan = el.querySelector('.stack-item-name-text');
-      if (!textSpan) return;
-      textSpan.setAttribute('contenteditable', 'true');
-      textSpan.style.outline = '1px solid rgba(255,255,255,0.25)';
-      textSpan.style.outlineOffset = '4px';
-      textSpan.style.borderRadius = '4px';
-      textSpan.focus();
-      placeCaretAtEnd(textSpan);
-      const finish = (commit) => {
-        textSpan.removeAttribute('contenteditable');
-        textSpan.style.outline = ''; textSpan.style.outlineOffset = '';
-        if (commit) {
-          const newVal = textSpan.textContent.trim();
-          if (newVal) updateItem(id, 'name', newVal); else render();
-        } else render();
-      };
-      textSpan.addEventListener('blur', () => finish(true), { once: true });
-      textSpan.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); textSpan.blur(); }
-        if (e.key === 'Escape') { textSpan.blur(); render(); }
-      });
-    }
-    if (field === 'meta') {
-      el.setAttribute('contenteditable', 'true');
-      el.focus(); placeCaretAtEnd(el);
-      const finish = (commit) => {
-        el.removeAttribute('contenteditable');
-        if (commit) {
-          const text = el.textContent.trim();
-          const parts = text.split(/\s*·\s*/);
-          updateItem(id, 'dose', parts[0] || '');
-          updateItem(id, 'note', parts.slice(1).join(' · '));
-        }
-        render();
-      };
-      el.addEventListener('blur', () => finish(true), { once: true });
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); el.blur(); }
-        if (e.key === 'Escape') { el.blur(); render(); }
-      });
-    }
-  }
-
-  function placeCaretAtEnd(el) {
-    const range = document.createRange();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-
-  // ====== ADD FORM + SEARCH AUTOCOMPLETE ======
-  const nameInput = document.getElementById('stackAddName');
-  const doseInput = document.getElementById('stackAddDose');
-  const winSelect = document.getElementById('stackAddWindow');
-  const addBtn = document.getElementById('stackAddBtn');
-  const resultsEl = document.getElementById('stackSearchResults');
-
-  let pendingNote = ''; // hidden note auto-filled when a DB result is selected
-
-  function searchSupplements(q) {
-    const query = q.toLowerCase().trim();
-    if (!query) return [];
-    const starts = [];
-    const contains = [];
-    SUPPLEMENT_DB.forEach(s => {
-      const nameLC = s.name.toLowerCase();
-      const aliases = (s.aliases || []).map(a => a.toLowerCase());
-      const allNames = [nameLC, ...aliases];
-      if (allNames.some(n => n.startsWith(query))) starts.push(s);
-      else if (allNames.some(n => n.includes(query))) contains.push(s);
-    });
-    return [...starts, ...contains].slice(0, 6);
-  }
-
-  function renderSearchResults(q) {
-    const matches = searchSupplements(q);
-    if (!q.trim() || matches.length === 0) {
-      resultsEl.hidden = true;
-      resultsEl.innerHTML = '';
-      return;
-    }
-    resultsEl.hidden = false;
-    resultsEl.innerHTML = matches.map(s => {
-      const winMeta = STACK_WINDOWS.find(w => w.key === s.window) || STACK_WINDOWS[3];
-      return `
-        <button class="stack-result" data-name="${escapeHtml(s.name)}" data-dose="${escapeHtml(s.dose)}" data-window="${s.window}" data-note="${escapeHtml(s.note)}">
-          <div class="stack-result-icon">${s.icon || '💊'}</div>
-          <div class="stack-result-body">
-            <div class="stack-result-name">${escapeHtml(s.name)}</div>
-            <div class="stack-result-meta">${escapeHtml(s.dose)} · ${winMeta.icon} ${winMeta.title.toLowerCase()} · ${escapeHtml(s.note)}</div>
-          </div>
-        </button>`;
-    }).join('');
-  }
-
-  nameInput.addEventListener('input', () => {
-    renderSearchResults(nameInput.value);
-    pendingNote = ''; // reset note if user is typing manually
-  });
-  nameInput.addEventListener('focus', () => {
-    if (nameInput.value.trim()) renderSearchResults(nameInput.value);
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.stack-name-wrap')) resultsEl.hidden = true;
-  });
-
-  resultsEl.addEventListener('click', (e) => {
-    const btn = e.target.closest('.stack-result');
-    if (!btn) return;
-    nameInput.value = btn.dataset.name;
-    doseInput.value = btn.dataset.dose;
-    winSelect.value = btn.dataset.window;
-    pendingNote = btn.dataset.note;
-    resultsEl.hidden = true;
-    addBtn.focus();
-  });
-
-  addBtn.addEventListener('click', () => {
-    addItem(nameInput.value, doseInput.value, winSelect.value, pendingNote);
-    nameInput.value = '';
-    doseInput.value = '';
-    pendingNote = '';
-    resultsEl.hidden = true;
-    nameInput.focus();
-  });
-
-  [nameInput, doseInput].forEach(i => {
-    i.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        // If search dropdown is open with matches, pick the first one
-        if (!resultsEl.hidden && i === nameInput) {
-          const firstResult = resultsEl.querySelector('.stack-result');
-          if (firstResult) { e.preventDefault(); firstResult.click(); return; }
-        }
-        addBtn.click();
-      }
-      if (e.key === 'Escape') resultsEl.hidden = true;
-    });
-  });
-
-  setInterval(() => {
-    const newKey = `stack:taken:${getActiveDate()}`;
-    if (newKey !== todayKey) todayKey = newKey;
-    render();
-  }, 60 * 1000);
-
-  render();
-  startTicker();
-})();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  if (typeof initCloudSync !== 'function') return;
-  initCloudSync({
-    appKey: 'health',
-    syncedKeys: ['stack:items', 'stack:version', 'stack:low', 'po_water_v1'],
-    syncedPrefixes: ['stack:taken:'],
-    onApplied: function () { window.dispatchEvent(new Event('storage')); }
-  });
+}
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-action="theme"]');
+  if (btn) applyTheme(btn.getAttribute('data-theme'));
 });
+applyTheme(currentTheme);
 </script>
 
 <script>
+/* ============================================================
+ * GARMIN / SUPABASE DATA LOADER
+ * ============================================================ */
 (function () {
   const SUPABASE_URL = 'https://ktqywwwrszmkwznhakbw.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_ru0xehlRpZQbSLLyeB9FHQ_T6ZAonPm';
 
   const $ = (id) => document.getElementById(id);
 
-  function zone(el, c) { el.className = 'wh-zone'; if (c) el.classList.add('z-' + c); }
-  function recoveryZone(v) { if (v == null) return null; if (v >= 67) return 'good'; if (v >= 34) return 'warn'; return 'bad'; }
-  function sleepZone(p)    { if (p == null) return null; if (p >= 80) return 'good'; if (p >= 60) return 'norm'; return 'warn'; }
-  function stressZone(s)   { if (s == null) return null; if (s < 25) return 'good'; if (s < 50) return 'norm'; if (s < 75) return 'warn'; return 'bad'; }
-  function rhrZone(r)      { if (r == null) return null; if (r <= 55) return 'good'; if (r <= 70) return 'norm'; return 'warn'; }
-
-  function ringStroke(v) { if (v >= 67) return '#6BE3A4'; if (v >= 34) return '#F2C063'; return '#FF8A8A'; }
-  function recoveryLabel(v) { if (v >= 67) return 'High — push hard today'; if (v >= 34) return 'Moderate — listen to body'; return 'Low — recover today'; }
-
-  function buildVerdict(rec, stress, sleepScore) {
-    if (rec == null) return null;
-    let cls = 'green', badge = 'GREEN', headline = 'Push hard today. Body Battery is high — prime time for a harder session.';
-    if (rec < 67 && rec >= 34) { cls = 'yellow'; badge = 'YELLOW'; headline = 'Moderate day. Train but don\'t max out — stick to planned volume.'; }
-    else if (rec < 34) { cls = 'red'; badge = 'RED'; headline = 'Recover. Body Battery is low — light movement, walk, and sleep early.'; }
-    return { cls, badge, headline };
+  /* ---- helpers ---- */
+  function recoveryTone(v) {
+    if (v == null) return 'muted';
+    if (v >= 67) return 'good';
+    if (v >= 34) return 'watch';
+    return 'low';
   }
-  function showErr(m) { const e = $('whErr'); e.textContent = m || ''; e.style.display = m ? 'block' : 'none'; }
+  function ringColor(v) {
+    if (v >= 67) return '#46E0A8';
+    if (v >= 34) return '#FBBF24';
+    return '#FB7185';
+  }
+  function recoveryTierLabel(v) {
+    if (v >= 67) return 'Recovered';
+    if (v >= 34) return 'Building';
+    return 'Drained';
+  }
+  function recoveryVerdict(v) {
+    if (v >= 67) return { cls: 'green', badge: 'GREEN', headline: 'High — push hard today. Body Battery is high — prime time for a harder session.' };
+    if (v >= 34) return { cls: 'yellow', badge: 'YELLOW', headline: 'Moderate — listen to body. Train but don\'t max out — stick to planned volume.' };
+    return { cls: 'red', badge: 'RED', headline: 'Low — recover today. Body Battery is low — light movement, walk, and sleep early.' };
+  }
+  function zoneClass(el, cls) { el.className = 'wh-zone'; if (cls) el.classList.add('z-' + cls); }
+  function sleepZone(p)  { if (p == null) return null; if (p >= 80) return 'good'; if (p >= 60) return 'norm'; return 'warn'; }
+  function stressZone(s) { if (s == null) return null; if (s < 25) return 'good'; if (s < 50) return 'norm'; if (s < 75) return 'warn'; return 'bad'; }
+  function rhrZone(r)    { if (r == null) return null; if (r <= 55) return 'good'; if (r <= 70) return 'norm'; return 'warn'; }
 
+  function formatSleepSecs(secs) {
+    if (secs == null) return null;
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    return h + 'h ' + String(m).padStart(2, '0') + 'm';
+  }
+
+  function showErr(msg) {
+    const el = $('errBanner');
+    el.textContent = msg || '';
+    el.style.display = msg ? '' : 'none';
+  }
+
+  /* ---- ticker builder ---- */
+  function buildTicker(d) {
+    const items = [];
+    if (d.body_battery != null) {
+      const tone = d.body_battery >= 67 ? 'good' : d.body_battery >= 34 ? 'watch' : 'urgent';
+      items.push({ symbol: 'BAT', value: String(d.body_battery), unit: '%', tone });
+    }
+    if (d.sleep_score != null) {
+      const tone = d.sleep_score >= 80 ? 'good' : d.sleep_score >= 60 ? 'watch' : 'urgent';
+      items.push({ symbol: 'SLP', value: String(d.sleep_score), unit: '%', tone });
+    }
+    if (d.avg_stress != null) {
+      const tone = d.avg_stress < 25 ? 'good' : d.avg_stress < 50 ? 'watch' : 'urgent';
+      items.push({ symbol: 'STR', value: String(d.avg_stress), unit: '', tone });
+    }
+    if (d.resting_hr != null) {
+      const tone = d.resting_hr <= 55 ? 'good' : d.resting_hr <= 70 ? 'watch' : 'urgent';
+      items.push({ symbol: 'RHR', value: String(d.resting_hr), unit: 'bpm', tone });
+    }
+    if (items.length === 0) return;
+    const rolled = items.concat(items);
+    const cells = rolled.map(it => '<span class="tickerCell" data-tone="' + it.tone + '">'
+      + '<span class="tickerSymbol">' + it.symbol + '</span>'
+      + '<span class="tickerValue">' + it.value + (it.unit ? '<span class="tickerUnit">' + it.unit + '</span>' : '') + '</span>'
+      + '</span>').join('');
+    $('tickerWrap').innerHTML = '<div class="ticker" role="status" aria-label="Health live metrics">'
+      + '<div class="tickerEyebrow"><span class="tickerPulse" aria-hidden></span>Garmin · Live</div>'
+      + '<div class="tickerScroll"><div class="tickerTrack">' + cells + '</div></div></div>';
+  }
+
+  /* ---- main data load ---- */
   async function loadData() {
     showErr('');
     try {
       const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       const { data, error } = await sb
-        .from('garmin_daily').select('*')
-        .order('date', { ascending: false }).limit(1).maybeSingle();
+        .from('garmin_daily')
+        .select('*')
+        .order('date', { ascending: false })
+        .limit(1)
+        .maybeSingle();
 
       if (error) throw new Error(error.message || 'Supabase error');
-      if (!data) { $('whNoData').style.display = ''; $('whConn').style.display = 'none'; return; }
 
-      $('whNoData').style.display = 'none';
-      $('whConn').style.display = '';
-
-      const recScore   = data.body_battery;
-      const sleepScore = data.sleep_score;
-      const sleepSecs  = data.sleep_seconds;
-      const stress     = data.avg_stress;
-      const rhr        = data.resting_hr;
-
-      // Ring
-      if (recScore != null) {
-        const C = 603.19;
-        $('whRingFill').style.strokeDashoffset = String(C * (1 - recScore / 100));
-        $('whRingFill').style.stroke = ringStroke(recScore);
-        $('whRecNum').textContent = String(recScore);
-        $('whRecLabel').textContent = recoveryLabel(recScore);
-        $('whRecLabel').style.color = ringStroke(recScore);
+      if (!data) {
+        $('noDataCard').style.display = '';
+        $('connectedPanel').style.display = 'none';
+        return;
       }
 
-      // Sleep stat (score + duration sub-label)
-      if (sleepScore != null) {
-        $('whSleep').textContent = sleepScore + '%';
-        if (sleepSecs != null) {
-          const h = Math.floor(sleepSecs / 3600);
-          const m = Math.floor((sleepSecs % 3600) / 60);
-          $('whSleepSub').textContent = h + 'h ' + String(m).padStart(2, '0') + 'm';
-        }
-        zone($('whZoneSleep'), sleepZone(sleepScore));
+      $('noDataCard').style.display = 'none';
+      $('connectedPanel').style.display = '';
+
+      const battery  = data.body_battery;
+      const sleep    = data.sleep_score;
+      const sleepSec = data.sleep_seconds;
+      const stress   = data.avg_stress;
+      const rhr      = data.resting_hr;
+
+      /* ---- ring ---- */
+      const tone = recoveryTone(battery);
+      const ring = $('recoveryRing');
+      ring.setAttribute('data-tone', tone);
+      if (battery != null) {
+        const circ = 2 * Math.PI * 92;
+        const fill = $('ringFill');
+        fill.style.strokeDasharray = circ;
+        fill.style.strokeDashoffset = circ * (1 - battery / 100);
+        fill.style.color = ringColor(battery);
+        $('recoveryValue').textContent = battery;
+        $('recoveryTier').textContent = recoveryTierLabel(battery);
+        $('recoveryTier').style.color = ringColor(battery);
       }
+      $('statBattery').textContent = battery != null ? battery : '—';
 
-      // Stress stat
-      if (stress != null) { $('whStrain').textContent = String(stress); zone($('whZoneStrain'), stressZone(stress)); }
+      /* ---- stats ---- */
+      if (sleep != null) {
+        $('statSleep').textContent = sleep;
+        if (sleepSec != null) $('statSleepSub').textContent = formatSleepSecs(sleepSec);
+        zoneClass($('zoneSleep'), sleepZone(sleep));
+      }
+      if (stress != null) { $('statStress').textContent = stress; zoneClass($('zoneStress'), stressZone(stress)); }
+      if (rhr   != null) { $('statRhr').textContent    = rhr;    zoneClass($('zoneRhr'),    rhrZone(rhr));    }
 
-      // RHR stat
-      if (rhr != null) { $('whRhr').textContent = String(rhr); zone($('whZoneRhr'), rhrZone(rhr)); }
-
-      // Verdict
-      const v = buildVerdict(recScore, stress, sleepScore);
-      if (v) {
-        $('whVerdict').style.display = '';
-        $('whVerdictBadge').textContent = v.badge;
-        $('whVerdictBadge').className = 'wh-verdict-badge ' + v.cls;
-        $('whVerdictHead').textContent = v.headline;
+      /* ---- verdict ---- */
+      if (battery != null) {
+        const v = recoveryVerdict(battery);
+        $('verdictCard').style.display = '';
+        $('verdictBadge').textContent = v.badge;
+        $('verdictBadge').className = 'verdictBadge ' + v.cls;
+        $('verdictHeadline').textContent = v.headline;
         const reasons = [];
-        if (sleepScore != null) reasons.push((sleepScore >= 75 ? '✓' : '·') + ' Sleep score ' + sleepScore + '/100 — ' + (sleepScore >= 75 ? 'well rested.' : 'sub-par sleep.'));
-        if (stress != null)     reasons.push((stress < 40 ? '✓' : '·') + ' Avg stress ' + stress + '/100 — ' + (stress < 40 ? 'calm state.' : stress < 65 ? 'moderate load.' : 'high stress.'));
-        if (rhr != null)        reasons.push((rhr <= 60 ? '✓' : '·') + ' RHR ' + rhr + ' bpm — ' + (rhr <= 60 ? 'well-conditioned.' : 'elevated.'));
-        $('whVerdictReasons').innerHTML = reasons.join('<br>');
+        if (sleep  != null) reasons.push((sleep >= 75 ? '✓' : '·') + ' Sleep score ' + sleep + '/100 — ' + (sleep >= 75 ? 'well rested.' : 'sub-par sleep.'));
+        if (stress != null) reasons.push((stress < 40 ? '✓' : '·') + ' Avg stress ' + stress + '/100 — ' + (stress < 40 ? 'calm state.' : stress < 65 ? 'moderate load.' : 'high stress.'));
+        if (rhr    != null) reasons.push((rhr <= 60 ? '✓' : '·') + ' RHR ' + rhr + ' bpm — ' + (rhr <= 60 ? 'well-conditioned.' : 'elevated.'));
+        $('verdictReasons').innerHTML = reasons.join('<br>');
       }
 
-      if (data.date) $('whUpdated').textContent = data.date;
+      /* ---- footer ---- */
+      if (data.date) $('footerSynced').textContent = 'last sync · ' + data.date;
+      if (data.date) $('syncMeta').textContent = 'Data for ' + data.date;
+
+      /* ---- ticker ---- */
+      buildTicker(data);
+
+      /* ---- publish to suite localStorage for supplement recommender ---- */
+      try {
+        const snap = {
+          source: 'garmin', connected: true, ts: Date.now(),
+          recovery: battery, rhr: rhr, sleepPerf: sleep,
+          sleepHours: sleepSec != null ? sleepSec / 3600 : null,
+          sleepTargetHours: 8,
+        };
+        localStorage.setItem('patron_health_v1', JSON.stringify(snap));
+      } catch (e) {}
+
     } catch (e) {
       showErr(e.message || String(e));
+      $('noDataCard').style.display = 'none';
+      $('connectedPanel').style.display = '';
     }
   }
 
-  $('whRefresh').addEventListener('click', (e) => {
-    const btn = e.currentTarget; btn.classList.add('spin');
-    loadData().finally(() => setTimeout(() => btn.classList.remove('spin'), 600));
+  $('refreshBtn').addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    btn.textContent = 'Refreshing…';
+    btn.disabled = true;
+    loadData().finally(() => {
+      btn.textContent = 'Refresh';
+      btn.disabled = false;
+    });
   });
 
   loadData();
 })();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="sync.js" defer></script>
+<script src="topbar.js" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof initCloudSync !== 'function') return;
+  initCloudSync({
+    appKey: 'health',
+    syncedPrefixes: ['health:', 'stack:'],
+    onApplied: function () { if (typeof renderStack === 'function') renderStack(); }
+  });
+});
+</script>
 </body>
 </html>

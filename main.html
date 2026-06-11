@@ -2,32 +2,135 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Dashboard" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="icon" type="image/svg+xml" href="icon.svg" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<style id="pwa-mobile">
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+img{max-width:100%;height:auto}
+@media (max-width:480px){input,select,textarea{font-size:16px !important}}
+</style>
 <meta name="theme-color" content="#0C0C12">
-<title>Gabriel's Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="sync.js" defer></script>
-<script src="topbar.js" defer></script>
-<link rel="stylesheet" href="theme.css">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("patron_theme")||"nocturne");}catch(e){document.documentElement.setAttribute("data-theme","nocturne");}</script>
+<title>Main · Dashboard</title>
 <style>
 :root {
   color-scheme: dark;
-  --text-primary:   var(--fg);
-  --text-secondary: var(--muted-strong);
-  --text-tertiary:  var(--muted);
-  --success: var(--pos);
-  --warning: var(--warn);
-  --danger: var(--neg);
-  --font: var(--font-ui);
+  --bg: #0C0C12;
+  --text-primary: #F3F2F8;
+  --text-secondary: rgba(243,242,248,0.74);
+  --text-tertiary: rgba(243,242,248,0.46);
+  --success: #46E0A8; --success-rgb: 70,224,168;
+  --warning: #FBBF24; --warning-rgb: 251,191,36;
+  --danger: #FB7185;
+  --brand: #8B7CFF; --brand-2: #C7BBFF; --brand-ink: #130E2E;
+  --brand-soft: color-mix(in srgb, #8B7CFF 14%, transparent);
+  --brand-line: color-mix(in srgb, #8B7CFF 30%, transparent);
+  --brand-glow: color-mix(in srgb, #8B7CFF 45%, transparent);
+  --surface: color-mix(in srgb, #ffffff 4%, transparent);
+  --surface-1: color-mix(in srgb, #ffffff 3%, transparent);
+  --border: color-mix(in srgb, #ffffff 8%, transparent);
+  --border-strong: color-mix(in srgb, #ffffff 13%, transparent);
+  --line-2: color-mix(in srgb, #ffffff 18%, transparent);
+  --line-3: color-mix(in srgb, #8B7CFF 50%, transparent);
+  --input-bg: color-mix(in srgb, #000000 28%, transparent);
+  --card-shadow-c: rgba(0,0,0,0.45);
+  --body-glow: color-mix(in srgb, #8B7CFF 16%, transparent);
+  --font: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+[data-theme="aurora"] {
+  color-scheme: dark;
+  --bg: #080913;
+  --text-primary: #EEF0FF; --text-secondary: rgba(220,225,255,0.76); --text-tertiary: rgba(220,225,255,0.48);
+  --success: #4FE3D0; --success-rgb: 79,227,208;
+  --warning: #FFC65C; --warning-rgb: 255,198,92;
+  --danger: #FF6FA5;
+  --brand: #8B7BFF; --brand-2: #B9ABFF; --brand-ink: #0A0922;
+  --brand-soft: color-mix(in srgb, #8B7BFF 16%, transparent);
+  --brand-line: color-mix(in srgb, #8B7BFF 34%, transparent);
+  --brand-glow: color-mix(in srgb, #7C6BFF 60%, transparent);
+  --surface: color-mix(in srgb, #96A0FF 5%, transparent);
+  --surface-1: color-mix(in srgb, #96A0FF 4%, transparent);
+  --border: color-mix(in srgb, #96A0FF 12%, transparent);
+  --border-strong: color-mix(in srgb, #96A0FF 20%, transparent);
+  --line-2: color-mix(in srgb, #96A0FF 26%, transparent);
+  --line-3: color-mix(in srgb, #8B7BFF 52%, transparent);
+  --input-bg: color-mix(in srgb, #000010 30%, transparent);
+  --card-shadow-c: rgba(8,8,30,0.5);
+  --body-glow: color-mix(in srgb, #7C6BFF 22%, transparent);
+}
+[data-theme="daylight"] {
+  color-scheme: light;
+  --bg: #F3F2FA;
+  --text-primary: #171622; --text-secondary: rgba(23,22,34,0.72); --text-tertiary: rgba(23,22,34,0.50);
+  --success: #0E9E64; --success-rgb: 14,158,100;
+  --warning: #B4690E; --warning-rgb: 180,105,14;
+  --danger: #E11D63;
+  --brand: #6A45FF; --brand-2: #8E6BFF; --brand-ink: #FFFFFF;
+  --brand-soft: color-mix(in srgb, #6A45FF 8%, transparent);
+  --brand-line: color-mix(in srgb, #6A45FF 24%, transparent);
+  --brand-glow: color-mix(in srgb, #6A45FF 28%, transparent);
+  --surface: #FFFFFF;
+  --surface-1: color-mix(in srgb, #17163C 3%, transparent);
+  --border: color-mix(in srgb, #17163C 9%, transparent);
+  --border-strong: color-mix(in srgb, #17163C 16%, transparent);
+  --line-2: color-mix(in srgb, #17163C 20%, transparent);
+  --line-3: color-mix(in srgb, #6A45FF 45%, transparent);
+  --input-bg: color-mix(in srgb, #17163C 4%, transparent);
+  --card-shadow-c: rgba(23,22,60,0.12);
+  --body-glow: color-mix(in srgb, #6A45FF 7%, transparent);
 }
 
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
 body {
   min-height: 100vh;
   position: relative;
+  overflow-x: hidden;
   padding: max(28px, env(safe-area-inset-top)) 20px 60px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(circle at 82% 14%, var(--body-glow), transparent 45%),
+    radial-gradient(circle at 18% 90%, color-mix(in srgb, var(--success) 7%, transparent), transparent 50%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: -2;
+  animation: drift 36s ease-in-out infinite alternate;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.014) 1px, transparent 1px);
+  background-size: 3px 3px;
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes drift {
+  0%   { transform: translate3d(0,0,0); }
+  100% { transform: translate3d(-22px, 14px, 0); }
 }
 
 .page {
@@ -40,9 +143,8 @@ body {
   margin: 0 0 14px;
   font-size: 28px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  font-family: 'Orbitron', sans-serif;
-  background: linear-gradient(180deg, #F3F2F8 0%, rgba(243,242,248,0.7) 120%);
+  letter-spacing: -0.025em;
+  background: linear-gradient(120deg, var(--text-primary), var(--brand));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -62,15 +164,16 @@ body {
   display: flex; align-items: center; gap: 10px;
   padding: 7px 12px;
   border-radius: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+  background:
+    var(--surface),
+    repeating-linear-gradient(0deg, var(--surface-1) 0, var(--surface-1) 1px, transparent 1px, transparent 3px);
+  box-shadow: inset 0 1px 0 var(--surface);
 }
 .goal-ticker::after {
   content: '';
   position: absolute; top: 0; bottom: 0;
   width: 30%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+  background: linear-gradient(90deg, transparent, var(--surface), transparent);
   pointer-events: none;
   animation: ticker-sweep 8s linear infinite;
 }
@@ -81,8 +184,8 @@ body {
 .goal-ticker-led { display: inline-flex; align-items: center; }
 .goal-ticker-led-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: var(--pos);
-  box-shadow: 0 0 8px rgba(70,224,168,0.7);
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(var(--success-rgb),0.7);
   animation: led-pulse 1.6s ease-in-out infinite;
 }
 @keyframes led-pulse {
@@ -130,7 +233,7 @@ body {
   color: var(--text-secondary);
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.04);
+  background: var(--surface);
 }
 @media (max-width: 480px) {
   .goal-ticker { padding: 9px 12px; }
@@ -141,6 +244,7 @@ body {
 
 /* ===== Component 3: Day Ring ===== */
 .day-ring-wrap {
+  position: relative;
   display: flex; flex-wrap: wrap;
   align-items: center; justify-content: center;
   gap: 26px;
@@ -148,10 +252,9 @@ body {
   margin-bottom: 22px;
   border-radius: 16px;
   background: var(--surface);
-  border: 1px solid var(--border);
   backdrop-filter: blur(24px) saturate(1.2);
   -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 12px 40px var(--card-shadow-c);
 }
 .day-ring {
   position: relative;
@@ -159,7 +262,7 @@ body {
   flex-shrink: 0;
 }
 .day-ring svg { width: 100%; height: 100%; display: block; }
-.day-ring-track { fill: none; stroke: var(--track); stroke-width: 8; }
+.day-ring-track { fill: none; stroke: var(--border); stroke-width: 8; }
 .day-ring-fill {
   fill: none;
   stroke-width: 8;
@@ -208,6 +311,65 @@ body {
   .day-ring-percent { font-size: 32px; }
   .day-ring-status { font-size: 13px; }
 }
+/* Estimated sleep line — recommended bedtime derived from vitals */
+.day-ring-est {
+  display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 2px; padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--brand-soft); border: 1px solid var(--brand-line);
+  font-family: var(--font-mono); font-size: 11px; color: var(--brand-2);
+  white-space: nowrap; align-self: flex-start;
+}
+.day-ring-est b { color: var(--text-primary); font-weight: 700; }
+.day-ring-est-sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-tertiary); margin-top: 1px; }
+/* Settings gear + popover */
+.day-ring-gear {
+  position: absolute; top: 12px; right: 12px;
+  width: 30px; height: 30px; display: grid; place-items: center;
+  border-radius: 50%; cursor: pointer;
+  background: var(--surface-1); border: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 14px; line-height: 1;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.day-ring-gear:hover { color: var(--text-primary); border-color: var(--border-strong); background: var(--surface); }
+.day-pop {
+  position: absolute; top: 48px; right: 12px; z-index: 30;
+  width: min(310px, calc(100% - 24px));
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--bg); border: 1px solid var(--border-strong);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.day-pop[hidden] { display: none; }
+.day-pop-title { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: var(--text-primary); margin-bottom: 3px; }
+.day-pop-note { font-family: var(--font-mono); font-size: 10.5px; line-height: 1.5; color: var(--text-tertiary); margin-bottom: 12px; }
+.day-pop-seg { display: flex; gap: 6px; margin-bottom: 13px; }
+.day-pop-seg button {
+  flex: 1; padding: 8px 6px; cursor: pointer;
+  border-radius: 9px; border: 1px solid var(--border); background: var(--surface-1);
+  color: var(--text-secondary); font-family: inherit; font-size: 11px; font-weight: 600;
+  transition: all .18s;
+}
+.day-pop-seg button.active { border-color: var(--brand); background: var(--brand-soft); color: var(--text-primary); }
+.day-pop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.day-pop-field { display: flex; flex-direction: column; gap: 5px; }
+.day-pop-field label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-tertiary); }
+.day-pop-field input {
+  width: 100%; padding: 8px 9px; box-sizing: border-box;
+  border-radius: 8px; border: 1px solid var(--border); background: var(--surface-1);
+  color: var(--text-primary); font-family: var(--font-mono); font-size: 13px;
+}
+.day-pop-field input:disabled { opacity: 0.5; }
+.day-pop-field input:focus { outline: none; border-color: var(--brand-line); }
+.day-pop-src { margin-top: 11px; font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); }
+.day-pop-src b { color: var(--brand-2); }
+.day-pop-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.day-pop-actions button {
+  padding: 8px 14px; cursor: pointer; border-radius: 9px;
+  font-family: inherit; font-size: 12px; font-weight: 700; border: 1px solid transparent;
+}
+.day-pop-save { background: var(--brand); color: var(--brand-ink); }
+.day-pop-cancel { background: transparent; border-color: var(--border); color: var(--text-secondary); }
 
 /* ===== Component 4: section + To Do List ===== */
 .section { margin-top: 8px; }
@@ -224,26 +386,25 @@ body {
 }
 .section-title::after {
   content: ''; flex: 1; height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
+  background: linear-gradient(90deg, var(--border-strong), transparent);
 }
 
 .gm-card {
   position: relative;
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 14px;
   backdrop-filter: blur(24px) saturate(1.2);
   -webkit-backdrop-filter: blur(24px) saturate(1.2);
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 12px 40px var(--card-shadow-c);
   transition: background 0.4s;
   overflow: hidden;
 }
 .gm-card.gm-all-done::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 0%, var(--pos-soft), transparent 60%);
+  background: radial-gradient(circle at 50% 0%, rgba(var(--success-rgb),0.10), transparent 60%);
   pointer-events: none;
 }
 .gm-card.gm-all-done .gm-progress-num,
@@ -295,8 +456,8 @@ body {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--surface);
+  border: 1px solid var(--border);
   color: var(--text-tertiary);
   font-size: 11px; font-weight: 600;
   letter-spacing: 0.10em; text-transform: uppercase;
@@ -309,12 +470,12 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .gm-streak.gm-streak-active {
-  background: rgba(242,192,99,0.10);
-  color: #F2C063;
-  border-color: rgba(242,192,99,0.32);
+  background: rgba(var(--warning-rgb),0.10);
+  color: var(--warning);
+  border-color: rgba(var(--warning-rgb),0.32);
 }
 .gm-streak.gm-streak-active .gm-streak-icon {
-  filter: drop-shadow(0 0 6px rgba(242,192,99,0.6));
+  filter: drop-shadow(0 0 6px rgba(var(--warning-rgb),0.6));
 }
 
 .gm-bar {
@@ -325,13 +486,13 @@ body {
 .gm-bar:empty { display: none; }
 .gm-bar-seg {
   flex: 1;
-  background: rgba(255,255,255,0.06);
+  background: var(--border);
   border-radius: 3px;
   transition: background 0.3s, box-shadow 0.3s;
 }
 .gm-bar-seg-done {
-  background: var(--pos);
-  box-shadow: 0 0 6px rgba(70,224,168,0.40);
+  background: var(--success);
+  box-shadow: 0 0 6px rgba(var(--success-rgb),0.40);
 }
 
 .goal-list { list-style: none; margin: 0; padding: 0; }
@@ -346,32 +507,32 @@ body {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 14px;
   margin-bottom: 6px;
-  background: var(--surface);
+  background: var(--surface-1);
   border: 1px solid var(--border);
   border-radius: 12px;
   transition: background 0.2s, opacity 0.3s;
   position: relative;
 }
-.gm-row:hover { background: var(--surface-2); }
+.gm-row:hover { background: var(--border); }
 .gm-row.gm-row-done {
   opacity: 0.45;
-  background: var(--pos-soft);
+  background: rgba(var(--success-rgb),0.04);
 }
 .gm-row.gm-row-done .gm-text {
   text-decoration: line-through;
   text-decoration-color: rgba(255,255,255,0.4);
 }
 .gm-row.gm-row-queued {
-  background: rgba(242,192,99,0.10);
-  box-shadow: inset 3px 0 0 0 #F2C063;
+  background: rgba(var(--warning-rgb),0.10);
+  box-shadow: inset 3px 0 0 0 var(--warning);
 }
-.gm-row.gm-row-queued .gm-text { color: #FFE2A8; }
-.gm-row.is-drag-over { border-top: 2px solid var(--pos); }
+.gm-row.gm-row-queued .gm-text { color: var(--warning); }
+.gm-row.is-drag-over { border-top: 2px solid var(--success); }
 .gm-row.is-queue-flashing { animation: gm-queue-flash 0.48s ease-out; }
 @keyframes gm-queue-flash {
-  0%   { background: rgba(255,255,255,0.035); transform: scale(1); }
-  40%  { background: rgba(242,192,99,0.32); transform: scale(1.015); }
-  100% { background: rgba(255,255,255,0.035); transform: scale(1); }
+  0%   { background: var(--surface-1); transform: scale(1); }
+  40%  { background: rgba(var(--warning-rgb),0.32); transform: scale(1.015); }
+  100% { background: var(--surface-1); transform: scale(1); }
 }
 
 .gm-handle {
@@ -391,17 +552,17 @@ body {
   appearance: none; -webkit-appearance: none;
   width: 22px; height: 22px; flex-shrink: 0;
   margin: 0;
-  border: 1.5px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.28);
+  border: 1.5px solid var(--line-2);
+  background: var(--input-bg);
   border-radius: 7px;
   position: relative;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, box-shadow 0.25s;
 }
 .gm-check:checked {
-  background: var(--brand);
-  border-color: var(--brand);
-  box-shadow: 0 0 12px var(--brand-glow);
+  background: var(--success);
+  border-color: var(--success);
+  box-shadow: 0 0 12px rgba(var(--success-rgb),0.40);
 }
 .gm-check:checked::after {
   content: '';
@@ -429,8 +590,8 @@ body {
   margin: -2px -4px;
 }
 .gm-text[contenteditable="true"] {
-  outline: 1px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.28);
+  outline: 1px solid var(--line-2);
+  background: var(--input-bg);
 }
 
 .gm-queue-btn {
@@ -445,9 +606,9 @@ body {
 }
 .gm-queue-btn:hover { opacity: 1; }
 .gm-queue-btn.gm-queue-active {
-  color: #F2C063;
+  color: var(--warning);
   opacity: 1;
-  filter: drop-shadow(0 0 4px rgba(242,192,99,0.65));
+  filter: drop-shadow(0 0 4px rgba(var(--warning-rgb),0.65));
 }
 .gm-queue-btn:disabled { cursor: not-allowed; opacity: 0.3; }
 
@@ -467,7 +628,7 @@ body {
   width: 100%;
   margin: 6px 0 0;
   padding: 9px;
-  border: 1px dashed rgba(255,255,255,0.12);
+  border: 1px dashed var(--border-strong);
   border-radius: 10px;
   background: transparent;
   color: var(--text-tertiary);
@@ -477,13 +638,13 @@ body {
   cursor: pointer;
   transition: color 0.2s, border-color 0.2s;
 }
-.gm-show-toggle:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.22); }
+.gm-show-toggle:hover { color: var(--text-primary); border-color: var(--line-3); }
 
 .gm-push-btn {
   width: 100%;
   margin-top: 14px;
   padding: 11px;
-  border: 1px dashed rgba(255,255,255,0.16);
+  border: 1px dashed var(--line-2);
   border-radius: 12px;
   background: transparent;
   color: var(--text-tertiary);
@@ -495,30 +656,30 @@ body {
 }
 .gm-push-btn:hover {
   color: var(--text-primary);
-  border-color: rgba(255,255,255,0.30);
+  border-color: var(--line-3);
   border-style: solid;
-  background: rgba(255,255,255,0.04);
+  background: var(--surface);
 }
 
 .goal-input-wrap.gm-input-wrap {
   display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--border);
 }
 .gm-input {
   flex: 1; min-width: 0;
   padding: 11px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 12px;
-  background: var(--surface);
-  color: var(--fg);
-  font-family: var(--font-mono); font-size: 14px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-family: inherit; font-size: 14px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, background 0.2s;
 }
-.gm-input::placeholder { color: var(--muted); }
-.gm-input:focus { border-color: var(--brand-line); box-shadow: 0 0 0 3px var(--brand-soft); }
+.gm-input::placeholder { color: var(--text-tertiary); }
+.gm-input:focus { border-color: var(--line-3); background: var(--input-bg); }
 
 .gm-add {
   padding: 11px 20px;
@@ -527,24 +688,28 @@ body {
   color: var(--brand-ink);
   font-family: inherit; font-size: 13px; font-weight: 700;
   cursor: pointer;
-  transition: transform 0.1s, filter 0.15s, box-shadow 0.15s;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    0 2px 8px rgba(0,0,0,0.35),
+    0 8px 22px rgba(0,0,0,0.25);
+  transition: transform 0.1s, filter 0.15s;
 }
-.gm-add:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 0 26px var(--brand-glow); }
+.gm-add:hover { filter: brightness(1.06); transform: translateY(-1px); }
 .gm-add:active { transform: translateY(0); }
 
 .gm-polish {
   padding: 11px 18px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 12px;
   background: var(--surface);
-  color: var(--fg);
+  color: var(--text-primary);
   font-family: inherit; font-size: 13px; font-weight: 600;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
 .gm-polish:hover {
-  background: var(--surface-2);
-  border-color: var(--border-strong);
+  background: var(--border);
+  border-color: var(--line-2);
 }
 
 .gm-status {
@@ -561,12 +726,31 @@ body {
   .gm-card { padding: 16px; }
   .gm-progress-num { font-size: 36px; }
 }
+
+/* --- display type --- */
+.dash-title, .day-ring-percent, .gm-progress-num { font-family: var(--font-display); }
+/* --- header + theme switcher --- */
+.back { display:inline-flex; align-items:center; gap:6px; align-self:flex-start; padding:6px 13px 6px 9px; background:var(--brand-soft); border:1px solid var(--brand-line); border-radius:999px; color:var(--brand); font-size:12px; font-weight:600; letter-spacing:.01em; text-decoration:none; margin-bottom:14px; transition:background .2s ease, border-color .2s ease; }
+.back:hover { border-color:var(--brand); background:color-mix(in srgb, var(--brand) 18%, transparent); }
+.backArrow { font-size:14px; line-height:1; }
+.dash-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.dash-head .dash-title { margin: 0; }
+.themeSeg { display: inline-flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 2px; }
+.themeBtn { appearance: none; background: transparent; border: 0; color: var(--text-tertiary); font-family: var(--font); font-size: 11px; font-weight: 700; letter-spacing: 0.02em; padding: 5px 10px 5px 7px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.18s, color 0.18s; }
+.themeBtn:hover { color: var(--text-secondary); }
+.themeSwatch { width: 11px; height: 11px; border-radius: 50%; box-shadow: 0 0 0 1px var(--border-strong) inset; flex-shrink: 0; }
+.themeBtnActive, .themeBtnActive:hover { background: var(--brand-soft); color: var(--text-primary); }
+.themeBtnActive .themeSwatch { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--brand); }
+@media (max-width: 480px) { .themeBtn .themeBtnLabel { display: none; } .themeBtn { padding: 6px; } }
 </style>
+<script src="icons.js"></script>
+<script src="theme.js"></script>
 </head>
 <body>
 <div class="page">
 
-  <h1 class="dash-title">Gabriel's Dashboard</h1>
+  <a class="back" href="index.html"><span class="backArrow">←</span> Dashboard</a>
+  <div class="dash-head"><h1 class="dash-title" id="dashTitle">Dashboard</h1><div class="themeSeg" role="radiogroup" aria-label="Theme"><button type="button" class="themeBtn" data-theme="nocturne"><span class="themeSwatch" style="background:#8B7CFF"></span><span class="themeBtnLabel">Nocturne</span></button><button type="button" class="themeBtn" data-theme="aurora"><span class="themeSwatch" style="background:linear-gradient(135deg,#8B7BFF,#4FE3D0)"></span><span class="themeBtnLabel">Aurora</span></button><button type="button" class="themeBtn" data-theme="daylight"><span class="themeSwatch" style="background:#6A45FF"></span><span class="themeBtnLabel">Daylight</span></button></div></div>
 
   <div class="ticker-row">
     <div class="goal-ticker" id="goalTicker" aria-live="polite" aria-atomic="true">
@@ -583,6 +767,24 @@ body {
   </div>
 
   <div class="day-ring-wrap">
+    <button type="button" class="day-ring-gear" id="dayRingGear" title="Wake &amp; sleep settings" aria-label="Wake and sleep settings">⚙</button>
+    <div class="day-pop" id="dayPop" hidden>
+      <div class="day-pop-title">Wake &amp; sleep window</div>
+      <div class="day-pop-note" id="dayPopNote">Pulls your times from Whoop / Apple Watch. Switch to Manual to set them yourself.</div>
+      <div class="day-pop-seg" id="dayPopSeg">
+        <button type="button" data-mode="auto">Auto from vitals</button>
+        <button type="button" data-mode="manual">Manual</button>
+      </div>
+      <div class="day-pop-grid">
+        <div class="day-pop-field"><label for="dayPopWake">Wake time</label><input type="time" id="dayPopWake"></div>
+        <div class="day-pop-field"><label for="dayPopSleep">Bedtime</label><input type="time" id="dayPopSleep"></div>
+      </div>
+      <div class="day-pop-src" id="dayPopSrc"></div>
+      <div class="day-pop-actions">
+        <button type="button" class="day-pop-cancel" id="dayPopCancel">Cancel</button>
+        <button type="button" class="day-pop-save" id="dayPopSave">Save</button>
+      </div>
+    </div>
     <div class="day-ring">
       <svg viewBox="0 0 120 120">
         <defs>
@@ -603,7 +805,9 @@ body {
     <div class="day-ring-text">
       <div class="day-ring-status"    id="dayRingStatus">Loading…</div>
       <div class="day-ring-remaining" id="dayRingRemaining">—</div>
-      <div class="day-ring-hours">8:00 AM – 12:00 AM</div>
+      <div class="day-ring-hours"     id="dayRingHours">8:00 AM – 12:00 AM</div>
+      <div class="day-ring-est"       id="dayRingEst" hidden></div>
+      <div class="day-ring-est-sub"   id="dayRingEstSub"></div>
     </div>
   </div>
 
@@ -665,11 +869,60 @@ body {
 (function () {
   'use strict';
 
-  // Paste your Anthropic key here to enable ✨ Polish. Empty = falls back to plain add.
-  const ANTHROPIC_API_KEY = '';
+  // Anthropic key for ✨ Polish is read from your Finance settings — entered in the
+  // app and stored only in this browser. It is NEVER hardcoded here, so it can't
+  // leak when the repo is public/forked. (Finance → settings → Anthropic key.)
+  function getAnthropicKey(){ try { return (JSON.parse(localStorage.getItem('finance_settings_v1') || '{}').anthropicKey || '').trim(); } catch (e) { return ''; } }
 
-  const WAKE_HOUR  = 8;
-  const SLEEP_HOUR = 24;
+  // Day window is dynamic: pulled from the suite-wide vitals record (Whoop / Apple
+  // Watch / manual entry), or overridden manually via the ⚙ popover. Defaults 8 / 24.
+  let WAKE_HOUR  = 8;
+  let SLEEP_HOUR = 24;
+  const DAY_WINDOW_KEY = 'goals:dayWindow';
+  const SUITE_HEALTH_KEY = 'patron_health_v1';
+  const LEGACY_WHOOP_KEY = 'patron_whoop_data_v1';
+
+  function readHealth() {
+    try {
+      let r = localStorage.getItem(SUITE_HEALTH_KEY);
+      if (r) { const d = JSON.parse(r); if (d && d.connected) return d; }
+      r = localStorage.getItem(LEGACY_WHOOP_KEY);
+      if (r) { const d = JSON.parse(r); if (d && d.connected) return Object.assign({ source: 'whoop' }, d); }
+    } catch (e) {}
+    return null;
+  }
+  function readWindowPrefs() {
+    const d = storeGet(DAY_WINDOW_KEY);
+    return (d && typeof d === 'object') ? d : { mode: 'auto', wake: '', sleep: '' };
+  }
+  function hm2dec(str) { if (!str) return null; const p = String(str).split(':'); const h = Number(p[0]), m = Number(p[1] || 0); return isFinite(h) ? h + (m || 0) / 60 : null; }
+  function dec2hm(dec) { let h = Math.floor(((dec % 24) + 24) % 24); let m = Math.round(((dec % 1) + 1) % 1 * 60); if (m === 60) { m = 0; h = (h + 1) % 24; } return pad2(h) + ':' + pad2(m); }
+  function dec2clock(dec) { const h = Math.floor(((dec % 24) + 24) % 24); let m = Math.round(((dec % 1) + 1) % 1 * 60); let hh = h; if (m === 60) { m = 0; hh = (hh + 1) % 24; } const ap = hh < 12 ? 'AM' : 'PM'; let h12 = hh % 12; if (h12 === 0) h12 = 12; return h12 + ':' + pad2(m) + ' ' + ap; }
+  function sourceLabel(s) { return s === 'apple' ? 'Apple Watch' : s === 'manual' ? 'Manual entry' : s === 'whoop' ? 'Whoop' : ''; }
+
+  // Resolve the active wake/sleep window from prefs + vitals. Sleep hour is
+  // normalised to be > wake hour (a 1am bedtime becomes 25 for the day-arc math).
+  function resolveWindow() {
+    const prefs = readWindowPrefs();
+    const health = readHealth();
+    let wakeStr = null, sleepStr = null, source = 'default';
+    if (prefs.mode === 'manual' && (prefs.wake || prefs.sleep)) {
+      wakeStr = prefs.wake || '08:00'; sleepStr = prefs.sleep || '00:00'; source = 'manual-override';
+    } else if (health && (health.wakeTime || health.bedtime)) {
+      wakeStr = health.wakeTime || '08:00'; sleepStr = health.bedtime || '00:00'; source = health.source || 'whoop';
+    } else {
+      wakeStr = '08:00'; sleepStr = '00:00'; source = 'default';
+    }
+    let wakeHour = hm2dec(wakeStr); if (wakeHour == null) wakeHour = 8;
+    let sleepHour = hm2dec(sleepStr); if (sleepHour == null) sleepHour = 24;
+    if (sleepHour <= wakeHour) sleepHour += 24; // bedtime after midnight
+    return { wakeHour, sleepHour, wakeStr, sleepStr, source, health, prefs };
+  }
+  function applyWindow() {
+    const w = resolveWindow();
+    WAKE_HOUR = w.wakeHour; SLEEP_HOUR = w.sleepHour;
+    return w;
+  }
 
   // ---------- storage helpers ----------
   function storeGet(key) {
@@ -796,6 +1049,8 @@ body {
     return '·';
   }
 
+  // Single-row crossfade: keep one row in the DOM, fade it out, swap
+  // its text, fade it back in. No overlap, no orphaned animation states.
   let firstTick = true;
   function tick() {
     const { items, done, total } = buildTickerItems();
@@ -842,15 +1097,15 @@ body {
 
   // ---------- Day Ring ----------
   const PALETTE = [
-    [0,    [255, 216, 158]],
-    [12.5, [255, 205, 121]],
-    [25,   [255, 227, 143]],
-    [37.5, [255, 183, 106]],
-    [50,   [255, 149,  89]],
-    [62.5, [243, 111,  79]],
-    [75,   [226,  93, 122]],
-    [87.5, [123,  91, 176]],
-    [100,  [ 47,  58, 102]]
+    [0,    [199, 187, 255]],
+    [12.5, [183, 168, 255]],
+    [25,   [167, 150, 255]],
+    [37.5, [150, 132, 250]],
+    [50,   [139, 124, 255]],
+    [62.5, [150, 108, 230]],
+    [75,   [146,  92, 205]],
+    [87.5, [110,  78, 175]],
+    [100,  [ 72,  64, 140]]
   ];
   function lerp(a, b, t) { return a + (b - a) * t; }
   function paletteAt(p) {
@@ -887,9 +1142,49 @@ body {
   fillEl.setAttribute('stroke-dasharray', C);
   fillEl.setAttribute('stroke-dashoffset', C);
 
+  // Recommended bedtime from sleep need (target nudged up when recovery is low).
+  function estimatedBedtime(w) {
+    const h = w.health;
+    if (!h && w.source !== 'manual-override') return null; // nothing personalised to base it on
+    let need = (h && h.sleepTargetHours) || 8;
+    let basis;
+    if (h && h.recovery != null) {
+      const r = h.recovery;
+      need += r < 34 ? 1 : r < 50 ? 0.5 : r < 67 ? 0.25 : 0;
+      need = Math.round(need * 10) / 10;
+      basis = 'for ' + need + 'h — tuned to your ' + Math.round(r) + '% recovery';
+    } else {
+      need = Math.round(need * 10) / 10;
+      basis = 'for your ' + need + 'h sleep target';
+    }
+    const bedDec = (WAKE_HOUR + 24) - need; // the night before the next wake-up
+    return { bedDec, need, basis };
+  }
+  function renderWindowExtras(w) {
+    const hoursEl = document.getElementById('dayRingHours');
+    const estEl   = document.getElementById('dayRingEst');
+    const estSub  = document.getElementById('dayRingEstSub');
+    if (hoursEl) hoursEl.textContent = dec2clock(WAKE_HOUR) + ' – ' + dec2clock(SLEEP_HOUR);
+    if (!estEl || !estSub) return;
+    const est = estimatedBedtime(w);
+    if (est) {
+      estEl.hidden = false;
+      estEl.innerHTML = '💤 Sleep by <b>' + dec2clock(est.bedDec) + '</b>';
+      estSub.textContent = est.basis + (w.source && w.source !== 'manual-override' && w.source !== 'default' ? ' · via ' + sourceLabel(w.source) : '');
+    } else {
+      estEl.hidden = true;
+      estSub.textContent = 'Add vitals (Whoop / Apple Watch) to estimate your ideal bedtime.';
+    }
+  }
+
   function updateDayRing() {
+    const w = applyWindow();
+    renderWindowExtras(w);
     const now = new Date();
-    const hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    let hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+    // Past-midnight bedtime (SLEEP_HOUR > 24): if it's the small hours but still
+    // before bedtime, treat as "late evening" of the same day rather than asleep.
+    if (hours < WAKE_HOUR && SLEEP_HOUR > 24 && (hours + 24) < SLEEP_HOUR) hours += 24;
     const percentEl   = document.getElementById('dayRingPercent');
     const phaseEl     = document.getElementById('dayRingPhase');
     const clockEl     = document.getElementById('dayRingClock');
@@ -911,7 +1206,7 @@ body {
 
     if (hours >= SLEEP_HOUR) {
       fillEl.setAttribute('stroke-dashoffset', 0);
-      fillEl.style.stroke = '#E25D7A';
+      fillEl.style.stroke = '#FB7185';
       percentEl.textContent = '100%';
       phaseEl.textContent   = 'PAST BEDTIME';
       statusEl.textContent  = '⚠️ Past bedtime';
@@ -1183,7 +1478,7 @@ body {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
+        'x-api-key': getAnthropicKey(),
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
@@ -1224,7 +1519,7 @@ body {
     polishBtn.addEventListener('click', async () => {
       const text = input.value.trim();
       if (!text) return;
-      if (!ANTHROPIC_API_KEY) {
+      if (!getAnthropicKey()) {
         plainAdd(text);
         showStatus(statusEl, 'Polish needs an Anthropic API key — added as-typed.', false);
         return;
@@ -1259,22 +1554,83 @@ body {
     loadTomorrow
   );
 
+  // ---------- Wake/sleep settings popover ----------
+  function setupDayWindowPopover() {
+    const gear   = document.getElementById('dayRingGear');
+    const pop     = document.getElementById('dayPop');
+    const seg      = document.getElementById('dayPopSeg');
+    const wakeIn   = document.getElementById('dayPopWake');
+    const sleepIn  = document.getElementById('dayPopSleep');
+    const srcEl    = document.getElementById('dayPopSrc');
+    const noteEl   = document.getElementById('dayPopNote');
+    const saveBtn  = document.getElementById('dayPopSave');
+    const cancelBtn= document.getElementById('dayPopCancel');
+    if (!gear || !pop) return;
+    let draftMode = 'auto';
+
+    function paintMode() {
+      seg.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.mode === draftMode));
+      const auto = draftMode === 'auto';
+      wakeIn.disabled = auto; sleepIn.disabled = auto;
+      noteEl.textContent = auto
+        ? 'Auto pulls your times from Whoop / Apple Watch. Switch to Manual to set them yourself.'
+        : 'Manual: these times drive your day ring regardless of vitals.';
+    }
+    function fillFromState() {
+      const prefs = readWindowPrefs();
+      const w = resolveWindow();
+      draftMode = prefs.mode === 'manual' ? 'manual' : 'auto';
+      // show the currently-active resolved times in the inputs
+      wakeIn.value  = dec2hm(w.wakeHour);
+      sleepIn.value = dec2hm(w.sleepHour);
+      const hasVitals = !!w.health && (w.health.wakeTime || w.health.bedtime);
+      srcEl.innerHTML = hasVitals
+        ? 'Vitals source: <b>' + sourceLabel(w.health.source) + '</b>' + (w.health.wakeTime && w.health.bedtime ? ' — wake ' + dec2clock(hm2dec(w.health.wakeTime)) + ', bed ' + dec2clock(hm2dec(w.health.bedtime)) : '')
+        : 'No wake/sleep times in your vitals yet — add them on the dashboard or set Manual.';
+      paintMode();
+    }
+    function open()  { fillFromState(); pop.hidden = false; }
+    function close() { pop.hidden = true; }
+
+    gear.addEventListener('click', (e) => { e.stopPropagation(); pop.hidden ? open() : close(); });
+    seg.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; draftMode = b.dataset.mode; paintMode(); });
+    cancelBtn.addEventListener('click', close);
+    saveBtn.addEventListener('click', () => {
+      const prefs = { mode: draftMode, wake: wakeIn.value || '', sleep: sleepIn.value || '' };
+      storeSet(DAY_WINDOW_KEY, prefs);
+      close();
+      updateDayRing();
+    });
+    // close on outside click / Esc
+    document.addEventListener('click', (e) => { if (!pop.hidden && !pop.contains(e.target) && e.target !== gear) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pop.hidden) close(); });
+  }
+
   // ---------- Boot ----------
   rollover();
   processStreak();
   loadToday();
   loadTomorrow();
   renderStreak();
+  setupDayWindowPopover();
   updateDayRing();
   setInterval(updateDayRing, 60 * 1000);
   startTicker();
 
   // Re-render when storage changes from another tab (or our bridged parent).
-  window.addEventListener('storage', () => {
+  window.addEventListener('storage', (e) => {
     loadToday(); loadTomorrow(); renderStreak();
+    // vitals updated elsewhere (dashboard / Whoop tab) → refresh the day window
+    if (!e || !e.key || e.key === SUITE_HEALTH_KEY || e.key === LEGACY_WHOOP_KEY || e.key === DAY_WINDOW_KEY) updateDayRing();
   });
 })();
 </script>
+
+<script>(function(){function cur(){try{return localStorage.getItem("patron_theme")||"nocturne";}catch(e){return "nocturne";}}function paint(){var c=cur();document.querySelectorAll(".themeBtn").forEach(function(b){b.classList.toggle("themeBtnActive",b.dataset.theme===c);});}document.addEventListener("click",function(e){var b=e.target.closest(".themeBtn");if(!b)return;var n=b.dataset.theme;document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("patron_theme",n);}catch(e){}paint();});paint();})();</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="sync.js" defer></script>
+<script src="topbar.js" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   if (typeof initCloudSync !== 'function') return;
