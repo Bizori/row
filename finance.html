@@ -1586,6 +1586,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
           <option value="USD">USD</option>
           <option value="EUR">EUR</option>
           <option value="GBP">GBP</option>
+          <option value="BRL">BRL</option>
         </select>
       </div>
     </div>
@@ -1733,6 +1734,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
         <option value="GBP">GBP</option>
+        <option value="BRL">BRL</option>
       </select>
       <select id="subPeriod" style="padding:6px 10px;border:0.5px solid var(--border);border-radius:var(--radius-md);font-size:12px;font-family:inherit;background:var(--bg-card);color:var(--text-primary);max-width:100px">
         <option value="monthly">Monthly</option>
@@ -1770,6 +1772,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
         <option value="GBP">GBP</option>
+        <option value="BRL">BRL</option>
       </select>
       <select id="ordFromCat" class="ord-input ord-input-from" title="Which net worth account this comes out of">
         <option value="">No accounts yet</option>
@@ -1827,6 +1830,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <option value="USD">USD</option>
         <option value="EUR">EUR</option>
         <option value="GBP">GBP</option>
+        <option value="BRL">BRL</option>
       </select>
       <button class="wish-add-btn" id="wishAddBtn" onclick="window.__addWish && window.__addWish()">+ Add</button>
     </div>
@@ -1930,7 +1934,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   const netWorthTotal = document.getElementById('netWorthTotal');
   const netWorthBreakdown = document.getElementById('netWorthBreakdown');
 
-  let exchangeRates = { CHF: 1, USD: 1, EUR: 1, GBP: 1 };
+  let exchangeRates = { CHF: 1, USD: 1, EUR: 1, GBP: 1, BRL: 1 };
   async function loadExchangeRates() {
     try {
       const res = await fetch('https://open.er-api.com/v6/latest/CHF');
@@ -1940,7 +1944,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
           CHF: 1,
           USD: data.rates.USD || 1,
           EUR: data.rates.EUR || 1,
-          GBP: data.rates.GBP || 1
+          GBP: data.rates.GBP || 1,
+          BRL: data.rates.BRL || 1
         };
         renderAllNetWorth();
         if (typeof renderSubs === 'function') renderSubs();
@@ -2699,7 +2704,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     const periodOpts = ['monthly','yearly','weekly'].map(p =>
       '<option value="' + p + '"' + (p === it.period ? ' selected' : '') + '>' + p.charAt(0).toUpperCase() + p.slice(1) + '</option>'
     ).join('');
-    const ccyOpts = ['CHF','USD','EUR','GBP'].map(c =>
+    const ccyOpts = ['CHF','USD','EUR','GBP','BRL'].map(c =>
       '<option value="' + c + '"' + (c === enteredCcy ? ' selected' : '') + '>' + c + '</option>'
     ).join('');
     // Build From-account options from the live NW accounts
